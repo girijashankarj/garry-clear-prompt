@@ -9,12 +9,22 @@ import { McpAdvisorPanel } from './McpAdvisor';
 import { LintWarningsPanel } from './LintWarnings';
 import { PromptPreview } from '@/components/shared/PromptPreview';
 import { ExportButtons } from '@/components/shared/ExportButtons';
+import { BeforeAfterComparison } from '@/components/shared/BeforeAfterComparison';
+import { CalibrationPanel } from '@/components/shared/CalibrationPanel';
+import { NlpAnalysisPanel } from '@/components/shared/NlpAnalysisPanel';
+import { CursorExportPanel } from '@/components/shared/CursorExportPanel';
+import { VersionHistoryPanel } from '@/components/shared/VersionHistoryPanel';
+import { TestCasesPanel } from '@/components/shared/TestCasesPanel';
+import { PromptSuggestionsPanel } from '@/components/shared/PromptSuggestionsPanel';
+import { LlmRunnerPanel } from '@/components/shared/LlmRunnerPanel';
 
 interface AdvancedResultsProps {
   result: PromptEngineResult;
+  rawPrompt?: string;
+  onApplyImproved?: (improved: string) => void;
 }
 
-export function AdvancedResults({ result }: AdvancedResultsProps) {
+export function AdvancedResults({ result, rawPrompt, onApplyImproved }: AdvancedResultsProps) {
   const hasContent = result.structuredPrompt.trim().length > 0;
 
   if (!hasContent) {
@@ -38,6 +48,13 @@ export function AdvancedResults({ result }: AdvancedResultsProps) {
       <TokenEstimatorPanel estimate={result.tokenEstimate} />
       <LintWarningsPanel warnings={result.lintWarnings} />
       <McpAdvisorPanel suggestions={result.mcpSuggestions} />
+      <CalibrationPanel promptSnippet={rawPrompt || ''} tokenEstimate={result.tokenEstimate} />
+      {rawPrompt && <NlpAnalysisPanel text={rawPrompt} />}
+
+      {/* Before/After Comparison */}
+      {rawPrompt && (
+        <BeforeAfterComparison promptText={rawPrompt} onApplyImproved={onApplyImproved} />
+      )}
 
       <Separator />
 
@@ -57,6 +74,29 @@ export function AdvancedResults({ result }: AdvancedResultsProps) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Similar Prompts from History */}
+      {rawPrompt && (
+        <PromptSuggestionsPanel currentText={rawPrompt} mode="advanced" onApply={onApplyImproved || (() => {})} />
+      )}
+
+      {/* Version History */}
+      <VersionHistoryPanel
+        currentPrompt={rawPrompt || ''}
+        currentMetaPrompt={result.metaPrompt}
+        currentScore={result.rating.totalScore}
+        mode="advanced"
+        onRestore={onApplyImproved || (() => {})}
+      />
+
+      {/* Test Cases */}
+      <TestCasesPanel promptSnippet={rawPrompt || ''} />
+
+      {/* Cursor Export */}
+      <CursorExportPanel result={result} />
+
+      {/* LLM Runner (disabled until we have money) */}
+      <LlmRunnerPanel result={result} />
     </div>
   );
 }

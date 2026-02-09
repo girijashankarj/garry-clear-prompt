@@ -141,3 +141,50 @@ export interface PromptEngineResult {
 
 // ===== Export =====
 export type ExportFormat = 'markdown' | 'text' | 'json';
+
+// ===== LLM Provider Integration =====
+export type LlmProvider = 'openai' | 'anthropic' | 'bedrock';
+
+export interface LlmProviderConfig {
+  provider: LlmProvider;
+  label: string;
+  description: string;
+  models: LlmModelOption[];
+  configFields: LlmConfigField[];
+}
+
+export interface LlmModelOption {
+  id: string;
+  label: string;
+  tier: ModelTier;
+  inputCostPer1k: number;   // $ per 1K input tokens
+  outputCostPer1k: number;  // $ per 1K output tokens
+  maxContext: number;        // max context window in tokens
+}
+
+export interface LlmConfigField {
+  key: string;
+  label: string;
+  type: 'text' | 'password';
+  placeholder: string;
+  required: boolean;
+}
+
+export interface LlmRunResult {
+  output: string;
+  provider: LlmProvider;
+  model: string;
+  inputTokens: number;
+  outputTokens: number;
+  durationMs: number;
+  estimatedCost: number;
+  timestamp: number;
+}
+
+export interface LlmSettings {
+  provider: LlmProvider;
+  modelId: string;
+  credentials: Record<string, string>;
+  maxTokens: number;
+  temperature: number;
+}

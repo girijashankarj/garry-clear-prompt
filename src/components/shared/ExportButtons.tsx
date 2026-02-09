@@ -1,4 +1,4 @@
-import { Copy, Download, FileText, FileJson } from 'lucide-react';
+import { Copy, Download, FileText, FileJson, FolderArchive } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import type { PromptEngineResult } from '@/types/prompt.types';
@@ -6,6 +6,7 @@ import { copyToClipboard, downloadFile } from '@/lib/utils';
 import { exportAsMarkdown } from '@/lib/exporters/markdown-exporter';
 import { exportAsText } from '@/lib/exporters/text-exporter';
 import { exportAsJson } from '@/lib/exporters/json-exporter';
+import { exportAsZip } from '@/lib/exporters/zip-exporter';
 
 interface ExportButtonsProps {
   result: PromptEngineResult;
@@ -48,6 +49,23 @@ export function ExportButtons({ result }: ExportButtonsProps) {
     toast.success('Downloaded as JSON');
   };
 
+  const handleDownloadZip = async () => {
+    try {
+      const blob = await exportAsZip(result);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'prompt-export.zip';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success('Downloaded as ZIP');
+    } catch {
+      toast.error('Failed to create ZIP');
+    }
+  };
+
   return (
     <div className="flex flex-wrap gap-2">
       <Button variant="outline" size="sm" onClick={handleCopyPrompt}>
@@ -71,6 +89,10 @@ export function ExportButtons({ result }: ExportButtonsProps) {
       <Button variant="outline" size="sm" onClick={handleDownloadJson}>
         <FileJson className="h-4 w-4 mr-1.5" />
         .json
+      </Button>
+      <Button variant="outline" size="sm" onClick={handleDownloadZip}>
+        <FolderArchive className="h-4 w-4 mr-1.5" />
+        .zip
       </Button>
     </div>
   );

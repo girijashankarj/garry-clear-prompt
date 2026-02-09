@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import { Toaster } from 'sonner';
 import type { BasicPromptInput, AdvancedPromptInput } from '@/types/prompt.types';
 import { useMode } from '@/hooks/use-mode';
@@ -43,13 +43,17 @@ function BasicMode() {
   const [input, setInput] = useLocalStorage<BasicPromptInput>('gcp-basic-input', DEFAULT_BASIC_INPUT);
   const result = usePromptEngineBasic(input);
 
+  const handleApplyImproved = useCallback((improved: string) => {
+    setInput((prev) => ({ ...prev, goal: improved }));
+  }, [setInput]);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div>
         <BasicPromptForm input={input} onChange={setInput} />
       </div>
       <div>
-        <BasicResults result={result} />
+        <BasicResults result={result} rawGoal={input.goal} onApplyImproved={handleApplyImproved} />
       </div>
     </div>
   );
@@ -59,13 +63,17 @@ function AdvancedMode() {
   const [input, setInput] = useLocalStorage<AdvancedPromptInput>('gcp-advanced-input', DEFAULT_ADVANCED_INPUT);
   const result = usePromptEngineAdvanced(input);
 
+  const handleApplyImproved = useCallback((improved: string) => {
+    setInput((prev) => ({ ...prev, prompt: improved }));
+  }, [setInput]);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div>
         <AdvancedPromptForm input={input} onChange={setInput} />
       </div>
       <div>
-        <AdvancedResults result={result} />
+        <AdvancedResults result={result} rawPrompt={input.prompt} onApplyImproved={handleApplyImproved} />
       </div>
     </div>
   );

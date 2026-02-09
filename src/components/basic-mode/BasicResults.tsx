@@ -5,12 +5,18 @@ import type { PromptEngineResult } from '@/types/prompt.types';
 import { ScoreBadge } from '@/components/shared/ScoreBadge';
 import { ExportButtons } from '@/components/shared/ExportButtons';
 import { PromptPreview } from '@/components/shared/PromptPreview';
+import { BeforeAfterComparison } from '@/components/shared/BeforeAfterComparison';
+import { NlpAnalysisPanel } from '@/components/shared/NlpAnalysisPanel';
+import { VersionHistoryPanel } from '@/components/shared/VersionHistoryPanel';
+import { PromptSuggestionsPanel } from '@/components/shared/PromptSuggestionsPanel';
 
 interface BasicResultsProps {
   result: PromptEngineResult;
+  rawGoal?: string;
+  onApplyImproved?: (improved: string) => void;
 }
 
-export function BasicResults({ result }: BasicResultsProps) {
+export function BasicResults({ result, rawGoal, onApplyImproved }: BasicResultsProps) {
   const hasContent = result.structuredPrompt.trim().length > 0;
 
   if (!hasContent) {
@@ -54,6 +60,14 @@ export function BasicResults({ result }: BasicResultsProps) {
         </CardContent>
       </Card>
 
+      {/* NLP Analysis */}
+      {rawGoal && <NlpAnalysisPanel text={rawGoal} />}
+
+      {/* Before/After Comparison */}
+      {rawGoal && (
+        <BeforeAfterComparison promptText={rawGoal} onApplyImproved={onApplyImproved} />
+      )}
+
       {/* Structured Prompt Preview */}
       <PromptPreview title="Your Structured Prompt" content={result.structuredPrompt} />
 
@@ -63,6 +77,20 @@ export function BasicResults({ result }: BasicResultsProps) {
       )}
 
       <Separator />
+
+      {/* Similar Prompts from History */}
+      {rawGoal && (
+        <PromptSuggestionsPanel currentText={rawGoal} mode="basic" onApply={onApplyImproved || (() => {})} />
+      )}
+
+      {/* Version History */}
+      <VersionHistoryPanel
+        currentPrompt={rawGoal || ''}
+        currentMetaPrompt={result.metaPrompt}
+        currentScore={result.rating.totalScore}
+        mode="basic"
+        onRestore={onApplyImproved || (() => {})}
+      />
 
       {/* Export */}
       <Card>
