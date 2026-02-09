@@ -2,7 +2,12 @@
  * Prompt versioning: save/load/list prompt versions in localStorage.
  */
 
-const STORAGE_KEY = 'gcp-prompt-versions';
+import { STORAGE_KEYS, MAX_PROMPT_VERSIONS } from '@/common/constants';
+import { loggerInfo, loggerDebug } from '@/utils/loggerUtils';
+import { INFO_MESSAGES } from '@/common/messages/info';
+import { DEBUG_MESSAGES } from '@/common/messages/debug';
+
+const STORAGE_KEY = STORAGE_KEYS.VERSIONS;
 
 export interface PromptVersion {
   id: string;
@@ -59,16 +64,18 @@ export function savePromptVersion(
 
   versions.push(newVersion);
 
-  // Keep last 50 versions total
-  const trimmed = versions.slice(-50);
+  // Keep last MAX_PROMPT_VERSIONS versions total
+  const trimmed = versions.slice(-MAX_PROMPT_VERSIONS);
   saveVersions(trimmed);
 
+  loggerInfo(INFO_MESSAGES.VERSION_SAVED, { version: nextVersion, mode }, 'versioning', 'versioning.ts', 'savePromptVersion');
   return newVersion;
 }
 
 export function deletePromptVersion(id: string): void {
   const versions = loadVersions().filter(v => v.id !== id);
   saveVersions(versions);
+  loggerDebug(DEBUG_MESSAGES.VERSION_DELETED, { id }, 'versioning', 'versioning.ts', 'deletePromptVersion');
 }
 
 export function clearPromptVersions(mode?: 'basic' | 'advanced'): void {

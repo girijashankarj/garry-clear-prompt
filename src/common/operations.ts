@@ -1,0 +1,16 @@
+export const OPERATIONS = {
+  APP_INIT: 'app_init',
+  THEME_TOGGLE: 'theme_toggle',
+  MODE_SWITCH: 'mode_switch',
+  PROMPT_RATE: 'prompt_rate',
+  PROMPT_BUILD: 'prompt_build',
+  PROMPT_LINT: 'prompt_lint',
+  PROMPT_IMPROVE: 'prompt_improve',
+  TOKEN_ESTIMATE: 'token_estimate',
+  MODEL_ADVISE: 'model_advise',
+  NLP_ANALYZE: 'nlp_analyze',
+  EXPORT: 'export',
+  VERSION_SAVE: 'version_save',
+  VERSION_RESTORE: 'version_restore',
+  CALIBRATION_RECORD: 'calibration_record',
+} as const;

@@ -2,11 +2,14 @@ import { Copy, Download, FileText, FileJson, FolderArchive } from 'lucide-react'
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import type { PromptEngineResult } from '@/types/prompt.types';
-import { copyToClipboard, downloadFile } from '@/lib/utils';
+import { copyToClipboard, downloadFile, getExportFileName } from '@/lib/utils';
 import { exportAsMarkdown } from '@/lib/exporters/markdown-exporter';
 import { exportAsText } from '@/lib/exporters/text-exporter';
 import { exportAsJson } from '@/lib/exporters/json-exporter';
 import { exportAsZip } from '@/lib/exporters/zip-exporter';
+import { INFO_MESSAGES } from '@/common/messages/info';
+import { ERROR_MESSAGES } from '@/common/messages/error';
+import { FILE_NAMES, EXPORT_EXTENSIONS } from '@/common/fileNames';
 
 interface ExportButtonsProps {
   result: PromptEngineResult;
@@ -16,37 +19,37 @@ export function ExportButtons({ result }: ExportButtonsProps) {
   const handleCopyPrompt = async () => {
     const success = await copyToClipboard(result.structuredPrompt);
     if (success) {
-      toast.success('Prompt copied to clipboard');
+      toast.success(INFO_MESSAGES.PROMPT_COPIED);
     } else {
-      toast.error('Failed to copy');
+      toast.error(ERROR_MESSAGES.CLIPBOARD_FAILED);
     }
   };
 
   const handleCopyMeta = async () => {
     const success = await copyToClipboard(result.metaPrompt);
     if (success) {
-      toast.success('Meta prompt copied to clipboard');
+      toast.success(INFO_MESSAGES.META_COPIED);
     } else {
-      toast.error('Failed to copy');
+      toast.error(ERROR_MESSAGES.CLIPBOARD_FAILED);
     }
   };
 
   const handleDownloadMd = () => {
     const content = exportAsMarkdown(result);
-    downloadFile(content, 'prompt-export.md', 'text/markdown');
-    toast.success('Downloaded as Markdown');
+    downloadFile(content, getExportFileName(FILE_NAMES.EXPORT_BASE, EXPORT_EXTENSIONS.MD), 'text/markdown');
+    toast.success(INFO_MESSAGES.EXPORT_MD);
   };
 
   const handleDownloadTxt = () => {
     const content = exportAsText(result);
-    downloadFile(content, 'prompt-export.txt', 'text/plain');
-    toast.success('Downloaded as Text');
+    downloadFile(content, getExportFileName(FILE_NAMES.EXPORT_BASE, EXPORT_EXTENSIONS.TXT), 'text/plain');
+    toast.success(INFO_MESSAGES.EXPORT_TXT);
   };
 
   const handleDownloadJson = () => {
     const content = exportAsJson(result);
-    downloadFile(content, 'prompt-export.json', 'application/json');
-    toast.success('Downloaded as JSON');
+    downloadFile(content, getExportFileName(FILE_NAMES.EXPORT_BASE, EXPORT_EXTENSIONS.JSON), 'application/json');
+    toast.success(INFO_MESSAGES.EXPORT_JSON);
   };
 
   const handleDownloadZip = async () => {
@@ -55,14 +58,14 @@ export function ExportButtons({ result }: ExportButtonsProps) {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'prompt-export.zip';
+      a.download = getExportFileName(FILE_NAMES.EXPORT_BASE, EXPORT_EXTENSIONS.ZIP);
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      toast.success('Downloaded as ZIP');
+      toast.success(INFO_MESSAGES.EXPORT_ZIP);
     } catch {
-      toast.error('Failed to create ZIP');
+      toast.error(ERROR_MESSAGES.ZIP_FAILED);
     }
   };
 

@@ -1,0 +1,35 @@
+---
+description: "Token optimisation rules specific to Garry Clear Prompt"
+alwaysApply: true
+---
+
+# Token Efficiency Rules
+
+## Context Layering
+| Layer | Budget | What to Include |
+|-------|--------|-----------------|
+| Immediate | 2 000 | Current file, direct imports |
+| Relevant | 5 000 | Related engine modules, shared types |
+| Extended | 10 000 | Broader codebase patterns |
+| Reference | 20 000 | Documentation, examples |
+
+## Expensive Operations — REQUIRE CONFIRMATION
+| Operation | Est. Tokens | Preferred Alternative |
+|-----------|------------|----------------------|
+| `jest --coverage` (full suite) | 100K+ | `jest --testPathPattern={file}` (~5K) |
+| `eslint .` (full lint) | 50K+ | `read_lints` tool |
+| `vite build` | 75K+ | `tsc -b` (~10K) |
+| Reading 10+ files | 50K+ | Read only changed sections |
+
+## Project-Specific Shortcuts
+- **Quick validation:** `tsc -b` catches type errors across the entire project
+- **Single file test:** `jest --testPathPattern=tests/src/lib/engine/prompt-rater`
+- **Lint check:** Use `read_lints` tool on edited files only
+- **Engine changes:** Only need to verify the engine module + its test file
+- **Component changes:** Type-check is usually sufficient; run component test only if requested
+
+## Output Guidelines
+- Summaries over verbose — bullet points, not paragraphs
+- Diff format for edits — show only changed lines
+- Max 3 sentences for explanations unless asked for more
+- Never repeat information the user already provided

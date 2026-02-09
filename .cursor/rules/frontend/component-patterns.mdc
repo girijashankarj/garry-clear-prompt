@@ -1,0 +1,44 @@
+---
+description: "Component patterns specific to Garry Clear Prompt"
+alwaysApply: true
+---
+
+# Component Patterns — Garry Clear Prompt
+
+## Component Hierarchy
+```
+App.tsx
+├── Header                     (layout/)
+├── ModeToggle                 (shared/)       ← Redux: mode toggle
+├── BasicMode / AdvancedMode   (basic-mode/ or advanced-mode/)
+│   ├── *PromptForm            ← Text input, refiners, InfoTooltip, CharCounter
+│   └── *Results               ← ScoreBadge, engine output, ExportButtons
+└── Footer                     (layout/)
+```
+
+## Shared Components (src/components/shared/)
+
+| Component | Purpose | Key Props |
+|-----------|---------|-----------|
+| `ScoreBadge` | Animated circular score display | `score`, `band` |
+| `ModeToggle` | Basic ↔ Advanced switch | (reads Redux) |
+| `InfoTooltip` | Hover "ⓘ" with description | `content` |
+| `CharCounter` | Character / word count bar | `value`, `maxChars?`, `maxWords?` |
+| `ExportButtons` | Copy + download (.md .txt .json .zip) | `result: PromptEngineResult` |
+| `VersionHistoryPanel` | Save/restore prompt versions | `currentPrompt`, `mode`, `onRestore` |
+| `CalibrationPanel` | Token accuracy calibration | `tokenEstimate` |
+| `TestSuitePanel` | Test-case runner | `structuredPrompt` |
+| `PromptSuggestionsPanel` | LLM prompt suggestions | `taskType`, `onSelect` |
+
+## UI Primitives (src/components/ui/)
+All from shadcn/ui — **never modify generated primitives directly**. Customise via Tailwind or wrapper components.
+
+## Rules
+- **Functional components only** — no class components
+- Destructure props at the function signature level
+- Define `interface *Props` above the component
+- **Message strings** must come from `src/common/messages/` — never hard-code toast text
+- **File-name constants** must come from `src/common/fileNames.ts` for exports
+- **Toast library:** `sonner` — `toast.success()` / `toast.error()`
+- Memoize with `useMemo`/`useCallback` when passing to children
+- **Max prop-drilling depth: 2** — beyond that, use Redux or Context

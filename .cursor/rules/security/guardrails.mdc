@@ -1,0 +1,35 @@
+---
+description: "Security guardrails for Garry Clear Prompt"
+alwaysApply: true
+---
+
+# Security Guardrails — Garry Clear Prompt
+
+## Absolute Rules
+
+### 1. Secrets Management
+- **NEVER** hardcode API keys, tokens, passwords, or connection strings in source code
+- **ALWAYS** use environment variables via `import.meta.env.VITE_*`
+- LLM API keys (`VITE_OPENAI_API_KEY`, `VITE_ANTHROPIC_API_KEY`, `VITE_BEDROCK_*`) must live in `.env`
+- Document all env vars in `.env.example` — never put real values there
+
+### 2. PII Protection
+- **NEVER** log PII (names, emails, phone numbers, IDs)
+- When logging, use operation names from `src/common/messages/` not user content
+- Logger functions (`loggerDebug`/`loggerInfo`/`loggerWarn`/`loggerError`) accept metadata objects — only include technical data, never user prompt text
+
+### 3. localStorage Security
+- All keys centralised in `STORAGE_KEYS` from `src/common/constants.ts`
+- Never store API keys or passwords in localStorage
+- Handle `QuotaExceededError` gracefully — return `StorageResult<T>` with `success: false`
+- Validate data on read — don't trust localStorage content blindly
+
+### 4. Input Handling
+- User prompts are processed locally (no server calls in current version)
+- When LLM integration is enabled, sanitise prompt text before sending to external APIs
+- File exports are client-side only — no data leaves the browser
+
+### 5. Git Hygiene
+- `.env` is in `.gitignore` — verify before committing
+- Run `/check-secrets` before pushing to public repo
+- Never include stack traces in user-facing error messages — use `ERROR_MESSAGES.*` constants

@@ -1,5 +1,7 @@
 import { ratePrompt } from './prompt-rater';
 import type { PromptRating } from '@/types/prompt.types';
+import { loggerInfo } from '@/utils/loggerUtils';
+import { INFO_MESSAGES } from '@/common/messages/info';
 
 export interface PromptImprovement {
   original: string;
@@ -67,6 +69,8 @@ export function improvePrompt(text: string): PromptImprovement {
 
   const originalRating = ratePrompt(text);
   const improvedRating = ratePrompt(improved);
+
+  loggerInfo(INFO_MESSAGES.PROMPT_IMPROVED, { originalScore: originalRating.totalScore, improvedScore: improvedRating.totalScore, changeCount: changes.length }, 'engine', 'prompt-improver.ts', 'improvePrompt');
 
   return {
     original: text.trim(),

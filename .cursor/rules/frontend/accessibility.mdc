@@ -1,0 +1,40 @@
+---
+description: "Accessibility rules for Garry Clear Prompt"
+alwaysApply: true
+---
+
+# Accessibility — Garry Clear Prompt
+
+## WCAG 2.1 AA Compliance
+
+### Project-Specific Requirements
+- `ScoreBadge` must include `aria-label` with the score band (e.g. "Average")
+- `InfoTooltip` uses `role="tooltip"` and `aria-describedby` to link trigger → content
+- `CharCounter` provides `aria-live="polite"` for screen-reader announcements at limits
+- All `ExportButtons` have descriptive `aria-label` (e.g. "Download as Markdown")
+- `ModeToggle` has `aria-pressed` state
+
+### Semantic HTML
+- `<nav>`, `<main>`, `<section>`, `<footer>` for layout landmarks
+- Heading hierarchy: `<h1>` → `<h2>` → `<h3>` — never skip levels
+- `<button>` for actions, `<a>` for navigation
+
+### ARIA
+- `aria-label` on all icon-only buttons (Copy, Download, Trash, etc.)
+- `aria-live` regions for dynamic updates (score changes, toast notifications)
+- `aria-expanded` for collapsible panels (version history, calibration)
+
+### Keyboard
+- All interactive elements keyboard-accessible
+- Visible focus indicators (Tailwind `focus-visible:ring-2`)
+- Tab order follows visual layout
+- Escape closes modals/dropdowns
+
+### Visual
+- Minimum contrast: 4.5:1 (normal text), 3:1 (large text)
+- Never convey information by colour alone — pair with icons/text
+- Support 200% text zoom without content loss
+
+### Testing
+- `@testing-library/react` queries prefer accessible roles (`getByRole`, `getByLabelText`)
+- Include `aria-*` attribute assertions in component tests

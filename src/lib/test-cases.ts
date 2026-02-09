@@ -3,7 +3,11 @@
  * to validate prompt behavior offline.
  */
 
-const STORAGE_KEY = 'gcp-prompt-test-cases';
+import { STORAGE_KEYS, MAX_TEST_CASES_PER_SUITE } from '@/common/constants';
+import { loggerInfo } from '@/utils/loggerUtils';
+import { INFO_MESSAGES } from '@/common/messages/info';
+
+const STORAGE_KEY = STORAGE_KEYS.TEST_CASES;
 
 export interface PromptTestCase {
   id: string;
@@ -51,6 +55,7 @@ export function createTestSuite(name: string, promptSnippet: string): PromptTest
   };
   suites.push(suite);
   saveSuites(suites);
+  loggerInfo(INFO_MESSAGES.TEST_SUITE_CREATED, { id: suite.id, name }, 'test-cases', 'test-cases.ts', 'createTestSuite');
   return suite;
 }
 
@@ -64,7 +69,7 @@ export function addTestCase(
   const suite = suites.find(s => s.id === suiteId);
   if (!suite) return null;
 
-  if (suite.cases.length >= 10) return null; // max 10 per suite
+  if (suite.cases.length >= MAX_TEST_CASES_PER_SUITE) return null;
 
   const tc: PromptTestCase = {
     id: crypto.randomUUID(),

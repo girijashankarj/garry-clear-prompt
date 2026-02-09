@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Toaster } from 'sonner';
 import type { BasicPromptInput, AdvancedPromptInput } from '@/types/prompt.types';
-import { useMode } from '@/hooks/use-mode';
 import { useLocalStorage } from '@/hooks/use-local-storage';
 import { usePromptEngineBasic, usePromptEngineAdvanced } from '@/hooks/use-prompt-engine';
 import { Header } from '@/components/layout/Header';
@@ -10,6 +10,9 @@ import { BasicPromptForm } from '@/components/basic-mode/BasicPromptForm';
 import { BasicResults } from '@/components/basic-mode/BasicResults';
 import { AdvancedPromptForm } from '@/components/advanced-mode/AdvancedPromptForm';
 import { AdvancedResults } from '@/components/advanced-mode/AdvancedResults';
+import { STORAGE_KEYS } from '@/common/constants';
+import { setMode, toggleTheme } from '@/store/promptSlice';
+import type { RootState, AppDispatch } from '@/store';
 
 const DEFAULT_BASIC_INPUT: BasicPromptInput = {
   goal: '',
@@ -40,7 +43,7 @@ const DEFAULT_ADVANCED_INPUT: AdvancedPromptInput = {
 };
 
 function BasicMode() {
-  const [input, setInput] = useLocalStorage<BasicPromptInput>('gcp-basic-input', DEFAULT_BASIC_INPUT);
+  const [input, setInput] = useLocalStorage<BasicPromptInput>(STORAGE_KEYS.BASIC_INPUT, DEFAULT_BASIC_INPUT);
   const result = usePromptEngineBasic(input);
 
   const handleApplyImproved = useCallback((improved: string) => {
@@ -60,7 +63,7 @@ function BasicMode() {
 }
 
 function AdvancedMode() {
-  const [input, setInput] = useLocalStorage<AdvancedPromptInput>('gcp-advanced-input', DEFAULT_ADVANCED_INPUT);
+  const [input, setInput] = useLocalStorage<AdvancedPromptInput>(STORAGE_KEYS.ADVANCED_INPUT, DEFAULT_ADVANCED_INPUT);
   const result = usePromptEngineAdvanced(input);
 
   const handleApplyImproved = useCallback((improved: string) => {
@@ -80,8 +83,9 @@ function AdvancedMode() {
 }
 
 export default function App() {
-  const { mode, setMode } = useMode();
-  const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('gcp-theme', 'dark');
+  const dispatch = useDispatch<AppDispatch>();
+  const mode = useSelector((state: RootState) => state.prompt.mode);
+  const theme = useSelector((state: RootState) => state.prompt.theme);
 
   // Apply theme class to document
   useEffect(() => {
@@ -93,17 +97,24 @@ export default function App() {
     }
   }, [theme]);
 
-  const toggleTheme = useCallback(() => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  }, [setTheme]);
+  const handleToggleTheme = useCallback(() => {
+    dispatch(toggleTheme());
+  }, [dispatch]);
+
+  const handleModeChange = useCallback(
+    (newMode: 'basic' | 'advanced') => {
+      dispatch(setMode(newMode));
+    },
+    [dispatch],
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header
         mode={mode}
-        onModeChange={setMode}
+        onModeChange={handleModeChange}
         theme={theme}
-        onThemeToggle={toggleTheme}
+        onThemeToggle={handleToggleTheme}
       />
 
       <main className="flex-1 mx-auto w-full max-w-5xl px-4 py-6">

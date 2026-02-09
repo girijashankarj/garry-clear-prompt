@@ -7,8 +7,11 @@
  */
 
 import type { LlmSettings, LlmRunResult } from '@/types/prompt.types';
+import { STORAGE_KEYS } from '@/common/constants';
+import { loggerDebug } from '@/utils/loggerUtils';
+import { DEBUG_MESSAGES } from '@/common/messages/debug';
 
-const SETTINGS_KEY = 'gcp-llm-settings';
+const SETTINGS_KEY = STORAGE_KEYS.LLM_SETTINGS;
 const HISTORY_KEY = 'gcp-llm-history';
 
 const DEFAULT_SETTINGS: LlmSettings = {
@@ -31,6 +34,7 @@ export function loadLlmSettings(): LlmSettings {
 
 export function saveLlmSettings(settings: LlmSettings): void {
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  loggerDebug(DEBUG_MESSAGES.LLM_SETTINGS_SAVED, { provider: settings.provider, modelId: settings.modelId }, 'llm', 'settings.ts', 'saveLlmSettings');
 }
 
 export function loadRunHistory(): LlmRunResult[] {

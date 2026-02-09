@@ -1,0 +1,34 @@
+---
+description: "State management patterns for Garry Clear Prompt"
+alwaysApply: true
+---
+
+# State Management — Garry Clear Prompt
+
+## State Map
+
+| State | Tool | Where | Example |
+|-------|------|-------|---------|
+| **Mode / Theme** | Redux Toolkit | `src/store/promptSlice.ts` | `useSelector(s => s.prompt.mode)` |
+| **Prompt drafts** | `useLocalStorage` | `src/hooks/use-local-storage.ts` | `STORAGE_KEYS.BASIC_INPUT` / `STORAGE_KEYS.ADVANCED_INPUT` |
+| **Version history** | `useLocalStorage` + lib | `src/lib/versioning.ts` | `STORAGE_KEYS.PROMPT_VERSIONS_BASIC` |
+| **Calibration** | `useLocalStorage` + lib | `src/lib/calibration.ts` | `STORAGE_KEYS.CALIBRATION_RECORDS` |
+| **Test suites** | `useLocalStorage` + lib | `src/lib/test-cases.ts` | `STORAGE_KEYS.TEST_SUITES` |
+| **LLM settings** | `useLocalStorage` + lib | `src/lib/llm/settings.ts` | `STORAGE_KEYS.LLM_SETTINGS` |
+| **Engine results** | `useMemo` (derived) | `usePromptEngine` hook | Computed from prompt input |
+| **Form inputs** | `useState` (local) | `BasicPromptForm` / `AdvancedPromptForm` | Component-local |
+
+## Storage Keys
+All localStorage keys are centralised in `src/common/constants.ts → STORAGE_KEYS`.
+**NEVER** use raw string keys — always reference `STORAGE_KEYS.*`.
+
+## Storage Return Types
+- All storage read/write functions return `StorageResult<T>` from `src/common/interfaces/`
+- Check `result.success` before accessing `result.data`
+
+## Rules
+- Keep Redux minimal — only app-wide state (mode, theme)
+- **NEVER** put derived/computed data in the store
+- Handle storage quota errors gracefully (`StorageResult.error`)
+- Provide fallback values for all persisted state
+- Log state changes via `loggerDebug(DEBUG_MESSAGES.*)` from `src/common/messages/debug.ts`

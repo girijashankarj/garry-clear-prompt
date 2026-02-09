@@ -8,8 +8,10 @@ interface ModeToggleProps {
 
 export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
   return (
-    <div className="flex items-center rounded-lg bg-muted p-1 gap-1">
+    <div className="flex items-center rounded-lg bg-muted p-1 gap-1" role="tablist" aria-label="Prompt mode">
       <button
+        role="tab"
+        aria-selected={mode === 'basic'}
         onClick={() => onModeChange('basic')}
         className={cn(
           'px-4 py-1.5 rounded-md text-sm font-medium transition-all duration-200',
@@ -21,6 +23,8 @@ export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
         Basic
       </button>
       <button
+        role="tab"
+        aria-selected={mode === 'advanced'}
         onClick={() => onModeChange('advanced')}
         className={cn(
           'px-4 py-1.5 rounded-md text-sm font-medium transition-all duration-200',

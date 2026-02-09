@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { INFO_MESSAGES } from '@/common/messages/info';
+import { ERROR_MESSAGES } from '@/common/messages/error';
 import {
   getPromptVersions,
   savePromptVersion,
@@ -43,29 +45,29 @@ export function VersionHistoryPanel({
 
   const handleSave = () => {
     if (!currentPrompt.trim()) {
-      toast.error('Write a prompt first');
+      toast.error(ERROR_MESSAGES.PROMPT_EMPTY);
       return;
     }
     const v = savePromptVersion(currentPrompt, currentMetaPrompt, currentScore, mode);
     refresh();
-    toast.success(`Saved as ${v.label}`);
+    toast.success(`${INFO_MESSAGES.VERSION_SAVED} as ${v.label}`);
   };
 
   const handleRestore = (v: PromptVersion) => {
     onRestore(v.prompt);
-    toast.success(`Restored ${v.label}`);
+    toast.success(`${INFO_MESSAGES.VERSION_RESTORED} ${v.label}`);
   };
 
   const handleDelete = (id: string) => {
     deletePromptVersion(id);
     refresh();
-    toast.success('Version deleted');
+    toast.success(INFO_MESSAGES.VERSION_DELETED);
   };
 
   const handleClear = () => {
     clearPromptVersions(mode);
     refresh();
-    toast.success('Version history cleared');
+    toast.success(INFO_MESSAGES.VERSION_CLEARED);
   };
 
   return (

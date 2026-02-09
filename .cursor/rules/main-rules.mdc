@@ -1,0 +1,67 @@
+---
+description: "Master rules for Garry Clear Prompt — applies to all interactions"
+alwaysApply: true
+---
+
+# Main Rules — Garry Clear Prompt
+
+## Identity
+You are an expert TypeScript developer working on **Garry Clear Prompt** — a browser-based prompt-quality tool that rates, lints, improves, and exports LLM prompts.
+
+**Tech stack:** TypeScript 5.8 · React 19 · Vite 7 · Tailwind CSS v4 · shadcn/ui (Radix) · Redux Toolkit · Jest + Testing Library
+
+## Critical Rules
+
+### 1. Token Efficiency (CRITICAL)
+- **NEVER** auto-run full test suites (100K+ tokens waste)
+- **NEVER** auto-run full lint (50K+ tokens waste)
+- Use `read_lints` tool instead of running lint commands
+- Run `tsc -b` (~10K tokens) to validate changes — not full tests
+- Require **explicit user confirmation** before operations estimated at 50K+ tokens
+
+### 2. Security Guardrails (CRITICAL)
+- **NEVER** hardcode API keys, passwords, or tokens
+- **NEVER** log PII (names, emails, phone numbers)
+- **ALWAYS** use `.env` / `import.meta.env.VITE_*` for runtime config
+- **NEVER** commit `.env` files — use `.env.example` for documentation
+
+### 3. Project Conventions
+| Area | Convention |
+|------|-----------|
+| **Shared constants** | `src/common/constants.ts` (`STORAGE_KEYS`, `MAX_*` limits) |
+| **Message strings** | `src/common/messages/{info,error,warn,debug}.ts` — never hard-code toast / log text |
+| **File-name constants** | `src/common/fileNames.ts` (`FILE_NAMES.EXPORT_*`) |
+| **Interfaces** | `src/common/interfaces/index.ts` (`ApiResult<T>`, `StorageResult<T>`) |
+| **Operations** | `src/common/operations.ts` (`OPERATIONS.*`) |
+| **Logging** | `src/utils/loggerUtils.ts` — `loggerDebug` / `loggerInfo` / `loggerWarn` / `loggerError` |
+| **State** | Redux Toolkit in `src/store/promptSlice.ts` for mode & theme |
+| **Persistence** | `useLocalStorage` hook for drafts, versions, calibration |
+| **Toasts** | `sonner` — always use message constants from `src/common/messages/` |
+| **Types** | `src/types/prompt.types.ts` for all engine I/O types |
+
+### 4. Code Organisation
+```
+src/
+├── common/          # Constants, enums, messages, interfaces, operations, fileNames
+├── components/      # React UI (ui/ layout/ basic-mode/ advanced-mode/ shared/)
+├── hooks/           # useLocalStorage, useMode, usePromptEngine
+├── lib/             # Core logic
+│   ├── engine/      # rater · linter · builder · improver · nlp · token · model · mcp · meta
+│   ├── exporters/   # markdown · text · json · cursor · zip
+│   ├── data/        # Static lookup tables (lint rules, MCP tools, output-multipliers)
+│   └── llm/         # adapter · providers · settings (deferred feature)
+├── store/           # Redux Toolkit (promptSlice)
+├── types/           # TypeScript type definitions
+└── utils/           # loggerUtils
+```
+
+### 5. Before Making Changes
+- Read the target file first
+- Check for existing patterns in the codebase
+- Follow established conventions — don't introduce new patterns without discussion
+- Run `tsc -b` after changes
+
+### 6. Output Format
+- Bullet points for lists; keep explanations ≤ 3 sentences
+- Code blocks with language tags; show only changed sections
+- Always specify the full file path when referencing files

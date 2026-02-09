@@ -1,0 +1,41 @@
+---
+description: "Performance rules for Garry Clear Prompt"
+alwaysApply: true
+---
+
+# Performance — Garry Clear Prompt
+
+## Core Web Vitals Targets
+| Metric | Target |
+|--------|--------|
+| LCP | < 2.5s |
+| FID / INP | < 100ms |
+| CLS | < 0.1 |
+| Initial bundle (gzipped) | < 200KB |
+
+## Project-Specific Hotspots
+
+### Engine Pipeline
+- `ratePrompt()` is the most expensive function (~15 sub-scorers)
+- `analyzePromptNlp()` does regex-heavy text processing
+- `improvePrompt()` calls `ratePrompt()` twice (original + improved)
+- **Debounce** engine runs at 300ms on keystroke
+
+### Bundle
+- Current gzipped JS: ~373KB — above 200KB target
+- Heaviest dep: `jszip` (only needed for .zip export)
+- **Lazy-load** `exportAsZip` with dynamic `import()` when user clicks .zip button
+- Consider `React.lazy()` for `AdvancedMode` to reduce initial load
+
+### Runtime
+- `ScoreBadge` uses CSS animation (GPU-accelerated) — no JS layout thrashing
+- `useMemo` for `usePromptEngine` result derivation — recalculate only when input changes
+- `useCallback` for all event handlers passed to child components
+
+### Storage
+- localStorage reads are synchronous — batch reads in `useEffect` on mount
+- Never read localStorage on every render — cache in state
+
+## Caching
+- Prompt versions and calibration data cached in component state; refreshed on mutation
+- Static data (`src/lib/data/`) is compile-time constant — no runtime overhead

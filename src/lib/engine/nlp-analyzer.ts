@@ -1,4 +1,6 @@
 import nlp from 'compromise';
+import { loggerDebug } from '@/utils/loggerUtils';
+import { DEBUG_MESSAGES } from '@/common/messages/debug';
 
 export type PromptIntent = 'question' | 'instruction' | 'description' | 'comparison' | 'unknown';
 export type ComplexityLevel = 'simple' | 'moderate' | 'complex';
@@ -160,9 +162,12 @@ export function analyzePromptNlp(text: string): NlpAnalysis {
     readabilityGrade: fleschKincaidGrade(text),
   };
 
-  return {
+  const result = {
     ...partial,
     intent: detectIntent(doc, text),
     complexity: calculateComplexity(partial),
   };
+
+  loggerDebug(DEBUG_MESSAGES.NLP_COMPLETE, { intent: result.intent, complexity: result.complexity, wordCount: result.wordCount }, 'engine', 'nlp-analyzer.ts', 'analyzePromptNlp');
+  return result;
 }

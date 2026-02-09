@@ -1,4 +1,6 @@
 import type { BasicPromptInput } from '@/types/prompt.types';
+import { loggerDebug } from '@/utils/loggerUtils';
+import { DEBUG_MESSAGES } from '@/common/messages/debug';
 
 export function buildMetaPromptFromBasic(input: BasicPromptInput): string {
   const parts: string[] = [];
@@ -30,5 +32,7 @@ export function buildMetaPromptFromBasic(input: BasicPromptInput): string {
     parts.push(`Additional rules: ${input.rules.trim()}`);
   }
 
-  return parts.join(' ');
+  const result = parts.join(' ');
+  loggerDebug(DEBUG_MESSAGES.META_PROMPT_BUILT, { wordCount: result.split(/\s+/).length }, 'engine', 'meta-prompt-builder.ts', 'buildMetaPromptFromBasic');
+  return result;
 }

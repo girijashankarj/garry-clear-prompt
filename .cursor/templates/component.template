@@ -1,0 +1,19 @@
+// {{ComponentName}}.tsx
+// Garry Clear Prompt — {{category}} component
+// Description: {{description}}
+
+import { INFO_MESSAGES } from '@/common/messages/info';
+import { ERROR_MESSAGES } from '@/common/messages/error';
+
+interface {{ComponentName}}Props {
+  /** {{prop1Description}} */
+  {{prop1}}: {{prop1Type}};
+}
+
+export function {{ComponentName}}({ {{prop1}} }: {{ComponentName}}Props) {
+  return (
+    <div className="{{baseClassName}}">
+      {/* Component implementation */}
+    </div>
+  );
+}

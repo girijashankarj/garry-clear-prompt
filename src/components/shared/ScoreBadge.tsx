@@ -68,7 +68,14 @@ export function ScoreBadge({ score, band, size = 'sm' }: ScoreBadgeProps) {
   const colors = BAND_COLORS[band];
 
   return (
-    <div className={cn('relative inline-flex flex-col items-center justify-center', isLarge ? 'w-[120px] h-[120px]' : 'w-[80px] h-[80px]')}>
+    <div
+      className={cn('relative inline-flex flex-col items-center justify-center', isLarge ? 'w-[120px] h-[120px]' : 'w-[80px] h-[80px]')}
+      role="meter"
+      aria-valuenow={score}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-label={`Prompt quality score: ${score} out of 100 (${BAND_LABELS[band]})`}
+    >
       {/* SVG ring */}
       <svg
         width={ringSize}

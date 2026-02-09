@@ -1,0 +1,51 @@
+---
+description: "Testing standards for Garry Clear Prompt"
+alwaysApply: true
+---
+
+# Testing Standards — Garry Clear Prompt
+
+## Infrastructure
+- **Runner:** Jest (CJS config: `jest.config.cjs`)
+- **Transform:** `ts-jest` with `tsconfig.test.json` (extends `tsconfig.app.json`, disables `verbatimModuleSyntax`)
+- **UI testing:** `@testing-library/react` + `@testing-library/jest-dom`
+- **Mock helpers:** `tests/mock/index.ts`
+
+## Test Directory Structure
+```
+tests/
+├── mock/
+│   └── index.ts              # createMockBasicInput, createMockAdvancedInput, createMockEngineResult
+├── src/
+│   ├── lib/
+│   │   ├── engine/            # prompt-builder, rater, linter, improver, nlp, token, model, mcp, meta
+│   │   ├── exporters/         # markdown, text, json, cursor, zip
+│   │   ├── calibration.test.ts
+│   │   ├── versioning.test.ts
+│   │   ├── storage.test.ts
+│   │   ├── test-cases.test.ts
+│   │   └── prompt-suggestions.test.ts
+│   ├── hooks/                 # use-local-storage, use-mode, use-prompt-engine
+│   ├── components/shared/     # ScoreBadge, ModeToggle, InfoTooltip, CharCounter, ExportButtons
+│   └── utils/                 # loggerUtils
+```
+
+## Coverage
+- Minimum: **80%**
+- Current suites: **28** | tests: **269**
+- Coverage command: `jest --coverage`
+
+## Rules
+- Test names: `should {expected behaviour} when {condition}`
+- Follow AAA: Arrange → Act → Assert
+- Mock `localStorage` via `Object.defineProperty(globalThis, 'localStorage', ...)`
+- Mock `crypto.randomUUID` for deterministic IDs
+- Reset mocks in `beforeEach` — restore in `afterEach`
+- Storage tests must check `StorageResult<T>.success` and `.data`, not raw values
+- Use `createMock*` factories from `tests/mock/index.ts` for test data
+- Suppress console output: `jest.spyOn(console, 'debug').mockImplementation(() => {})`
+
+## What NOT to Test
+- shadcn/ui generated primitives (`src/components/ui/`)
+- Third-party library internals
+- Trivial re-exports

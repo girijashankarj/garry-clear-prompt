@@ -1,5 +1,5 @@
 import { Lightbulb } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import type { PromptEngineResult } from '@/types/prompt.types';
 import { PromptRatingPanel } from './PromptRating';
@@ -17,6 +17,7 @@ import { VersionHistoryPanel } from '@/components/shared/VersionHistoryPanel';
 import { TestCasesPanel } from '@/components/shared/TestCasesPanel';
 import { PromptSuggestionsPanel } from '@/components/shared/PromptSuggestionsPanel';
 import { LlmRunnerPanel } from '@/components/shared/LlmRunnerPanel';
+import { InfoTooltip } from '@/components/shared/InfoTooltip';
 
 interface AdvancedResultsProps {
   result: PromptEngineResult;
@@ -43,21 +44,25 @@ export function AdvancedResults({ result, rawPrompt, onApplyImproved }: Advanced
 
   return (
     <div className="space-y-4">
+      {/* ── Section 1: Analysis ────────────────────────────── */}
       <PromptRatingPanel rating={result.rating} />
-      <ModelAdvisorPanel recommendation={result.modelRecommendation} />
-      <TokenEstimatorPanel estimate={result.tokenEstimate} />
-      <LintWarningsPanel warnings={result.lintWarnings} />
-      <McpAdvisorPanel suggestions={result.mcpSuggestions} />
-      <CalibrationPanel promptSnippet={rawPrompt || ''} tokenEstimate={result.tokenEstimate} />
       {rawPrompt && <NlpAnalysisPanel text={rawPrompt} />}
+      <LintWarningsPanel warnings={result.lintWarnings} />
 
-      {/* Before/After Comparison */}
+      {/* ── Section 2: Improvement ─────────────────────────── */}
       {rawPrompt && (
         <BeforeAfterComparison promptText={rawPrompt} onApplyImproved={onApplyImproved} />
       )}
 
+      {/* ── Section 3: Intelligence ────────────────────────── */}
+      <ModelAdvisorPanel recommendation={result.modelRecommendation} />
+      <TokenEstimatorPanel estimate={result.tokenEstimate} />
+      <McpAdvisorPanel suggestions={result.mcpSuggestions} />
+      <CalibrationPanel promptSnippet={rawPrompt || ''} tokenEstimate={result.tokenEstimate} />
+
       <Separator />
 
+      {/* ── Section 4: Prompt Output ───────────────────────── */}
       <PromptPreview title="Structured Prompt" content={result.structuredPrompt} />
       {result.metaPrompt && (
         <PromptPreview title="Meta Prompt" content={result.metaPrompt} />
@@ -65,22 +70,11 @@ export function AdvancedResults({ result, rawPrompt, onApplyImproved }: Advanced
 
       <Separator />
 
-      {/* Export */}
-      <Card>
-        <CardContent className="pt-4 pb-4">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Export</span>
-            <ExportButtons result={result} />
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Similar Prompts from History */}
+      {/* ── Section 5: History & Suggestions ────────────────── */}
       {rawPrompt && (
         <PromptSuggestionsPanel currentText={rawPrompt} mode="advanced" onApply={onApplyImproved || (() => {})} />
       )}
 
-      {/* Version History */}
       <VersionHistoryPanel
         currentPrompt={rawPrompt || ''}
         currentMetaPrompt={result.metaPrompt}
@@ -89,13 +83,31 @@ export function AdvancedResults({ result, rawPrompt, onApplyImproved }: Advanced
         onRestore={onApplyImproved || (() => {})}
       />
 
-      {/* Test Cases */}
+      <Separator />
+
+      {/* ── Section 6: Testing & Validation ─────────────────── */}
       <TestCasesPanel promptSnippet={rawPrompt || ''} />
 
-      {/* Cursor Export */}
+      <Separator />
+
+      {/* ── Section 7: Export ───────────────────────────────── */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-1.5">
+            <CardTitle className="text-sm font-medium">Export</CardTitle>
+            <InfoTooltip content="Export your prompt in multiple formats. Copy to clipboard, download as a file, or create a ZIP bundle with the full analysis." />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <ExportButtons result={result} />
+        </CardContent>
+      </Card>
+
       <CursorExportPanel result={result} />
 
-      {/* LLM Runner (disabled until we have money) */}
+      <Separator />
+
+      {/* ── Section 8: LLM Runner ──────────────────────────── */}
       <LlmRunnerPanel result={result} />
     </div>
   );

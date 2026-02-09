@@ -8,15 +8,31 @@
  * When ready to enable, implement the actual API calls for each provider.
  */
 
-import type { LlmProvider, LlmRunResult, LlmSettings } from '@/types/prompt.types';
+import type { LlmRunResult, LlmSettings } from '@/types/prompt.types';
+import type { ApiResult } from '@/common/interfaces';
+import { ERROR_MESSAGES } from '@/common/messages/error';
 import { estimateCost } from './providers';
 
 export const LLM_FEATURE_ENABLED = false;
 
 export class LlmNotEnabledError extends Error {
   constructor() {
-    super('LLM integration is not enabled yet. Coming soon!');
+    super(ERROR_MESSAGES.LLM_DISABLED);
     this.name = 'LlmNotEnabledError';
+  }
+}
+
+/** Wrap LLM run into a typed ApiResult */
+export async function runPromptSafe(
+  prompt: string,
+  systemPrompt: string,
+  settings: LlmSettings
+): Promise<ApiResult<LlmRunResult>> {
+  try {
+    const data = await runPrompt(prompt, systemPrompt, settings);
+    return { ok: true, data };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : ERROR_MESSAGES.UNEXPECTED };
   }
 }
 
@@ -55,64 +71,32 @@ export async function runPrompt(
 
 // ===== Provider stubs (implement when enabling) =====
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function _runOpenAi(
+// ===== Provider stubs (export for future use) =====
+
+export async function runOpenAi(
   prompt: string,
   systemPrompt: string,
-  settings: LlmSettings
+  settings: LlmSettings,
 ): Promise<LlmRunResult> {
   // TODO: Implement OpenAI API call
-  // const response = await fetch(`${settings.credentials.baseUrl || 'https://api.openai.com/v1'}/chat/completions`, {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': `Bearer ${settings.credentials.apiKey}`,
-  //   },
-  //   body: JSON.stringify({
-  //     model: settings.modelId,
-  //     messages: [
-  //       { role: 'system', content: systemPrompt },
-  //       { role: 'user', content: prompt },
-  //     ],
-  //     max_tokens: settings.maxTokens,
-  //     temperature: settings.temperature,
-  //   }),
-  // });
   void prompt; void systemPrompt; void settings;
   throw new LlmNotEnabledError();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function _runAnthropic(
+export async function runAnthropic(
   prompt: string,
   systemPrompt: string,
-  settings: LlmSettings
+  settings: LlmSettings,
 ): Promise<LlmRunResult> {
   // TODO: Implement Anthropic API call
-  // const response = await fetch('https://api.anthropic.com/v1/messages', {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     'x-api-key': settings.credentials.apiKey,
-  //     'anthropic-version': '2023-06-01',
-  //   },
-  //   body: JSON.stringify({
-  //     model: settings.modelId,
-  //     system: systemPrompt,
-  //     messages: [{ role: 'user', content: prompt }],
-  //     max_tokens: settings.maxTokens,
-  //     temperature: settings.temperature,
-  //   }),
-  // });
   void prompt; void systemPrompt; void settings;
   throw new LlmNotEnabledError();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function _runBedrock(
+export async function runBedrock(
   prompt: string,
   systemPrompt: string,
-  settings: LlmSettings
+  settings: LlmSettings,
 ): Promise<LlmRunResult> {
   // TODO: Implement AWS Bedrock API call via AWS SDK
   void prompt; void systemPrompt; void settings;

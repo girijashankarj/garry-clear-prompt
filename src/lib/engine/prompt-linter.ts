@@ -1,5 +1,7 @@
 import type { LintWarning } from '@/types/prompt.types';
 import { LINT_RULES } from '@/lib/data/lint-rules';
+import { loggerDebug } from '@/utils/loggerUtils';
+import { DEBUG_MESSAGES } from '@/common/messages/debug';
 
 export function lintPrompt(text: string): LintWarning[] {
   if (!text.trim()) return [];
@@ -21,5 +23,6 @@ export function lintPrompt(text: string): LintWarning[] {
   const severityOrder = { error: 0, warning: 1, info: 2 };
   warnings.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
 
+  loggerDebug(DEBUG_MESSAGES.PROMPT_LINTED, { warningCount: warnings.length }, 'engine', 'prompt-linter.ts', 'lintPrompt');
   return warnings;
 }

@@ -1,0 +1,114 @@
+{
+  "project": {
+    "name": "Garry Clear Prompt",
+    "description": "Browser-based prompt-quality tool — rates, lints, improves, and exports LLM prompts with NLP analysis, token estimation, model recommendations, and MCP tool suggestions.",
+    "version": "0.1.0",
+    "repository": "https://github.com/girijashankarj/garry-clear-prompt"
+  },
+  "cursor": {
+    "include": {
+      "patterns": ["src/**", "tests/**", "config/**", "docs/**"],
+      "priorityFiles": [
+        "README.md",
+        "package.json",
+        "tsconfig.json",
+        "tsconfig.app.json",
+        "tsconfig.test.json",
+        "vite.config.ts",
+        "jest.config.cjs"
+      ]
+    },
+    "exclude": {
+      "patterns": ["node_modules/**", "dist/**", ".git/**", "coverage/**"],
+      "largeFiles": ["*.lock", "*.map", "*.min.js", "*.min.css"],
+      "secrets": [".env", ".env.*", "!.env.example"]
+    },
+    "tokenOptimization": {
+      "contextLayers": {
+        "immediate": 2000,
+        "relevant": 5000,
+        "extended": 10000,
+        "reference": 20000
+      }
+    }
+  },
+  "paths": {
+    "source": "src/",
+    "components": "src/components/",
+    "engine": "src/lib/engine/",
+    "exporters": "src/lib/exporters/",
+    "data": "src/lib/data/",
+    "llm": "src/lib/llm/",
+    "common": "src/common/",
+    "store": "src/store/",
+    "hooks": "src/hooks/",
+    "utils": "src/utils/",
+    "types": "src/types/",
+    "tests": "tests/",
+    "mocks": "tests/mock/",
+    "docs": "docs/"
+  },
+  "techStack": {
+    "language": "TypeScript 5.8",
+    "runtime": "Browser (client-only SPA)",
+    "framework": "React 19",
+    "uiLibrary": "shadcn/ui (Radix UI primitives)",
+    "styling": "Tailwind CSS v4",
+    "buildTool": "Vite 7",
+    "stateManagement": "Redux Toolkit (mode + theme)",
+    "persistence": "localStorage via useLocalStorage hook",
+    "toasts": "sonner",
+    "testing": "Jest + @testing-library/react + ts-jest",
+    "linter": "ESLint 9 (flat config)",
+    "formatter": "Prettier",
+    "packageManager": "npm",
+    "nodeVersion": "24.13.0"
+  },
+  "features": {
+    "modes": ["basic", "advanced"],
+    "engine": [
+      "prompt-builder",
+      "prompt-rater (8 dimensions, 100-point scale)",
+      "prompt-linter (20+ lint rules)",
+      "prompt-improver",
+      "nlp-analyzer (intent, complexity, entities)",
+      "token-estimator",
+      "model-advisor (GPT-4o, Claude, Gemini, Llama, Mistral)",
+      "mcp-advisor (Cursor MCP tool suggestions)",
+      "meta-prompt-builder"
+    ],
+    "exportFormats": ["clipboard", "markdown", "text", "json", "cursor-rules", "zip"],
+    "extras": [
+      "version history (save/restore/compare)",
+      "token calibration panel",
+      "test-case generator",
+      "prompt suggestions"
+    ],
+    "deferred": [
+      "LLM integration (OpenAI, Anthropic, Bedrock) — src/lib/llm/"
+    ]
+  },
+  "testing": {
+    "coverageMinimum": 80,
+    "currentSuites": 28,
+    "currentTests": 269,
+    "testCommand": "jest --coverage",
+    "singleFileTest": "jest --testPathPattern={file}",
+    "typeCheckCommand": "tsc -b",
+    "lintCommand": "eslint . --max-warnings 0"
+  },
+  "conventions": {
+    "branchPrefix": {
+      "feature": "feature/",
+      "bugfix": "fix/",
+      "hotfix": "hotfix/",
+      "release": "release/"
+    },
+    "commitFormat": "conventional",
+    "prTemplate": true,
+    "messageConstants": "src/common/messages/{info,error,warn,debug}.ts",
+    "storageKeys": "src/common/constants.ts → STORAGE_KEYS",
+    "fileNames": "src/common/fileNames.ts → FILE_NAMES",
+    "interfaces": "src/common/interfaces/index.ts → ApiResult, StorageResult"
+  }
+}

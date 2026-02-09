@@ -1,309 +1,643 @@
-# Garry Clear Prompt
+<p align="center">
+  <img src="public/favicon.svg" alt="Garry Clear Prompt" width="80" />
+</p>
 
-A standalone web app that helps **anyone who can type** write prompts that produce more accurate results using fewer words and fewer tokens. Two modes:
+<h1 align="center">Garry Clear Prompt</h1>
 
-- **Basic Mode** (default): Natural language, no jargon, gentle refiners
-- **Advanced Mode**: Full control -- model advisor, token estimation, prompt lint/rating, MCP suggestions, NLP analysis, calibration, versioning, test cases, and export
+<p align="center">
+  <strong>Write better prompts. Get better answers.</strong><br/>
+  A local-first prompt quality analyzer, optimizer, and engineering workbench.
+</p>
 
-No backend. No auth. No database. Local-first. Offline-capable.
+<p align="center">
+  <a href="#features">Features</a> &bull;
+  <a href="#quick-start">Quick Start</a> &bull;
+  <a href="#architecture">Architecture</a> &bull;
+  <a href="#user-flows">User Flows</a> &bull;
+  <a href="#scenarios">Scenarios</a> &bull;
+  <a href="#tech-stack">Tech Stack</a> &bull;
+  <a href="#contributing">Contributing</a> &bull;
+  <a href="#license">License</a>
+</p>
 
-## What It Does
+<p align="center">
+  <img src="https://img.shields.io/badge/react-19-blue?logo=react" alt="React 19" />
+  <img src="https://img.shields.io/badge/typescript-5.9-blue?logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/vite-7-purple?logo=vite" alt="Vite 7" />
+  <img src="https://img.shields.io/badge/tailwind-4-blue?logo=tailwindcss" alt="Tailwind v4" />
+  <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License" />
+</p>
 
-- **Rates your prompt** on 5 dimensions (clarity, constraints, structure, token efficiency, risk) with an animated score ring (0-100)
-- **Suggests improvements** with actionable feedback
-- **Before/After comparison** -- auto-rewrites your prompt and shows score improvement side-by-side with one-click apply
-- **NLP analysis** -- detects intent (question/instruction/description/comparison), complexity level, readability grade, key nouns/verbs, and structural features using `compromise`
-- **Recommends model tier** (Fast / Balanced / Reasoning) based on task type, complexity, and risk
-- **Estimates token usage** with input/output token ranges and format multipliers
-- **Calibration mode** -- record actual token usage to refine future estimates over time
-- **Lints your prompt** with 15+ rules covering quality, security, and efficiency
-- **Suggests MCP tools** with permission levels and risk notes
-- **Prompt versioning** -- save v1/v2/v3 snapshots, restore, and compare across iterations
-- **Similar prompt suggestions** -- surfaces related prompts from your version history using keyword similarity
-- **Test cases** -- create test suites with input/expected-output pairs for offline prompt validation
-- **Exports** to Markdown, Text, JSON, ZIP bundle, and Cursor IDE templates (rule, agent, skill, command)
-- **Run Prompt** (coming soon) -- built-in LLM runner with OpenAI, Anthropic, and AWS Bedrock adapters, pre-flight cost estimates, run history, and total spend tracking. Currently disabled -- will be enabled when we have money to waste on tokens.
+---
+
+## Why?
+
+Most people write prompts like they write emails -- long, vague, and full of filler. The result? Unpredictable AI output, wasted tokens, and wasted time.
+
+**Garry Clear Prompt** scores your prompt in real-time, shows you exactly what's wrong, rewrites it for you, and estimates how many tokens it'll cost -- all locally, with zero API calls.
+
+---
+
+## Features
+
+### Core Engine
+
+| Feature | Description |
+|---------|-------------|
+| **Prompt Rating** | Scores 0-100 across 5 dimensions: clarity, constraints, structure, token efficiency, risk penalty |
+| **Before/After Comparison** | Auto-rewrites your prompt, shows score delta, one-click apply |
+| **Prompt Linter** | 15+ rules covering quality, security (PII, secrets, injection), and efficiency |
+| **Prompt Improver** | Strips filler, adds format instructions, adds length constraints |
+| **NLP Analysis** | Intent detection, complexity grading, Flesch-Kincaid readability, key noun/verb extraction |
+
+### Model & Token Intelligence
+
+| Feature | Description |
+|---------|-------------|
+| **Model Advisor** | Recommends Fast/Balanced/Reasoning tier based on task type, complexity, risk, context size |
+| **Token Estimator** | Input/output token ranges with format multipliers (JSON +10%, code +50%, tables +20%) |
+| **Token Calibration** | Record actual usage to compute correction factors for future estimates |
+| **Cost Preview** | Pre-flight cost estimate per provider and model |
+
+### Productivity Tools
+
+| Feature | Description |
+|---------|-------------|
+| **Version History** | Save v1/v2/v3 snapshots, restore any version, view score progression |
+| **Similar Prompts** | Keyword-based Jaccard similarity search across your version history |
+| **Test Cases** | Create test suites with input/expected-output pairs for offline validation |
+| **Multi-format Export** | Copy, Markdown, Text, JSON, ZIP bundle — timestamped filenames (DD_MM_YYYY_HH_MM) |
+| **Cursor IDE Export** | Export as `.mdc` rule, agent, skill, or command for Cursor IDE |
+
+### Two Modes
+
+| Mode | Best For | Includes |
+|------|----------|----------|
+| **Basic** | Anyone who can type | Goal input, detail/style/format refiners, score, NLP, before/after, versioning |
+| **Advanced** | Prompt engineers | Everything in Basic + task config, model advisor, token estimator, lint, MCP advisor, calibration, test cases, Cursor export, LLM runner |
+
+### Coming Soon
+
+| Feature | Status |
+|---------|--------|
+| **LLM Runner** | UI built, API disabled. OpenAI, Anthropic, AWS Bedrock adapters ready. |
+| **Collaborative Editing** | Planned |
+| **Prompt Templates Library** | Planned |
+
+---
+
+## Quick Start
+
+**Prerequisites**: Node.js >= 20.19 (recommended: v24.13.0), npm >= 10
+
+```bash
+# Clone the repo
+git clone https://github.com/girijashankarj/garry-clear-prompt.git
+cd garry-clear-prompt
+
+# Install dependencies
+npm install
+
+# Copy environment config
+cp .env.example .env
+
+# Start development server
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+### Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start Vite dev server with HMR |
+| `npm run build` | TypeScript check + Vite production build |
+| `npm run lint` | ESLint check (zero warnings enforced) |
+| `npm run lint:fix` | ESLint auto-fix |
+| `npm run format` | Prettier format all files |
+| `npm run format:check` | Check formatting without changes |
+| `npm test` | Jest with coverage |
+| `npm run test:coverage` | Same as test (with coverage report) |
+| `npm run test:structure` | Verify tests mirror src/ structure |
+| `npm run preview` | Preview production build |
+
+---
+
+## Architecture
+
+### High-Level Overview
+
+```mermaid
+graph LR
+    subgraph Browser
+        UI[React UI]
+        Store[Redux Store]
+        Engine[Prompt Engine]
+        Storage[localStorage]
+    end
+
+    UI -->|dispatch| Store
+    Store -->|state| UI
+    UI -->|input| Engine
+    Engine -->|results| UI
+    Store -->|persist| Storage
+    Storage -->|hydrate| Store
+```
+
+### Component Architecture
+
+```mermaid
+graph TD
+    App[App.tsx]
+    App --> Header[Header]
+    App --> BasicMode[Basic Mode]
+    App --> AdvancedMode[Advanced Mode]
+    App --> Footer[Footer]
+
+    BasicMode --> BasicForm[BasicPromptForm]
+    BasicMode --> BasicResults[BasicResults]
+
+    AdvancedMode --> AdvancedForm[AdvancedPromptForm]
+    AdvancedMode --> AdvancedResults[AdvancedResults]
+
+    subgraph Shared Components
+        ScoreBadge
+        PromptPreview
+        ExportButtons
+        BeforeAfter[BeforeAfterComparison]
+        NlpPanel[NlpAnalysisPanel]
+        VersionHistory[VersionHistoryPanel]
+        Suggestions[PromptSuggestionsPanel]
+        InfoTooltip
+        CharCounter
+    end
+
+    BasicResults --> ScoreBadge
+    BasicResults --> PromptPreview
+    BasicResults --> ExportButtons
+    BasicResults --> BeforeAfter
+    BasicResults --> NlpPanel
+    BasicResults --> VersionHistory
+    BasicResults --> Suggestions
+
+    AdvancedResults --> ScoreBadge
+    AdvancedResults --> PromptPreview
+    AdvancedResults --> ExportButtons
+    AdvancedResults --> BeforeAfter
+    AdvancedResults --> NlpPanel
+    AdvancedResults --> VersionHistory
+    AdvancedResults --> Suggestions
+```
+
+### Engine Pipeline
+
+```mermaid
+flowchart LR
+    Input[User Input] --> Builder[Prompt Builder]
+    Input --> Rater[Prompt Rater]
+    Input --> Linter[Prompt Linter]
+    Input --> NLP[NLP Analyzer]
+    Input --> Improver[Prompt Improver]
+    Input --> TokenEst[Token Estimator]
+    Input --> ModelAdv[Model Advisor]
+    Input --> McpAdv[MCP Advisor]
+
+    Builder --> |structured prompt| Output[Results]
+    Rater --> |score 0-100| Output
+    Linter --> |warnings| Output
+    NLP --> |intent + complexity| Output
+    Improver --> |before/after| Output
+    TokenEst --> |token range| Output
+    ModelAdv --> |tier recommendation| Output
+    McpAdv --> |tool suggestions| Output
+```
+
+### State Management
+
+```mermaid
+flowchart TD
+    subgraph Redux Store
+        Mode[mode: basic/advanced]
+        Theme[theme: light/dark]
+    end
+
+    subgraph localStorage
+        BasicInput[gcp-basic-input]
+        AdvancedInput[gcp-advanced-input]
+        Versions[gcp-versions]
+        Calibration[gcp-calibration]
+        TestCases[gcp-test-cases]
+        LlmSettings[gcp-llm-settings]
+    end
+
+    Redux_Store --> |persist on change| localStorage
+    localStorage --> |hydrate on load| Redux_Store
+    useLocalStorage --> |read/write| localStorage
+```
+
+### Data Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Form Component
+    participant H as usePromptEngine Hook
+    participant E as Engine Modules
+    participant R as Results Component
+
+    U->>F: Types prompt text
+    F->>H: Input changes (via useMemo)
+    H->>E: buildPrompt(input)
+    H->>E: ratePrompt(text)
+    H->>E: lintPrompt(text)
+    H->>E: estimateTokens(text)
+    H->>E: recommendModel(config)
+    H->>E: suggestMcpTools(text)
+    E-->>H: PromptEngineResult
+    H-->>R: Render results
+    R-->>U: Score, suggestions, preview
+```
+
+---
+
+## User Flows
+
+### Basic Mode Flow
+
+```mermaid
+flowchart TD
+    Start([Open App]) --> BasicMode[Basic Mode - Default]
+    BasicMode --> TypeGoal[Type your goal]
+    TypeGoal --> Refine{Refine options?}
+    Refine -->|Yes| SetDetail[Set detail level]
+    Refine -->|Yes| SetStyle[Set style tone]
+    Refine -->|Yes| SetFormat[Set response format]
+    Refine -->|Yes| AddRules[Add rules]
+    Refine -->|No| ViewScore[View score in real-time]
+    SetDetail --> ViewScore
+    SetStyle --> ViewScore
+    SetFormat --> ViewScore
+    AddRules --> ViewScore
+
+    ViewScore --> ReviewSuggestions[Review improvement suggestions]
+    ReviewSuggestions --> NLP[View NLP analysis]
+    NLP --> BeforeAfter{Improve prompt?}
+    BeforeAfter -->|Yes| Apply[Apply improved version]
+    BeforeAfter -->|No| Preview[View structured prompt]
+    Apply --> Preview
+
+    Preview --> Export{Export?}
+    Export -->|Copy| Clipboard[Copy to clipboard]
+    Export -->|File| Download[Download MD/TXT/JSON/ZIP]
+    Export -->|Save| SaveVersion[Save as version]
+
+    SaveVersion --> Compare[Compare with past versions]
+    Compare --> TypeGoal
+```
+
+### Advanced Mode Flow
+
+```mermaid
+flowchart TD
+    Start([Switch to Advanced]) --> WritePrompt[Write prompt]
+    WritePrompt --> ConfigTask[Configure task type, complexity, risk]
+    ConfigTask --> SetOutput[Set output format toggles]
+    SetOutput --> OptionalMeta[Write meta prompt - optional]
+
+    OptionalMeta --> ViewResults[View results panel]
+
+    ViewResults --> Rating[Prompt rating 0-100]
+    ViewResults --> ModelAdv[Model recommendation]
+    ViewResults --> Tokens[Token estimate + cost]
+    ViewResults --> Lint[Lint warnings]
+    ViewResults --> MCP[MCP tool suggestions]
+    ViewResults --> NLP[NLP analysis]
+    ViewResults --> BeforeAfter[Before/after comparison]
+
+    Rating --> Iterate{Score acceptable?}
+    Iterate -->|No| WritePrompt
+    Iterate -->|Yes| ExportFlow
+
+    subgraph ExportFlow [Export & Save]
+        ExportCopy[Copy prompt]
+        ExportFile[Download file]
+        ExportCursor[Export for Cursor IDE]
+        SaveVer[Save version]
+        AddTest[Add test cases]
+        Calibrate[Record actual tokens]
+    end
+
+    ExportFlow --> Done([Done])
+```
+
+---
+
+## Scenarios
+
+### Scenario 1: First-Time User Writes a Better Prompt
+
+> **Goal**: A non-technical user wants to ask ChatGPT to explain a concept.
+
+1. Opens app (defaults to Basic Mode, dark theme)
+2. Types: "tell me about React"
+3. Sees a low score (30/100) with suggestions:
+   - "Start with a clear action verb"
+   - "Add output format: 'in bullet points'"
+   - "Add a length limit"
+4. Clicks "Apply" on the Before/After comparison
+5. Prompt becomes: "Explain React. Provide the response in a clear, structured format. Keep the response concise."
+6. Score jumps to 65/100
+7. Adds detail level "Short" and style "Simple"
+8. Copies the structured prompt to clipboard
+
+### Scenario 2: Developer Optimizes a Complex Prompt
+
+> **Goal**: A senior developer needs to write a production-quality prompt for code generation.
+
+1. Switches to Advanced Mode
+2. Writes a detailed prompt for a REST API migration
+3. Sets: Task Type = Refactor, Complexity = High, Risk = High, Context = Large
+4. Sees Model Advisor recommend "Reasoning" tier with high confidence
+5. Token estimate shows 2,500-4,800 tokens (~$0.15 on Claude 4 Opus)
+6. Lint catches: "No examples provided", "Missing audience"
+7. Iterates until score reaches 85/100
+8. Saves as v3, exports as Cursor Rule for team use
+
+### Scenario 3: Team Standardizes Prompt Quality
+
+> **Goal**: A team lead wants to ensure all team prompts meet a quality bar.
+
+1. Opens Advanced Mode
+2. Creates a test suite "API Documentation Prompts"
+3. Adds 5 test cases with input/expected-output pairs
+4. Each team member runs their prompts through the linter
+5. Exports Cursor Rules (.mdc) for the team's shared `.cursor/rules/` folder
+6. Pre-commit hooks catch prompts below score 60
+
+### Scenario 4: Token Budget Optimization
+
+> **Goal**: Reduce LLM costs by tracking and calibrating token estimates.
+
+1. Writes a prompt, sees estimate: 400-700 input tokens
+2. Runs it in ChatGPT, actual usage: 520 input tokens
+3. Records actual usage in the Calibration panel
+4. After 10 records, correction factor settles at 1.15x
+5. Future estimates are automatically 15% more accurate
+6. Cost preview adjusts accordingly
+
+### Scenario 5: Cursor IDE Integration
+
+> **Goal**: Export a well-crafted prompt as a Cursor IDE rule for persistent AI guidance.
+
+1. Crafts a prompt for "Code Review Best Practices"
+2. Score: 92/100
+3. Opens Cursor Export panel
+4. Types name: "Code Review Helper"
+5. Selects "Rule (.mdc)"
+6. Previews the generated `.mdc` file
+7. Downloads and places in `.cursor/rules/`
+
+---
+
+## Rating Mechanism
+
+5 dimensions, scored out of 100:
+
+| Dimension | Max | What It Checks |
+|-----------|-----|----------------|
+| Clarity | 25 | Single clear goal, specific action verb, no vague language |
+| Constraints | 20 | Output format, length limits, do/don't rules, scope boundaries |
+| Structure | 20 | Labeled sections, bullet points, paragraphs, logical flow |
+| Token Efficiency | 20 | No filler words, no repetition, no conversational padding |
+| Risk Penalty | -15 | Open-ended scope, multiple tasks, missing audience, contradictions |
+
+**Score bands**: Excellent (90+), Good (75-89), Average (60-74), Weak (40-59), Poor (<40)
+
+---
 
 ## Tech Stack
 
-- **Vite + React 19 + TypeScript**
-- **Tailwind CSS v4 + shadcn/ui** (Radix primitives)
-- **react-hook-form + zod** (form handling + validation)
-- **react-markdown + remark-gfm** (preview rendering)
-- **compromise** (lightweight NLP for prompt analysis)
-- **jszip** (ZIP bundle export)
-- **sonner** (toast notifications for copy/export feedback)
-- **localStorage** for draft persistence, versioning, calibration, and test cases (no DB)
+| Layer | Technology |
+|-------|-----------|
+| **Framework** | React 19 + TypeScript 5.9 (Node.js v24.13.0) |
+| **Build** | Vite 7 |
+| **Styling** | Tailwind CSS v4 + shadcn/ui (Radix primitives) |
+| **State** | Redux Toolkit (app state) + localStorage (persistence) |
+| **Forms** | react-hook-form + zod |
+| **NLP** | compromise (lightweight browser NLP) |
+| **Export** | JSZip, react-markdown + remark-gfm |
+| **Notifications** | sonner |
+| **Logging** | Custom browser logger (structured JSON) |
+| **Testing** | Jest + React Testing Library |
+| **Linting** | ESLint 9 (flat config) + Prettier |
+| **Git Hooks** | Husky + commitlint + lint-staged |
+| **Versioning** | Changesets |
+
+---
 
 ## Project Structure
 
 ```
 garry-clear-prompt/
-├── index.html
-├── package.json
-├── tsconfig.json
-├── vite.config.ts
-├── components.json                  # shadcn config
-├── public/
 ├── src/
-│   ├── main.tsx
-│   ├── App.tsx
-│   ├── index.css                    # Tailwind base + theme variables
-│   ├── components/
-│   │   ├── ui/                      # shadcn primitives (button, card, input, etc.)
-│   │   ├── layout/
-│   │   │   ├── Header.tsx           # Logo, mode toggle (Basic/Advanced), theme toggle
-│   │   │   └── Footer.tsx
-│   │   ├── basic-mode/
-│   │   │   ├── BasicPromptForm.tsx  # Main text input + gentle refiners
-│   │   │   └── BasicResults.tsx     # Clean output + score + suggestions + NLP + versioning
-│   │   ├── advanced-mode/
-│   │   │   ├── AdvancedPromptForm.tsx  # Prompt + meta prompt editors
-│   │   │   ├── ModelAdvisor.tsx     # Model tier recommendation
-│   │   │   ├── TokenEstimator.tsx   # Input/output token range display
-│   │   │   ├── PromptRating.tsx     # Full lint score breakdown
-│   │   │   ├── McpAdvisor.tsx       # MCP tool suggestions
-│   │   │   ├── LintWarnings.tsx     # Lint results panel
-│   │   │   └── AdvancedResults.tsx  # Full output with all panels
-│   │   └── shared/
-│   │       ├── ScoreBadge.tsx       # Animated SVG score ring (0-100)
-│   │       ├── ExportButtons.tsx    # Copy / Download .md / .txt / .json / .zip
-│   │       ├── PromptPreview.tsx    # Rendered markdown preview
-│   │       ├── ModeToggle.tsx       # Basic <-> Advanced switch
-│   │       ├── ThemeToggle.tsx      # Dark/light theme switch
-│   │       ├── BeforeAfterComparison.tsx  # Auto-rewrite with score diff
-│   │       ├── NlpAnalysisPanel.tsx       # Intent, complexity, readability
-│   │       ├── CalibrationPanel.tsx       # Record actual token usage
-│   │       ├── VersionHistoryPanel.tsx    # Save/restore prompt versions
-│   │       ├── PromptSuggestionsPanel.tsx # Similar prompts from history
-│   │       ├── TestCasesPanel.tsx         # Input/expected output test suites
-│   │       ├── CursorExportPanel.tsx      # Export as Cursor rule/agent/skill/command
-│   │       └── LlmRunnerPanel.tsx         # Run prompt against LLM providers (disabled)
+│   ├── main.tsx                      # Entry point (Redux Provider)
+│   ├── App.tsx                       # Root component
+│   ├── common/                       # Constants, enums, types, messages, interfaces, fileNames
+│   ├── store/                        # Redux Toolkit (promptSlice)
+│   ├── utils/                        # loggerUtils, index
+│   ├── hooks/                        # useLocalStorage, usePromptEngine
+│   ├── types/                        # prompt.types.ts
 │   ├── lib/
-│   │   ├── engine/
-│   │   │   ├── prompt-builder.ts    # Structures raw input into clean prompt
-│   │   │   ├── meta-prompt-builder.ts  # Generates meta prompt from inputs
-│   │   │   ├── prompt-rater.ts      # Rating engine (clarity, constraints, structure, efficiency, risk)
-│   │   │   ├── prompt-improver.ts   # Auto-rewrites prompt and computes before/after
-│   │   │   ├── token-estimator.ts   # Input/output token range estimation
-│   │   │   ├── model-advisor.ts     # Rule-based model tier recommendation
-│   │   │   ├── mcp-advisor.ts       # Rule-based MCP tool suggestions
-│   │   │   ├── prompt-linter.ts     # 15+ lint rules for prompt quality
-│   │   │   └── nlp-analyzer.ts      # NLP analysis via compromise
-│   │   ├── data/
-│   │   │   ├── model-tiers.ts       # Model tier definitions + scoring matrix
-│   │   │   ├── mcp-tools.ts         # MCP tool catalog + permissions
-│   │   │   ├── lint-rules.ts        # Lint rule definitions
-│   │   │   └── output-multipliers.ts  # Token output size multipliers
-│   │   ├── exporters/
-│   │   │   ├── markdown-exporter.ts
-│   │   │   ├── text-exporter.ts
-│   │   │   ├── json-exporter.ts
-│   │   │   ├── zip-exporter.ts      # ZIP bundle with all files
-│   │   │   └── cursor-exporter.ts   # Cursor rule/agent/skill/command templates
-│   │   ├── llm/
-│   │   │   ├── providers.ts         # Provider definitions (OpenAI, Anthropic, Bedrock)
-│   │   │   ├── adapter.ts           # Unified run interface (stubbed, disabled)
-│   │   │   └── settings.ts          # LLM settings + run history persistence
-│   │   ├── calibration.ts           # Token calibration records + correction factors
-│   │   ├── versioning.ts            # Prompt version history (v1/v2/v3)
-│   │   ├── test-cases.ts            # Test suite management
-│   │   ├── prompt-suggestions.ts    # Keyword-based similar prompt lookup
-│   │   ├── storage.ts               # localStorage draft persistence
-│   │   └── utils.ts                 # Clipboard, file download, cn() helpers
-│   ├── hooks/
-│   │   ├── use-prompt-engine.ts     # Main hook orchestrating all engine modules
-│   │   ├── use-mode.ts              # Basic/Advanced mode state
-│   │   └── use-local-storage.ts     # Generic localStorage hook
-│   └── types/
-│       └── prompt.types.ts          # All shared type definitions
-└── README.md
+│   │   ├── engine/                   # Builder, Rater, Linter, Estimator, Advisor, NLP, Improver
+│   │   ├── data/                     # Model tiers, MCP tools, lint rules, output multipliers
+│   │   ├── exporters/                # Markdown, Text, JSON, ZIP, Cursor
+│   │   └── llm/                      # Providers, adapter, settings (disabled)
+│   └── components/
+│       ├── ui/                       # 11 shadcn primitives
+│       ├── layout/                   # Header, Footer
+│       ├── basic-mode/               # BasicPromptForm, BasicResults
+│       ├── advanced-mode/            # AdvancedPromptForm, AdvancedResults, + panels
+│       └── shared/                   # ScoreBadge, InfoTooltip, CharCounter, ExportButtons, ...
+├── tests/                            # Jest tests mirroring src/ structure
+├── config/                           # client.json, env.json, theme.json
+├── scripts/                          # verify-tests.js, precommit scripts
+├── .cursor/                          # AI rules, agents, skills, commands, hooks
+├── .env.example                      # Environment variable documentation
+├── .github/                          # PR template, labeler, CI workflow
+└── .husky/                           # pre-commit, commit-msg hooks
 ```
 
-## Architecture Flow
+---
 
-```mermaid
-flowchart TD
-    UserInput[User Types Input] --> ModeCheck{Which Mode?}
-    ModeCheck -->|Basic| BasicForm[BasicPromptForm]
-    ModeCheck -->|Advanced| AdvancedForm[AdvancedPromptForm]
+## Contributing
 
-    BasicForm --> Engine[Prompt Engine]
-    AdvancedForm --> Engine
+We welcome contributions! Here's how to get started:
 
-    Engine --> Builder[PromptBuilder]
-    Engine --> Rater[PromptRater]
-    Engine --> TokenEst[TokenEstimator]
-    Engine --> ModelAdv[ModelAdvisor]
-    Engine --> McpAdv[McpAdvisor]
-    Engine --> Linter[PromptLinter]
-    Engine --> NLP[NLP Analyzer]
-    Engine --> Improver[Prompt Improver]
-
-    Builder --> Output[Structured Prompt]
-    Rater --> Score["Score 0-100"]
-    TokenEst --> Tokens["Token Range Estimate"]
-    ModelAdv --> ModelRec[Model Tier Recommendation]
-    McpAdv --> McpRec[MCP Tool Suggestions]
-    Linter --> Warnings[Lint Warnings]
-    NLP --> Analysis[Intent + Complexity + Readability]
-    Improver --> BeforeAfter[Before/After Comparison]
-
-    Output --> BasicResults[Basic Results View]
-    Score --> BasicResults
-    Analysis --> BasicResults
-    BeforeAfter --> BasicResults
-
-    Output --> AdvancedResults[Advanced Results View]
-    Score --> AdvancedResults
-    Tokens --> AdvancedResults
-    ModelRec --> AdvancedResults
-    McpRec --> AdvancedResults
-    Warnings --> AdvancedResults
-    Analysis --> AdvancedResults
-    BeforeAfter --> AdvancedResults
-
-    BasicResults --> Export[Export: Copy / MD / TXT / JSON / ZIP / Cursor]
-    AdvancedResults --> Export
-
-    BasicResults --> Versioning[Version History + Suggestions]
-    AdvancedResults --> Versioning
-    AdvancedResults --> Calibration[Token Calibration]
-    AdvancedResults --> TestCases[Test Cases]
-    AdvancedResults --> LlmRunner["Run Prompt (disabled)"]
-
-    LlmRunner -.->|Coming Soon| OpenAI[OpenAI API]
-    LlmRunner -.->|Coming Soon| Anthropic[Anthropic API]
-    LlmRunner -.->|Coming Soon| Bedrock[AWS Bedrock]
-```
-
-## Rating Mechanism (Core Differentiator)
-
-5 dimensions, scored out of 100:
-
-| Dimension        | Max Points | What It Checks                                       |
-| ---------------- | ---------- | ---------------------------------------------------- |
-| Clarity          | 25         | Single clear goal, unambiguous task                  |
-| Constraints      | 20         | Output format, length limits, do/dont rules          |
-| Structure        | 20         | Organized sections vs rambling text                  |
-| Token Efficiency | 20         | No repetition, filler words, noise                   |
-| Risk Penalty     | -15        | Open-ended wording, multiple tasks, missing audience |
-
-Score bands: **Excellent** (90-100), **Good** (75-89), **Average** (60-74), **Weak** (40-59), **Poor** (below 40)
-
-The animated SVG score ring counts up with an ease-out animation, color-coded by band.
-
-## Model Advisor Logic
-
-Rule-based scoring from user inputs (task type + complexity + risk + context size + tool needs):
-
-- **Fast tier**: low risk, simple tasks (formatting, small edits)
-- **Balanced tier**: most dev work (coding, moderate reasoning)
-- **Reasoning tier**: high risk, complex (architecture, debugging, root cause)
-
-## Token Estimator Logic
-
-- Input tokens: `characters / 4` (English), shown as range `chars/5` to `chars/3`
-- Output tokens: based on output size selector (XS/S/M/L/XL) + format multipliers (JSON +10%, code +30-80%, tables +20%, diagrams +50%, examples +40%)
-- Always displayed as range with "Estimated" label
-- **Calibration mode**: record actual usage to compute correction factors that refine future estimates
-
-## NLP Analysis
-
-Powered by `compromise`, detects:
-
-- **Intent**: question, instruction, description, or comparison
-- **Complexity**: simple, moderate, or complex
-- **Readability**: Flesch-Kincaid grade level
-- **Structural features**: lists, conditionals, negations
-- **Key nouns and verbs** extracted from the prompt
-
-## Before/After Comparison
-
-Automatically rewrites your prompt by:
-
-1. Stripping filler words and conversational padding ("please", "I want you to", "could you")
-2. Adding output format instructions if missing
-3. Adding length constraints if missing
-4. Showing a side-by-side score comparison with the delta
-5. One-click "Apply" to replace your prompt with the improved version
-
-## Prompt Versioning
-
-- Save your prompt as v1, v2, v3... (up to 50 versions in localStorage)
-- Restore any previous version with one click
-- View score history across versions
-- **Similar prompt suggestions**: when you type, surfaces related prompts from your history using keyword-based Jaccard similarity
-
-## Test Cases
-
-- Create named test suites (e.g. "Email Generation Tests")
-- Add up to 10 input/expected-output pairs per suite
-- Track what your prompt should produce for specific inputs
-- Export suites as JSON for sharing
-
-## LLM Runner (Coming Soon)
-
-Built-in prompt execution with a unified adapter layer across three providers. **Currently disabled** -- the UI is fully built but the Run button is locked.
-
-| Provider     | Models                                      | Status   |
-| ------------ | ------------------------------------------- | -------- |
-| OpenAI       | GPT-4o mini, GPT-4o, o1, o3-mini           | Disabled |
-| Anthropic    | Claude 3.5 Haiku, Claude 4 Sonnet, Claude 4 Opus | Disabled |
-| AWS Bedrock  | Titan Text Express, Claude 3.5 Sonnet/Haiku | Disabled |
-
-Features ready for when it's enabled:
-
-- **Provider & model selector** with tier badges (fast/balanced/reasoning)
-- **Pre-flight cost estimate** based on token estimate and model pricing
-- **Settings panel** with credentials, temperature slider, max tokens
-- **Run history** tracking runs, total spend, and tokens used
-- **Security notice** -- API keys stored locally, never sent anywhere except directly to the provider
-
-To enable: flip `LLM_FEATURE_ENABLED` to `true` in `src/lib/llm/adapter.ts` and implement the API calls.
-
-## Export Options
-
-| Format           | Description                                                           |
-| ---------------- | --------------------------------------------------------------------- |
-| Copy to Clipboard | One-click copy of structured prompt or meta prompt                   |
-| Markdown (.md)   | Full analysis with score breakdown                                    |
-| Plain Text (.txt)| Simple text export                                                    |
-| JSON (.json)     | Machine-readable export of all data                                   |
-| ZIP (.zip)       | Bundle: prompt.txt, meta-prompt.txt, analysis.md, config.json, report.md, lint warnings, MCP suggestions, README |
-| Cursor Rule      | `.mdc` file for Cursor IDE rules                                      |
-| Cursor Agent     | `.md` agent definition                                                |
-| Cursor Skill     | `SKILL.md` step-by-step workflow                                      |
-| Cursor Command   | Quick-action command snippet                                          |
-
-## Key UI Decisions
-
-- **Dark mode by default** with light mode toggle
-- **Mode toggle** in header (Basic/Advanced) -- persisted in localStorage
-- Basic Mode: single clean page, big input, friendly suggestions, NLP analysis, before/after comparison
-- Advanced Mode: multi-panel layout with rating, model advisor, tokens, lint, MCP, calibration, NLP, versioning, test cases, and Cursor export
-- Mobile responsive
-- Animated score ring with counting animation and color-coded bands
-
-## Getting Started
+### 1. Fork & Clone
 
 ```bash
-# Install dependencies
+git clone https://github.com/<your-username>/garry-clear-prompt.git
+cd garry-clear-prompt
 npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
+cp .env.example .env
 ```
+
+### 2. Create a Branch
+
+Follow the naming convention:
+
+```bash
+git checkout -b feature/your-feature-name
+# or
+git checkout -b fix/your-bug-fix
+```
+
+| Prefix | Use For |
+|--------|---------|
+| `feature/*` | New features |
+| `fix/*` | Bug fixes |
+| `hotfix/*` | Production hotfixes |
+| `release/DD-MM-YYYY` | Release branches |
+
+### 3. Make Changes
+
+- Follow the existing code patterns (see `.cursor/rules/` for standards)
+- Add info tooltips to any new form fields
+- Add char count / char limit to any new text inputs
+- Add structured logging via `loggerUtils` to new modules
+- Use constants from `src/common/constants`
+- Use message constants from `src/common/messages/` for all toast and log text — never hard-code strings
+- Use `src/common/fileNames.ts` for export file-name constants
+- Use `StorageResult<T>` / `ApiResult<T>` from `src/common/interfaces/` for typed returns
+
+### 4. Write Tests
+
+```bash
+# Run tests
+npm test
+
+# Check that every src file has a test
+npm run test:structure
+```
+
+- Tests live in `tests/src/` mirroring the `src/` directory (28 suites, 269 tests)
+- Minimum 80% coverage required
+- Use mock factories from `tests/mock/index.ts` (`createMockBasicInput`, `createMockAdvancedInput`, `createMockEngineResult`)
+
+### 5. Commit
+
+We use [Conventional Commits](https://www.conventionalcommits.org/):
+
+```bash
+# Create a changeset (required for all PRs)
+npx changeset
+
+# Commit with conventional format
+git commit -m "feat: add prompt template library"
+```
+
+| Type | When |
+|------|------|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `docs` | Documentation only |
+| `refactor` | Code change that neither fixes nor adds |
+| `test` | Adding or updating tests |
+| `chore` | Build process, dependencies, CI |
+
+### 6. Pre-commit Checks
+
+Husky runs these automatically:
+
+1. Branch name validation
+2. Changeset presence check
+3. ESLint auto-fix
+4. Prettier formatting
+5. Test coverage check
+
+### 7. Open a Pull Request
+
+```bash
+git push -u origin feature/your-feature-name
+```
+
+Then open a PR against `main`. Fill in the PR template.
+
+### What We Look For in PRs
+
+- [ ] Code follows project conventions (see `.cursor/rules/`)
+- [ ] Tests added/updated for changes
+- [ ] All tests pass (`npm test`)
+- [ ] Lint passes (`npm run lint`)
+- [ ] Format check passes (`npm run format:check`)
+- [ ] Changeset created (`npx changeset`)
+- [ ] No hardcoded secrets or PII
+- [ ] Toast/log messages use constants from `src/common/messages/`
+- [ ] Info tooltips added for new form fields
+- [ ] Char counters added for new text inputs
+- [ ] Accessibility: ARIA labels, keyboard navigation, color contrast
+
+### Development Tips
+
+- **Cursor IDE users**: The `.cursor/` directory has 10 AI rules, 4 agents, 2 skills, and 4 commands pre-configured for this project
+- **VS Code users**: `.vscode/settings.json` and `.vscode/extensions.json` are included
+- **New components**: Use `.cursor/templates/component.template` for scaffolding
+- **New tests**: Use `.cursor/templates/test.template` for scaffolding
+
+---
+
+## Git Conventions
+
+### Commit Format
+
+```
+feat: add prompt version comparison
+fix: correct token estimation for JSON format
+docs: update architecture diagram
+refactor: extract rating dimensions to constants
+test: add prompt-linter edge case tests
+chore: update eslint config
+```
+
+### Changesets
+
+Version management via changesets:
+
+```bash
+npx changeset          # Create a changeset
+npx changeset version  # Apply version bumps
+```
+
+---
+
+## Cursor IDE Configuration
+
+This project includes a comprehensive `.cursor/` configuration:
+
+| Category | Count | Description |
+|----------|-------|-------------|
+| Rules | 10 | Architecture, frontend, testing, security standards |
+| Agents | 4 | Performance, state, styling, UI component specialists |
+| Skills | 2 | Component creation, state management workflows |
+| Commands | 4 | Test coverage, test single, audit deps, check secrets |
+| Hooks | 3 | Auto-format, post-edit check, shell guard |
+| Templates | 2 | Component and test scaffolding |
+
+---
 
 ## Core Philosophy
 
-- Clarity before cleverness
-- Structure before size
-- Constraints before creativity
+> **Clarity before cleverness.** Structure before size. Constraints before creativity.
+
+---
 
 ## License
 
-MIT
+MIT -- see [LICENSE](LICENSE) for details.
+
+---
+
+<p align="center">
+  Made with care by <a href="https://github.com/girijashankarjambhale">@girijashankarjambhale</a>
+</p>

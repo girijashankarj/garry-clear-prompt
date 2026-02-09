@@ -1,0 +1,78 @@
+# =============================================================================
+# .cursorignore - Files excluded from Cursor AI context
+# =============================================================================
+# Purpose: Reduce token consumption by excluding irrelevant files from AI context.
+# =============================================================================
+
+# Dependencies & Package Managers
+node_modules/
+.pnp/
+.pnp.js
+
+# Lock files
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Build Output
+dist/
+build/
+out/
+
+# Source Maps & Minified Files
+*.map
+*.min.js
+*.min.css
+*.bundle.js
+*.chunk.js
+
+# Test Coverage
+coverage/
+.nyc_output/
+test-results/
+*.lcov
+
+# IDE & Editor Files
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+
+# Version Control
+.git/
+
+# Media Files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.mp4
+*.mp3
+*.wav
+*.webp
+*.woff
+*.woff2
+*.ttf
+*.eot
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Temporary Files
+tmp/
+temp/
+.cache/
+.turbo/

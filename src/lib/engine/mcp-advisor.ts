@@ -1,5 +1,7 @@
 import type { McpToolSuggestion } from '@/types/prompt.types';
 import { MCP_TOOLS } from '@/lib/data/mcp-tools';
+import { loggerDebug } from '@/utils/loggerUtils';
+import { DEBUG_MESSAGES } from '@/common/messages/debug';
 
 export function suggestMcpTools(promptText: string): McpToolSuggestion[] {
   if (!promptText.trim()) return [];
@@ -25,6 +27,7 @@ export function suggestMcpTools(promptText: string): McpToolSuggestion[] {
   // Sort: most relevant first
   suggestions.sort((a, b) => (b.recommended ? 1 : 0) - (a.recommended ? 1 : 0));
 
+  loggerDebug(DEBUG_MESSAGES.MCP_SUGGESTED, { count: suggestions.length }, 'engine', 'mcp-advisor.ts', 'suggestMcpTools');
   return suggestions;
 }
 

@@ -1,0 +1,11 @@
+# Default code owners
+* @girijashankarjambhale
+
+# Frontend components
+src/components/ @girijashankarjambhale
+
+# Engine logic
+src/lib/engine/ @girijashankarjambhale
+
+# Tests
+tests/ @girijashankarjambhale

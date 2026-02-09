@@ -1,4 +1,6 @@
 import type { BasicPromptInput, AdvancedPromptInput } from '@/types/prompt.types';
+import { loggerDebug } from '@/utils/loggerUtils';
+import { DEBUG_MESSAGES } from '@/common/messages/debug';
 
 export function buildPromptFromBasic(input: BasicPromptInput): string {
   const parts: string[] = [];
@@ -35,7 +37,9 @@ export function buildPromptFromBasic(input: BasicPromptInput): string {
     parts.push(`Rules to follow: ${input.rules.trim()}`);
   }
 
-  return parts.join('\n\n');
+  const result = parts.join('\n\n');
+  loggerDebug(DEBUG_MESSAGES.BASIC_PROMPT_BUILT, { wordCount: result.split(/\s+/).length }, 'engine', 'prompt-builder.ts', 'buildPromptFromBasic');
+  return result;
 }
 
 export function buildPromptFromAdvanced(input: AdvancedPromptInput): string {
@@ -78,7 +82,9 @@ export function buildPromptFromAdvanced(input: AdvancedPromptInput): string {
     parts.push(`Target audience: ${input.audience.trim()}`);
   }
 
-  return parts.join('\n\n');
+  const result = parts.join('\n\n');
+  loggerDebug(DEBUG_MESSAGES.ADVANCED_PROMPT_BUILT, { wordCount: result.split(/\s+/).length }, 'engine', 'prompt-builder.ts', 'buildPromptFromAdvanced');
+  return result;
 }
 
 export function buildMetaPrompt(input: AdvancedPromptInput): string {

@@ -116,7 +116,7 @@ export function LlmRunnerPanel({ result }: LlmRunnerPanelProps) {
             </div>
             <div className="rounded-md border p-2 text-center">
               <Clock className="h-3.5 w-3.5 mx-auto text-violet-500 mb-0.5" />
-              <p className="text-xs font-bold">{model.speedLevel}</p>
+              <p className="text-xs font-bold">{model.tier}</p>
               <p className="text-[9px] text-muted-foreground">Speed</p>
             </div>
           </div>

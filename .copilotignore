@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+package-lock.json
+*.map
+*.min.js
+*.min.css
+.env
+.env.*
+*.pem
+*.key

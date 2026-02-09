@@ -1,0 +1,54 @@
+---
+description: "Mock patterns for Garry Clear Prompt tests"
+alwaysApply: true
+---
+
+# Mock Patterns — Garry Clear Prompt
+
+## Mock Factories (`tests/mock/index.ts`)
+
+```typescript
+createMockBasicInput(overrides?)    → BasicPromptInput
+createMockAdvancedInput(overrides?) → AdvancedPromptInput
+createMockEngineResult(overrides?)  → PromptEngineResult
+```
+
+Always use factories — never construct raw objects in tests.
+
+## Common Mocks
+
+### localStorage
+```typescript
+const localStorageMock = (() => {
+  let store: Record<string, string> = {};
+  return {
+    getItem: jest.fn((key: string) => store[key] ?? null),
+    setItem: jest.fn((key: string, value: string) => { store[key] = value; }),
+    removeItem: jest.fn((key: string) => { delete store[key]; }),
+    clear: jest.fn(() => { store = {}; }),
+  };
+})();
+Object.defineProperty(globalThis, 'localStorage', { value: localStorageMock });
+```
+
+### crypto.randomUUID
+```typescript
+jest.spyOn(crypto, 'randomUUID').mockReturnValue('test-uuid-1234');
+```
+
+### Console (suppress structured logger output)
+```typescript
+beforeEach(() => {
+  jest.spyOn(console, 'debug').mockImplementation(() => {});
+  jest.spyOn(console, 'info').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+});
+afterEach(() => jest.restoreAllMocks());
+```
+
+## Rules
+- **NEVER** use real API endpoints
+- Reset all mocks in `beforeEach` / `afterEach`
+- Use factories for dynamic data, inline values only for test-specific overrides
+- Keep mock implementations simple — mock at the boundary, not internals
+- Storage test assertions: check `StorageResult<T>.success` + `.data`, not raw localStorage values

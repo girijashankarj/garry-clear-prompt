@@ -1,5 +1,7 @@
 import type { TokenEstimate, OutputSize, OutputFormatOptions } from '@/types/prompt.types';
 import { OUTPUT_SIZE_RANGES, FORMAT_MULTIPLIERS } from '@/lib/data/output-multipliers';
+import { loggerDebug } from '@/utils/loggerUtils';
+import { DEBUG_MESSAGES } from '@/common/messages/debug';
 
 export function estimateInputTokens(text: string): { low: number; high: number } {
   if (!text.trim()) return { low: 0, high: 0 };
@@ -58,7 +60,7 @@ export function estimateTokens(
   const inputTokens = estimateInputTokens(promptText);
   const outputTokens = estimateOutputTokens(outputSize, formatOptions);
 
-  return {
+  const estimate: TokenEstimate = {
     inputTokens,
     outputTokens,
     totalTokens: {
@@ -66,4 +68,7 @@ export function estimateTokens(
       high: inputTokens.high + outputTokens.high,
     },
   };
+
+  loggerDebug(DEBUG_MESSAGES.TOKEN_ESTIMATE, { total: estimate.totalTokens }, 'engine', 'token-estimator.ts', 'estimateTokens');
+  return estimate;
 }

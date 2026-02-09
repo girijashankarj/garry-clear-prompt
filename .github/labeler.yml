@@ -1,0 +1,29 @@
+frontend:
+  - changed-files:
+      - any-glob-to-any-file: 'src/components/**'
+
+engine:
+  - changed-files:
+      - any-glob-to-any-file: 'src/lib/engine/**'
+
+hooks:
+  - changed-files:
+      - any-glob-to-any-file: 'src/hooks/**'
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file: 'tests/**'
+
+config:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '*.json'
+          - '*.config.*'
+          - '.eslint*'
+          - '.prettier*'
+
+docs:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.md'
+          - 'docs/**'

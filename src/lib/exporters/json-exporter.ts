@@ -1,8 +1,9 @@
 import type { PromptEngineResult } from '@/types/prompt.types';
+import { APP_NAME } from '@/common/constants';
 
 export function exportAsJson(result: PromptEngineResult): string {
   const exportData = {
-    generatedBy: 'Garry Clear Prompt',
+    generatedBy: APP_NAME,
     generatedAt: new Date().toISOString(),
     prompt: result.structuredPrompt,
     metaPrompt: result.metaPrompt,

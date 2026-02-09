@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { INFO_MESSAGES } from '@/common/messages/info';
+import { ERROR_MESSAGES } from '@/common/messages/error';
 import type { TokenEstimate } from '@/types/prompt.types';
 import {
   addCalibrationRecord,
@@ -39,7 +41,7 @@ export function CalibrationPanel({ promptSnippet, tokenEstimate }: CalibrationPa
     const ai = parseInt(actualInput, 10);
     const ao = parseInt(actualOutput, 10);
     if (isNaN(ai) || isNaN(ao) || ai <= 0 || ao <= 0) {
-      toast.error('Enter valid positive numbers for actual token counts');
+      toast.error(ERROR_MESSAGES.INVALID_INPUT);
       return;
     }
 
@@ -58,13 +60,13 @@ export function CalibrationPanel({ promptSnippet, tokenEstimate }: CalibrationPa
     setActualOutput('');
     setShowForm(false);
     refresh();
-    toast.success('Calibration record added');
+    toast.success(INFO_MESSAGES.CALIBRATION_RECORDED);
   };
 
   const handleClear = () => {
     clearCalibrationRecords();
     refresh();
-    toast.success('Calibration data cleared');
+    toast.success(INFO_MESSAGES.CALIBRATION_CLEARED);
   };
 
   return (

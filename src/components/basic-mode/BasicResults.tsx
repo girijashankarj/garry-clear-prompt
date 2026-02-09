@@ -9,6 +9,7 @@ import { BeforeAfterComparison } from '@/components/shared/BeforeAfterComparison
 import { NlpAnalysisPanel } from '@/components/shared/NlpAnalysisPanel';
 import { VersionHistoryPanel } from '@/components/shared/VersionHistoryPanel';
 import { PromptSuggestionsPanel } from '@/components/shared/PromptSuggestionsPanel';
+import { InfoTooltip } from '@/components/shared/InfoTooltip';
 
 interface BasicResultsProps {
   result: PromptEngineResult;
@@ -95,7 +96,10 @@ export function BasicResults({ result, rawGoal, onApplyImproved }: BasicResultsP
       {/* Export */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium">Export</CardTitle>
+          <div className="flex items-center gap-1.5">
+            <CardTitle className="text-sm font-medium">Export</CardTitle>
+            <InfoTooltip content="Export your prompt in multiple formats. Copy to clipboard, download as Markdown, Text, JSON, or a ZIP bundle with the full analysis." />
+          </div>
         </CardHeader>
         <CardContent>
           <ExportButtons result={result} />

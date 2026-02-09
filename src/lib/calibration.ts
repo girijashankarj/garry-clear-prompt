@@ -3,7 +3,11 @@
  * a correction factor to refine future estimates.
  */
 
-const STORAGE_KEY = 'gcp-calibration-records';
+import { STORAGE_KEYS } from '@/common/constants';
+import { loggerInfo } from '@/utils/loggerUtils';
+import { INFO_MESSAGES } from '@/common/messages/info';
+
+const STORAGE_KEY = STORAGE_KEYS.CALIBRATION;
 
 export interface CalibrationRecord {
   id: string;
@@ -49,6 +53,7 @@ export function addCalibrationRecord(
   // Keep last 100 records
   const trimmed = records.slice(-100);
   saveRecords(trimmed);
+  loggerInfo(INFO_MESSAGES.CALIBRATION_RECORDED, { id: newRecord.id }, 'calibration', 'calibration.ts', 'addCalibrationRecord');
   return newRecord;
 }
 

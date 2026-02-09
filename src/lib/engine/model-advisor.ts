@@ -1,4 +1,6 @@
 import type { ModelRecommendation, TaskType, Complexity, RiskLevel, ContextSize } from '@/types/prompt.types';
+import { loggerDebug } from '@/utils/loggerUtils';
+import { DEBUG_MESSAGES } from '@/common/messages/debug';
 
 interface ModelAdvisorInput {
   taskType: TaskType;
@@ -99,6 +101,8 @@ export function recommendModel(input: ModelAdvisorInput): ModelRecommendation {
   const reasonStr = reasons.length > 0
     ? `Recommended based on: ${reasons.join(', ')}`
     : `Best general-purpose option for ${input.taskType} tasks`;
+
+  loggerDebug(DEBUG_MESSAGES.MODEL_RECOMMENDED, { recommended, confidence }, 'engine', 'model-advisor.ts', 'recommendModel');
 
   return {
     recommended,

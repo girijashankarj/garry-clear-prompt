@@ -1,0 +1,41 @@
+// {{fileName}}.test.ts
+// Garry Clear Prompt — Tests for {{moduleName}}
+
+import { {{functionName}} } from '@/{{modulePath}}';
+// If testing engine results, uncomment:
+// import { createMockEngineResult } from '../../../mock';
+
+describe('{{moduleName}}', () => {
+  beforeEach(() => {
+    jest.spyOn(console, 'debug').mockImplementation(() => {});
+    jest.spyOn(console, 'info').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  describe('{{functionName}}', () => {
+    it('should {{expectedBehavior}} when {{condition}}', () => {
+      // Arrange
+      const input = {{testInput}};
+
+      // Act
+      const result = {{functionName}}(input);
+
+      // Assert
+      expect(result).{{matcher}}({{expected}});
+    });
+
+    it('should handle empty input', () => {
+      // Arrange
+      const input = {{emptyInput}};
+
+      // Act
+      const result = {{functionName}}(input);
+
+      // Assert
+      expect(result).{{emptyMatcher}}({{emptyExpected}});
+    });
+  });
+});

@@ -1,4 +1,6 @@
 import type { PromptRating, RatingDimension, RatingBand } from '@/types/prompt.types';
+import { loggerDebug } from '@/utils/loggerUtils';
+import { INFO_MESSAGES } from '@/common/messages/info';
 
 function rateClarity(text: string): RatingDimension {
   let score = 0;
@@ -277,10 +279,13 @@ export function ratePrompt(text: string): PromptRating {
   const totalScore = Math.max(0, Math.min(100, rawTotal));
 
   const dimensions = { clarity, constraints, structure, tokenEfficiency, riskPenalty };
+  const band = getBand(totalScore);
+
+  loggerDebug(INFO_MESSAGES.PROMPT_RATED, { totalScore, band }, 'engine', 'prompt-rater.ts', 'ratePrompt');
 
   return {
     totalScore,
-    band: getBand(totalScore),
+    band,
     dimensions,
     suggestions: generateSuggestions(dimensions),
   };

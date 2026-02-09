@@ -1,0 +1,54 @@
+---
+description: "Core architecture principles for Garry Clear Prompt"
+alwaysApply: true
+---
+
+# Core Architecture Principles
+
+## Design Philosophy
+1. **Configuration over code** — behaviour controlled via `config/` and `src/common/`
+2. **Convention over configuration** — sensible defaults, override when needed
+3. **Composition over inheritance** — small, composable pure functions
+4. **Explicit over implicit** — no magic, clear data flow
+5. **Fail fast** — validate early, return typed results (`StorageResult<T>`, `ApiResult<T>`)
+
+## Engine Pipeline (Core Business Logic)
+All prompt processing follows this pipeline in `src/lib/engine/`:
+```
+User Input → prompt-builder → prompt-rater → prompt-linter → prompt-improver
+                                                  ↓
+                              token-estimator → model-advisor → mcp-advisor
+                                                  ↓
+                              nlp-analyzer → meta-prompt-builder
+```
+Each engine module is a **pure function** that receives input and returns typed output.
+
+## Module Boundaries
+
+| Layer | Directory | Purpose | Rules |
+|-------|-----------|---------|-------|
+| **UI** | `src/components/` | React components | No business logic |
+| **Hooks** | `src/hooks/` | Custom React hooks | Orchestrate UI ↔ Engine |
+| **Engine** | `src/lib/engine/` | Prompt processing | Pure functions only |
+| **Exporters** | `src/lib/exporters/` | File generation | Pure functions, return strings/Blobs |
+| **Data** | `src/lib/data/` | Static lookup tables | Read-only constants |
+| **Common** | `src/common/` | Shared constants, messages, interfaces | No dependencies on other layers |
+| **Store** | `src/store/` | Redux Toolkit | Minimal: mode + theme only |
+| **Types** | `src/types/` | TypeScript types | Interface definitions only |
+
+## File Naming
+- kebab-case for modules: `prompt-builder.ts`, `use-mode.ts`
+- PascalCase for components: `BasicPromptForm.tsx`, `ExportButtons.tsx`
+- Tests mirror `src/` structure under `tests/src/`
+
+## Dependency Rules
+- **No circular dependencies**
+- Shared types live in `src/common/` or `src/types/`
+- Path alias `@/` resolves to `src/`
+- Engine modules must never import from `src/components/` or `src/store/`
+
+## Error Handling
+- User-facing errors: `toast.*()` with constants from `src/common/messages/error.ts`
+- Internal logging: `loggerError()` / `loggerWarn()` from `src/utils/loggerUtils.ts`
+- Storage operations return `StorageResult<T>` with `{ success, data?, error? }`
+- LLM operations return `ApiResult<T>` with `{ ok, data?, error? }`
