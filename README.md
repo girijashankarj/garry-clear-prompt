@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="https://girijashankarj.github.io/garry-clear-prompt/"><strong>Live Demo</strong></a> &bull;
   <a href="#features">Features</a> &bull;
   <a href="#quick-start">Quick Start</a> &bull;
   <a href="#architecture">Architecture</a> &bull;
@@ -21,6 +22,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/girijashankarj/garry-clear-prompt/actions/workflows/deploy.yml"><img src="https://github.com/girijashankarj/garry-clear-prompt/actions/workflows/deploy.yml/badge.svg" alt="Deploy" /></a>
   <img src="https://img.shields.io/badge/react-19-blue?logo=react" alt="React 19" />
   <img src="https://img.shields.io/badge/typescript-5.9-blue?logo=typescript" alt="TypeScript" />
   <img src="https://img.shields.io/badge/vite-7-purple?logo=vite" alt="Vite 7" />

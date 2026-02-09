@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from "@tailwindcss/vite"
 
 export default defineConfig(({ mode }) => ({
+  base: process.env.GITHUB_PAGES === 'true' ? '/garry-clear-prompt/' : '/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
