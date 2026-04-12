@@ -14,15 +14,13 @@ export function PromptPreview({ title, content, maxHeight = '300px' }: PromptPre
 
   return (
     <Card>
-      <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+      <CardHeader className="pb-1">
+        <CardTitle className="text-sm font-semibold tracking-tight">{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <ScrollArea style={{ maxHeight }} className="rounded-md border bg-muted/50 p-4">
-          <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {content}
-            </ReactMarkdown>
+        <ScrollArea style={{ maxHeight }} className="rounded-lg border bg-muted/30 p-3">
+          <div className="prose prose-sm dark:prose-invert max-w-none text-sm leading-relaxed">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
           </div>
         </ScrollArea>
       </CardContent>

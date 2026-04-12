@@ -10,7 +10,11 @@ interface PromptSuggestionsPanelProps {
   onApply: (prompt: string) => void;
 }
 
-export function PromptSuggestionsPanel({ currentText, mode, onApply }: PromptSuggestionsPanelProps) {
+export function PromptSuggestionsPanel({
+  currentText,
+  mode,
+  onApply,
+}: PromptSuggestionsPanelProps) {
   const suggestions: PromptSuggestion[] = useMemo(
     () => findSimilarPrompts(currentText, 5, mode),
     [currentText, mode]
@@ -36,7 +40,9 @@ export function PromptSuggestionsPanel({ currentText, mode, onApply }: PromptSug
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 mb-1">
-                  <Badge variant="outline" className="text-[9px] font-mono shrink-0">{s.version.label}</Badge>
+                  <Badge variant="outline" className="text-[9px] font-mono shrink-0">
+                    {s.version.label}
+                  </Badge>
                   <Badge variant="secondary" className="text-[9px] tabular-nums shrink-0">
                     {Math.round(s.similarity * 100)}% match
                   </Badge>

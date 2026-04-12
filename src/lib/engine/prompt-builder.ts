@@ -3,6 +3,10 @@ import { loggerDebug } from '@/utils/loggerUtils';
 import { DEBUG_MESSAGES } from '@/common/messages/debug';
 
 export function buildPromptFromBasic(input: BasicPromptInput): string {
+  if (!input.goal.trim()) {
+    return '';
+  }
+
   const parts: string[] = [];
 
   // Goal
@@ -38,7 +42,13 @@ export function buildPromptFromBasic(input: BasicPromptInput): string {
   }
 
   const result = parts.join('\n\n');
-  loggerDebug(DEBUG_MESSAGES.BASIC_PROMPT_BUILT, { wordCount: result.split(/\s+/).length }, 'engine', 'prompt-builder.ts', 'buildPromptFromBasic');
+  loggerDebug(
+    DEBUG_MESSAGES.BASIC_PROMPT_BUILT,
+    { wordCount: result.split(/\s+/).length },
+    'engine',
+    'prompt-builder.ts',
+    'buildPromptFromBasic'
+  );
   return result;
 }
 
@@ -74,7 +84,7 @@ export function buildPromptFromAdvanced(input: AdvancedPromptInput): string {
   }
 
   if (formatInstructions.length > 0) {
-    parts.push('Output format:\n' + formatInstructions.map(f => `- ${f}`).join('\n'));
+    parts.push('Output format:\n' + formatInstructions.map((f) => `- ${f}`).join('\n'));
   }
 
   // Audience
@@ -83,7 +93,13 @@ export function buildPromptFromAdvanced(input: AdvancedPromptInput): string {
   }
 
   const result = parts.join('\n\n');
-  loggerDebug(DEBUG_MESSAGES.ADVANCED_PROMPT_BUILT, { wordCount: result.split(/\s+/).length }, 'engine', 'prompt-builder.ts', 'buildPromptFromAdvanced');
+  loggerDebug(
+    DEBUG_MESSAGES.ADVANCED_PROMPT_BUILT,
+    { wordCount: result.split(/\s+/).length },
+    'engine',
+    'prompt-builder.ts',
+    'buildPromptFromAdvanced'
+  );
   return result;
 }
 

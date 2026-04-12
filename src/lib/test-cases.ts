@@ -20,7 +20,7 @@ export interface PromptTestCase {
 export interface PromptTestSuite {
   id: string;
   name: string;
-  promptSnippet: string;      // first 100 chars of the prompt this suite is for
+  promptSnippet: string; // first 100 chars of the prompt this suite is for
   cases: PromptTestCase[];
   createdAt: number;
   updatedAt: number;
@@ -55,7 +55,13 @@ export function createTestSuite(name: string, promptSnippet: string): PromptTest
   };
   suites.push(suite);
   saveSuites(suites);
-  loggerInfo(INFO_MESSAGES.TEST_SUITE_CREATED, { id: suite.id, name }, 'test-cases', 'test-cases.ts', 'createTestSuite');
+  loggerInfo(
+    INFO_MESSAGES.TEST_SUITE_CREATED,
+    { id: suite.id, name },
+    'test-cases',
+    'test-cases.ts',
+    'createTestSuite'
+  );
   return suite;
 }
 
@@ -66,7 +72,7 @@ export function addTestCase(
   notes: string = ''
 ): PromptTestCase | null {
   const suites = loadSuites();
-  const suite = suites.find(s => s.id === suiteId);
+  const suite = suites.find((s) => s.id === suiteId);
   if (!suite) return null;
 
   if (suite.cases.length >= MAX_TEST_CASES_PER_SUITE) return null;
@@ -86,15 +92,15 @@ export function addTestCase(
 
 export function removeTestCase(suiteId: string, caseId: string): void {
   const suites = loadSuites();
-  const suite = suites.find(s => s.id === suiteId);
+  const suite = suites.find((s) => s.id === suiteId);
   if (!suite) return;
-  suite.cases = suite.cases.filter(c => c.id !== caseId);
+  suite.cases = suite.cases.filter((c) => c.id !== caseId);
   suite.updatedAt = Date.now();
   saveSuites(suites);
 }
 
 export function deleteTestSuite(suiteId: string): void {
-  const suites = loadSuites().filter(s => s.id !== suiteId);
+  const suites = loadSuites().filter((s) => s.id !== suiteId);
   saveSuites(suites);
 }
 

@@ -6,14 +6,14 @@
 
 ## Documentation Map
 
-| Document | Description |
-|----------|-------------|
-| [ARCHITECTURE.md](./ARCHITECTURE.md) | System design, layer architecture, data flow diagrams, state management strategy, directory structure |
-| [COMPONENTS.md](./COMPONENTS.md) | Full component catalog -- every component with props, description, and usage patterns |
+| Document                               | Description                                                                                                            |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| [ARCHITECTURE.md](./ARCHITECTURE.md)   | System design, layer architecture, data flow diagrams, state management strategy, directory structure                  |
+| [COMPONENTS.md](./COMPONENTS.md)       | Full component catalog -- every component with props, description, and usage patterns                                  |
 | [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md) | Visual language, colors, typography, spacing, component patterns, responsive behavior, animation, accessibility, icons |
-| [ENGINE-API.md](./ENGINE-API.md) | Engine module API reference -- every function with params, return types, and behavior |
-| [TESTING.md](./TESTING.md) | Testing guide -- tools, coverage requirements, mock factories, how to write tests |
-| [CONTRIBUTING.md](./CONTRIBUTING.md) | Contribution workflow -- setup, branch naming, commits, PR checklist, code review |
+| [ENGINE-API.md](./ENGINE-API.md)       | Engine module API reference -- every function with params, return types, and behavior                                  |
+| [TESTING.md](./TESTING.md)             | Testing guide -- tools, coverage requirements, mock factories, how to write tests                                      |
+| [CONTRIBUTING.md](./CONTRIBUTING.md)   | Contribution workflow -- setup, branch naming, commits, PR checklist, code review                                      |
 
 ---
 
@@ -35,6 +35,7 @@
 A standalone web app that helps anyone write prompts that produce more accurate results using fewer words and fewer tokens.
 
 **Two modes**:
+
 - **Basic Mode**: Natural language, no jargon, gentle refiners
 - **Advanced Mode**: Full control -- model advisor, token estimation, prompt lint/rating, MCP suggestions, NLP analysis, calibration, versioning, test cases, and export
 

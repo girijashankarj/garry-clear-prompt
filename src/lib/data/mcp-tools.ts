@@ -15,15 +15,27 @@ export const MCP_TOOLS: McpToolDefinition[] = [
     description: 'Direct database access for queries and data exploration',
     defaultPermission: 'read-only',
     safeEnvironments: ['dev'],
-    riskNote: 'Write access in production can cause data loss. Always use read-only in non-dev environments.',
-    keywords: ['sql', 'database', 'query', 'postgres', 'db', 'table', 'schema', 'migration', 'data'],
+    riskNote:
+      'Write access in production can cause data loss. Always use read-only in non-dev environments.',
+    keywords: [
+      'sql',
+      'database',
+      'query',
+      'postgres',
+      'db',
+      'table',
+      'schema',
+      'migration',
+      'data',
+    ],
   },
   {
     name: 'Playwright',
     description: 'Browser automation for UI testing and validation',
     defaultPermission: 'read-only',
     safeEnvironments: ['dev', 'staging'],
-    riskNote: 'Can interact with live UIs. Avoid in production to prevent unintended user-facing changes.',
+    riskNote:
+      'Can interact with live UIs. Avoid in production to prevent unintended user-facing changes.',
     keywords: ['test', 'browser', 'ui', 'e2e', 'automation', 'playwright', 'screenshot', 'click'],
   },
   {
@@ -47,7 +59,8 @@ export const MCP_TOOLS: McpToolDefinition[] = [
     description: 'Local file system access for reading and writing files',
     defaultPermission: 'read-only',
     safeEnvironments: ['dev'],
-    riskNote: 'Write access can modify or delete local files. Restrict to project directories only.',
+    riskNote:
+      'Write access can modify or delete local files. Restrict to project directories only.',
     keywords: ['file', 'read', 'write', 'directory', 'folder', 'path', 'filesystem', 'local'],
   },
   {
@@ -55,7 +68,8 @@ export const MCP_TOOLS: McpToolDefinition[] = [
     description: 'Search and analytics engine for log and data queries',
     defaultPermission: 'read-only',
     safeEnvironments: ['dev', 'staging'],
-    riskNote: 'Write access can modify indices or delete data. Use read-only for queries and dashboards.',
+    riskNote:
+      'Write access can modify indices or delete data. Use read-only for queries and dashboards.',
     keywords: ['opensearch', 'elasticsearch', 'search', 'log', 'dashboard', 'index', 'analytics'],
   },
 ];

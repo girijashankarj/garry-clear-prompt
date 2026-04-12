@@ -1,4 +1,8 @@
-import { buildPromptFromBasic, buildPromptFromAdvanced, buildMetaPrompt } from '@/lib/engine/prompt-builder';
+import {
+  buildPromptFromBasic,
+  buildPromptFromAdvanced,
+  buildMetaPrompt,
+} from '@/lib/engine/prompt-builder';
 import { createMockBasicInput, createMockAdvancedInput } from '../../../mock';
 
 describe('prompt-builder', () => {
@@ -43,6 +47,11 @@ describe('prompt-builder', () => {
       const input = createMockBasicInput();
       const result = buildPromptFromBasic(input);
       expect(result).toContain('\n\n');
+    });
+
+    it('should return empty string when goal is empty', () => {
+      const input = createMockBasicInput({ goal: '' });
+      expect(buildPromptFromBasic(input)).toBe('');
     });
   });
 

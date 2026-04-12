@@ -95,17 +95,17 @@ sequenceDiagram
 
 ## State Management Strategy
 
-| State Type | Mechanism | Scope | Persistence |
-|------------|-----------|-------|-------------|
-| App mode (basic/advanced) | Redux Toolkit | Global | localStorage via slice |
-| Theme (light/dark) | Redux Toolkit | Global | localStorage via slice |
-| Form input (basic) | useLocalStorage hook | Component tree | localStorage |
-| Form input (advanced) | useLocalStorage hook | Component tree | localStorage |
-| Engine results | useMemo in hook | Component tree | None (derived) |
-| Prompt versions | Direct localStorage | Feature | localStorage |
-| Calibration records | Direct localStorage | Feature | localStorage |
-| Test case suites | Direct localStorage | Feature | localStorage |
-| LLM settings | Direct localStorage | Feature | localStorage |
+| State Type                | Mechanism            | Scope          | Persistence            |
+| ------------------------- | -------------------- | -------------- | ---------------------- |
+| App mode (basic/advanced) | Redux Toolkit        | Global         | localStorage via slice |
+| Theme (light/dark)        | Redux Toolkit        | Global         | localStorage via slice |
+| Form input (basic)        | useLocalStorage hook | Component tree | localStorage           |
+| Form input (advanced)     | useLocalStorage hook | Component tree | localStorage           |
+| Engine results            | useMemo in hook      | Component tree | None (derived)         |
+| Prompt versions           | Direct localStorage  | Feature        | localStorage           |
+| Calibration records       | Direct localStorage  | Feature        | localStorage           |
+| Test case suites          | Direct localStorage  | Feature        | localStorage           |
+| LLM settings              | Direct localStorage  | Feature        | localStorage           |
 
 ---
 
@@ -143,7 +143,7 @@ All engine modules emit structured log entries via `loggerUtils` for debugging.
 ```
 src/
 ├── main.tsx                          # Entry: ReactDOM + Redux Provider
-├── App.tsx                           # Root: mode switch, theme, layout
+├── App.tsx                           # Root: Redux mode/theme, lazy Basic/Advanced + Suspense
 ├── common/                           # Shared infrastructure
 │   ├── constants/index.ts            # APP_NAME, STORAGE_KEYS, SCORE_BANDS, limits
 │   ├── enums/index.ts                # ThemeMode, PromptMode, DetailLevel, etc.
@@ -157,7 +157,6 @@ src/
 │   └── promptSlice.ts                # mode + theme with localStorage sync
 ├── hooks/
 │   ├── use-local-storage.ts          # Generic localStorage hook with SSR safety
-│   ├── use-mode.ts                   # Convenience wrapper (legacy, used in some places)
 │   └── use-prompt-engine.ts          # Memoized engine results for Basic + Advanced
 ├── types/
 │   └── prompt.types.ts               # All shared TypeScript types
@@ -168,6 +167,7 @@ src/
 │   ├── engine/                       # Pure function engine modules
 │   ├── data/                         # Static data (model tiers, lint rules, etc.)
 │   ├── exporters/                    # Multi-format export functions
+│   ├── ml/                           # Optional in-browser intent classifier (Transformers.js)
 │   ├── llm/                          # LLM adapter layer (currently disabled)
 │   ├── utils.ts                      # cn(), copyToClipboard(), downloadFile(), formatExportTimestamp(), getExportFileName()
 │   ├── storage.ts                    # Draft save/load helpers
@@ -180,7 +180,7 @@ src/
     ├── layout/                       # Header, Footer
     ├── basic-mode/                   # BasicPromptForm, BasicResults
     ├── advanced-mode/                # AdvancedPromptForm, AdvancedResults, + 5 panels
-    └── shared/                       # 14 shared components
+    └── shared/                       # Shared UI (score, export, tabs, sticky score, loading skeleton, etc.)
 ```
 
 ---

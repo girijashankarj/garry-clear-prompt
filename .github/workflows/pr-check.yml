@@ -52,3 +52,37 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+
+  bundle-size:
+    name: Bundle Size Check
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Check JS bundle size (gzipped < 200KB)
+        run: |
+          MAX_SIZE_KB=200
+          JS_FILES=$(find dist/assets -name '*.js' 2>/dev/null)
+          if [ -z "$JS_FILES" ]; then
+            echo "No JS files found in dist/assets"
+            exit 1
+          fi
+          TOTAL=0
+          for f in $JS_FILES; do
+            SIZE=$(gzip -c "$f" | wc -c)
+            SIZE_KB=$((SIZE / 1024))
+            echo "  $(basename "$f"): ${SIZE_KB}KB gzipped"
+            TOTAL=$((TOTAL + SIZE))
+          done
+          TOTAL_KB=$((TOTAL / 1024))
+          echo ""
+          echo "Total JS gzipped: ${TOTAL_KB}KB (budget: ${MAX_SIZE_KB}KB)"
+          if [ "$TOTAL_KB" -gt "$MAX_SIZE_KB" ]; then
+            echo "::warning::Bundle size ${TOTAL_KB}KB exceeds ${MAX_SIZE_KB}KB budget"
+          fi

@@ -4,7 +4,9 @@ import * as versioning from '@/lib/versioning';
 // Mock the versioning module
 jest.mock('@/lib/versioning');
 
-const mockGetPromptVersions = versioning.getPromptVersions as jest.MockedFunction<typeof versioning.getPromptVersions>;
+const mockGetPromptVersions = versioning.getPromptVersions as jest.MockedFunction<
+  typeof versioning.getPromptVersions
+>;
 
 describe('prompt-suggestions', () => {
   afterEach(() => {

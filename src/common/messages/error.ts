@@ -9,4 +9,5 @@ export const ERROR_MESSAGES = {
   INVALID_INPUT: 'Invalid input provided',
   LLM_DISABLED: 'LLM integration is not enabled yet',
   ZIP_FAILED: 'Failed to create ZIP',
+  ML_INTENT_REFINE_FAILED: 'Could not run local ML checklist refinement',
 } as const;

@@ -63,5 +63,25 @@ describe('json-exporter', () => {
       const parsed = JSON.parse(exportAsJson(result));
       expect(parsed.rating.suggestions).toEqual(['Add output format', 'Specify constraints']);
     });
+
+    it('should include section coverage and dimension hints in rating', () => {
+      const parsed = JSON.parse(exportAsJson(result));
+      expect(parsed.rating.sectionCoverage).toEqual({
+        goal: true,
+        context: false,
+        constraints: false,
+        output: false,
+      });
+      expect(parsed.rating.dimensionHints).toHaveProperty('clarity');
+    });
+
+    it('should include nlpSummary', () => {
+      const parsed = JSON.parse(exportAsJson(result));
+      expect(parsed.nlpSummary).toMatchObject({
+        intent: expect.any(String),
+        complexity: expect.any(String),
+        wordCount: expect.any(Number),
+      });
+    });
   });
 });

@@ -40,11 +40,38 @@ function detectIntent(doc: ReturnType<typeof nlp>, text: string): PromptIntent {
   // Check for imperative mood (starts with verb)
   const firstWord = text.trim().split(/\s+/)[0]?.toLowerCase() || '';
   const imperativeStarters = [
-    'create', 'generate', 'write', 'build', 'design', 'implement',
-    'explain', 'describe', 'list', 'summarize', 'analyze', 'review',
-    'fix', 'optimize', 'convert', 'translate', 'refactor', 'debug',
-    'add', 'remove', 'update', 'delete', 'deploy', 'test', 'make',
-    'show', 'find', 'search', 'get', 'set', 'configure', 'help',
+    'create',
+    'generate',
+    'write',
+    'build',
+    'design',
+    'implement',
+    'explain',
+    'describe',
+    'list',
+    'summarize',
+    'analyze',
+    'review',
+    'fix',
+    'optimize',
+    'convert',
+    'translate',
+    'refactor',
+    'debug',
+    'add',
+    'remove',
+    'update',
+    'delete',
+    'deploy',
+    'test',
+    'make',
+    'show',
+    'find',
+    'search',
+    'get',
+    'set',
+    'configure',
+    'help',
   ];
   if (imperativeStarters.includes(firstWord)) {
     return 'instruction';
@@ -58,7 +85,9 @@ function detectIntent(doc: ReturnType<typeof nlp>, text: string): PromptIntent {
   return 'instruction'; // default for prompts
 }
 
-function calculateComplexity(analysis: Omit<NlpAnalysis, 'complexity' | 'intent'>): ComplexityLevel {
+function calculateComplexity(
+  analysis: Omit<NlpAnalysis, 'complexity' | 'intent'>
+): ComplexityLevel {
   let score = 0;
 
   if (analysis.wordCount > 80) score += 2;
@@ -140,11 +169,13 @@ export function analyzePromptNlp(text: string): NlpAnalysis {
 
   const hasList = /^[\s]*[-*•]\s+/m.test(text) || /^\s*\d+[.)]\s+/m.test(text);
   const hasConditional = /\b(if|when|unless|provided|assuming|given that|in case)\b/i.test(text);
-  const hasNegation = /\b(not|no|don't|doesn't|won't|can't|never|without|neither|nor)\b/i.test(text);
+  const hasNegation = /\b(not|no|don't|doesn't|won't|can't|never|without|neither|nor)\b/i.test(
+    text
+  );
 
   // Frequency-ranked unique nouns/verbs
-  const topNouns = [...new Set(nouns.map(n => n.toLowerCase()))].slice(0, 5);
-  const topVerbs = [...new Set(verbs.map(v => v.toLowerCase()))].slice(0, 5);
+  const topNouns = [...new Set(nouns.map((n) => n.toLowerCase()))].slice(0, 5);
+  const topVerbs = [...new Set(verbs.map((v) => v.toLowerCase()))].slice(0, 5);
 
   const partial = {
     sentenceCount,
@@ -168,6 +199,12 @@ export function analyzePromptNlp(text: string): NlpAnalysis {
     complexity: calculateComplexity(partial),
   };
 
-  loggerDebug(DEBUG_MESSAGES.NLP_COMPLETE, { intent: result.intent, complexity: result.complexity, wordCount: result.wordCount }, 'engine', 'nlp-analyzer.ts', 'analyzePromptNlp');
+  loggerDebug(
+    DEBUG_MESSAGES.NLP_COMPLETE,
+    { intent: result.intent, complexity: result.complexity, wordCount: result.wordCount },
+    'engine',
+    'nlp-analyzer.ts',
+    'analyzePromptNlp'
+  );
   return result;
 }

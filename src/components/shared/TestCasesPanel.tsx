@@ -33,14 +33,18 @@ export function TestCasesPanel({ promptSnippet }: TestCasesPanelProps) {
   const refresh = useCallback(() => {
     const all = getTestSuites();
     setSuites(all);
-    if (activeSuiteId && !all.find(s => s.id === activeSuiteId)) {
+    if (activeSuiteId && !all.find((s) => s.id === activeSuiteId)) {
       setActiveSuiteId(all.length > 0 ? all[all.length - 1].id : null);
     }
   }, [activeSuiteId]);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    queueMicrotask(() => {
+      refresh();
+    });
+  }, [refresh]);
 
-  const activeSuite = suites.find(s => s.id === activeSuiteId) || null;
+  const activeSuite = suites.find((s) => s.id === activeSuiteId) || null;
 
   const handleCreateSuite = () => {
     if (!suiteName.trim()) {
@@ -57,8 +61,14 @@ export function TestCasesPanel({ promptSnippet }: TestCasesPanelProps) {
 
   const handleAddCase = () => {
     if (!activeSuiteId) return;
-    if (!caseInput.trim()) { toast.error('Input is required'); return; }
-    if (!caseExpected.trim()) { toast.error('Expected output is required'); return; }
+    if (!caseInput.trim()) {
+      toast.error('Input is required');
+      return;
+    }
+    if (!caseExpected.trim()) {
+      toast.error('Expected output is required');
+      return;
+    }
 
     const tc = addTestCase(activeSuiteId, caseInput.trim(), caseExpected.trim(), caseNotes.trim());
     if (!tc) {
@@ -89,7 +99,11 @@ export function TestCasesPanel({ promptSnippet }: TestCasesPanelProps) {
   const handleExport = () => {
     if (!activeSuite) return;
     const json = exportTestSuiteAsJson(activeSuite);
-    downloadFile(json, `test-suite-${activeSuite.name.replace(/\s+/g, '-').toLowerCase()}.json`, 'application/json');
+    downloadFile(
+      json,
+      `test-suite-${activeSuite.name.replace(/\s+/g, '-').toLowerCase()}.json`,
+      'application/json'
+    );
     toast.success('Exported test suite');
   };
 
@@ -114,7 +128,7 @@ export function TestCasesPanel({ promptSnippet }: TestCasesPanelProps) {
         {/* Suite selector */}
         {suites.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
-            {suites.map(s => (
+            {suites.map((s) => (
               <button
                 key={s.id}
                 onClick={() => setActiveSuiteId(s.id)}
@@ -141,8 +155,12 @@ export function TestCasesPanel({ promptSnippet }: TestCasesPanelProps) {
               className="w-full rounded-md border bg-background px-2.5 py-1.5 text-sm"
             />
             <div className="flex gap-2">
-              <Button size="sm" onClick={handleCreateSuite}>Create</Button>
-              <Button size="sm" variant="ghost" onClick={() => setShowNewSuite(false)}>Cancel</Button>
+              <Button size="sm" onClick={handleCreateSuite}>
+                Create
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setShowNewSuite(false)}>
+                Cancel
+              </Button>
             </div>
           </div>
         ) : (
@@ -176,7 +194,9 @@ export function TestCasesPanel({ promptSnippet }: TestCasesPanelProps) {
             {showAddCase && (
               <div className="space-y-2 rounded-md border p-2.5 bg-muted/30">
                 <div>
-                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Test Input</label>
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                    Test Input
+                  </label>
                   <Textarea
                     value={caseInput}
                     onChange={(e) => setCaseInput(e.target.value)}
@@ -185,7 +205,9 @@ export function TestCasesPanel({ promptSnippet }: TestCasesPanelProps) {
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Expected Output</label>
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                    Expected Output
+                  </label>
                   <Textarea
                     value={caseExpected}
                     onChange={(e) => setCaseExpected(e.target.value)}
@@ -194,7 +216,9 @@ export function TestCasesPanel({ promptSnippet }: TestCasesPanelProps) {
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Notes (optional)</label>
+                  <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                    Notes (optional)
+                  </label>
                   <input
                     type="text"
                     value={caseNotes}
@@ -204,8 +228,12 @@ export function TestCasesPanel({ promptSnippet }: TestCasesPanelProps) {
                   />
                 </div>
                 <div className="flex gap-2">
-                  <Button size="sm" onClick={handleAddCase}>Add</Button>
-                  <Button size="sm" variant="ghost" onClick={() => setShowAddCase(false)}>Cancel</Button>
+                  <Button size="sm" onClick={handleAddCase}>
+                    Add
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => setShowAddCase(false)}>
+                    Cancel
+                  </Button>
                 </div>
               </div>
             )}
@@ -214,15 +242,27 @@ export function TestCasesPanel({ promptSnippet }: TestCasesPanelProps) {
             {activeSuite.cases.length > 0 && (
               <div className="space-y-1.5 max-h-52 overflow-y-auto">
                 {activeSuite.cases.map((tc, idx) => (
-                  <div key={tc.id} className="rounded-md border p-2 text-xs group hover:bg-muted/50 transition-colors">
+                  <div
+                    key={tc.id}
+                    className="rounded-md border p-2 text-xs group hover:bg-muted/50 transition-colors"
+                  >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5 mb-1">
-                          <Badge variant="outline" className="text-[9px] font-mono">#{idx + 1}</Badge>
-                          {tc.notes && <span className="text-muted-foreground/70 truncate">{tc.notes}</span>}
+                          <Badge variant="outline" className="text-[9px] font-mono">
+                            #{idx + 1}
+                          </Badge>
+                          {tc.notes && (
+                            <span className="text-muted-foreground/70 truncate">{tc.notes}</span>
+                          )}
                         </div>
-                        <p className="text-muted-foreground truncate"><span className="font-medium text-foreground">In:</span> {tc.input}</p>
-                        <p className="text-muted-foreground truncate"><span className="font-medium text-foreground">Out:</span> {tc.expectedOutput}</p>
+                        <p className="text-muted-foreground truncate">
+                          <span className="font-medium text-foreground">In:</span> {tc.input}
+                        </p>
+                        <p className="text-muted-foreground truncate">
+                          <span className="font-medium text-foreground">Out:</span>{' '}
+                          {tc.expectedOutput}
+                        </p>
                       </div>
                       <button
                         onClick={() => handleRemoveCase(tc.id)}

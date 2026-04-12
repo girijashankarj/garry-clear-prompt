@@ -69,6 +69,12 @@ export function estimateTokens(
     },
   };
 
-  loggerDebug(DEBUG_MESSAGES.TOKEN_ESTIMATE, { total: estimate.totalTokens }, 'engine', 'token-estimator.ts', 'estimateTokens');
+  loggerDebug(
+    DEBUG_MESSAGES.TOKEN_ESTIMATE,
+    { total: estimate.totalTokens },
+    'engine',
+    'token-estimator.ts',
+    'estimateTokens'
+  );
   return estimate;
 }

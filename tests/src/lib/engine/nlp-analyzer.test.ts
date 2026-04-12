@@ -67,7 +67,9 @@ describe('nlp-analyzer', () => {
     });
 
     it('should detect conditional language', () => {
-      const result = analyzePromptNlp('If the user is logged in, show the dashboard. Unless they are admin, hide settings.');
+      const result = analyzePromptNlp(
+        'If the user is logged in, show the dashboard. Unless they are admin, hide settings.'
+      );
       expect(result.hasConditional).toBe(true);
     });
 
@@ -77,7 +79,9 @@ describe('nlp-analyzer', () => {
     });
 
     it('should compute readability grade', () => {
-      const result = analyzePromptNlp('Create a function that calculates the sum of all numbers in an array.');
+      const result = analyzePromptNlp(
+        'Create a function that calculates the sum of all numbers in an array.'
+      );
       expect(result.readabilityGrade).toBeGreaterThanOrEqual(0);
     });
 
@@ -89,16 +93,18 @@ describe('nlp-analyzer', () => {
     it('should classify moderate or complex for long prompts', () => {
       const result = analyzePromptNlp(
         'Design a comprehensive microservices architecture for an e-commerce platform. ' +
-        'Include service boundaries and data flow. If the system is under heavy load, ' +
-        'implement circuit breakers. Consider the following:\n- API gateway\n- Auth service\n' +
-        '- Product catalog\n- Order management\n- Payment processing. ' +
-        'What about scaling? How should we handle failures?'
+          'Include service boundaries and data flow. If the system is under heavy load, ' +
+          'implement circuit breakers. Consider the following:\n- API gateway\n- Auth service\n' +
+          '- Product catalog\n- Order management\n- Payment processing. ' +
+          'What about scaling? How should we handle failures?'
       );
       expect(['moderate', 'complex']).toContain(result.complexity);
     });
 
     it('should return top nouns and verbs as arrays', () => {
-      const result = analyzePromptNlp('Create a user management system with authentication and authorization.');
+      const result = analyzePromptNlp(
+        'Create a user management system with authentication and authorization.'
+      );
       expect(Array.isArray(result.topNouns)).toBe(true);
       expect(Array.isArray(result.topVerbs)).toBe(true);
     });

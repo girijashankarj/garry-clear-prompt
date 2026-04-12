@@ -6,6 +6,8 @@ import { analyzePromptNlp, type NlpAnalysis, type PromptIntent } from '@/lib/eng
 
 interface NlpAnalysisPanelProps {
   text: string;
+  /** When set (e.g. from `usePromptEngine`), avoids a second `analyzePromptNlp` run. */
+  analysis?: NlpAnalysis;
 }
 
 const INTENT_CONFIG: Record<PromptIntent, { label: string; icon: typeof Brain; color: string }> = {
@@ -22,8 +24,8 @@ const COMPLEXITY_COLORS = {
   complex: 'bg-red-500/10 text-red-500',
 };
 
-export function NlpAnalysisPanel({ text }: NlpAnalysisPanelProps) {
-  const analysis: NlpAnalysis = useMemo(() => analyzePromptNlp(text), [text]);
+export function NlpAnalysisPanel({ text, analysis: analysisProp }: NlpAnalysisPanelProps) {
+  const analysis = useMemo(() => analysisProp ?? analyzePromptNlp(text), [text, analysisProp]);
 
   if (!text.trim()) return null;
 
@@ -32,18 +34,20 @@ export function NlpAnalysisPanel({ text }: NlpAnalysisPanelProps) {
 
   return (
     <Card>
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-1">
         <div className="flex items-center gap-2">
-          <Brain className="h-4 w-4 text-pink-500" />
+          <Brain className="h-3.5 w-3.5 text-pink-500" />
           <CardTitle className="text-sm font-medium">NLP Analysis</CardTitle>
         </div>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-2.5">
         {/* Intent + Complexity badges */}
         <div className="flex items-center gap-2 flex-wrap">
           <div className="flex items-center gap-1.5">
             <IntentIcon className={`h-3.5 w-3.5 ${intentConfig.color}`} />
-            <Badge variant="secondary" className="text-xs">{intentConfig.label}</Badge>
+            <Badge variant="secondary" className="text-xs">
+              {intentConfig.label}
+            </Badge>
           </div>
           <Badge className={`text-xs ${COMPLEXITY_COLORS[analysis.complexity]}`}>
             {analysis.complexity}
@@ -65,9 +69,21 @@ export function NlpAnalysisPanel({ text }: NlpAnalysisPanelProps) {
 
         {/* Flags */}
         <div className="flex flex-wrap gap-1.5">
-          {analysis.hasList && <Badge variant="outline" className="text-[10px]">Has list</Badge>}
-          {analysis.hasConditional && <Badge variant="outline" className="text-[10px]">Conditional</Badge>}
-          {analysis.hasNegation && <Badge variant="outline" className="text-[10px]">Negation</Badge>}
+          {analysis.hasList && (
+            <Badge variant="outline" className="text-[10px]">
+              Has list
+            </Badge>
+          )}
+          {analysis.hasConditional && (
+            <Badge variant="outline" className="text-[10px]">
+              Conditional
+            </Badge>
+          )}
+          {analysis.hasNegation && (
+            <Badge variant="outline" className="text-[10px]">
+              Negation
+            </Badge>
+          )}
         </div>
 
         {/* Top nouns/verbs */}
@@ -94,9 +110,11 @@ export function NlpAnalysisPanel({ text }: NlpAnalysisPanelProps) {
 
 function StatBox({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-md border p-2 text-center">
-      <p className="text-lg font-bold tabular-nums">{value}</p>
-      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
+    <div className="stat-box rounded-md p-1.5 text-center">
+      <p className="text-base font-bold tabular-nums tracking-tight leading-tight">{value}</p>
+      <p className="text-[9px] uppercase tracking-wider text-muted-foreground font-medium">
+        {label}
+      </p>
     </div>
   );
 }

@@ -28,7 +28,7 @@ const CONFIDENCE_COLORS = {
 };
 
 export function ModelAdvisorPanel({ recommendation }: ModelAdvisorProps) {
-  const recommendedTier = MODEL_TIERS.find(t => t.tier === recommendation.recommended);
+  const recommendedTier = MODEL_TIERS.find((t) => t.tier === recommendation.recommended);
   const RecommendedIcon = TIER_ICONS[recommendation.recommended];
 
   return (
@@ -36,19 +36,29 @@ export function ModelAdvisorPanel({ recommendation }: ModelAdvisorProps) {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-medium">Model Recommendation</CardTitle>
-          <Badge variant="outline" className={cn('text-xs', CONFIDENCE_COLORS[recommendation.confidence])}>
+          <Badge
+            variant="outline"
+            className={cn('text-xs', CONFIDENCE_COLORS[recommendation.confidence])}
+          >
             {recommendation.confidence} confidence
           </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
         {/* Recommended */}
-        <div className={cn('flex items-center gap-3 rounded-lg border p-3', 'border-primary/20 bg-primary/5')}>
+        <div
+          className={cn(
+            'flex items-center gap-3 rounded-lg border p-3',
+            'border-primary/20 bg-primary/5'
+          )}
+        >
           <RecommendedIcon className={cn('h-8 w-8', TIER_COLORS[recommendation.recommended])} />
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold">{recommendedTier?.label}</span>
-              <Badge variant="secondary" className="text-xs">Recommended</Badge>
+              <Badge variant="secondary" className="text-xs">
+                Recommended
+              </Badge>
             </div>
             <p className="text-xs text-muted-foreground mt-0.5">{recommendedTier?.description}</p>
           </div>
@@ -60,7 +70,8 @@ export function ModelAdvisorPanel({ recommendation }: ModelAdvisorProps) {
         {/* Alternative & Avoid */}
         <div className="flex gap-2 text-xs">
           <span className="text-muted-foreground">
-            Alternative: <span className="font-medium text-foreground">{recommendation.alternative}</span>
+            Alternative:{' '}
+            <span className="font-medium text-foreground">{recommendation.alternative}</span>
           </span>
           {recommendation.avoid && (
             <span className="text-muted-foreground">

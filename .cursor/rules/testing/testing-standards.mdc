@@ -32,7 +32,7 @@ tests/
 
 ## Coverage
 - Minimum: **80%**
-- Current suites: **28** | tests: **269**
+- Current suites: **30** | tests: **315**
 - Coverage command: `jest --coverage`
 
 ## Rules

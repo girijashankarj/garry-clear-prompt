@@ -12,18 +12,18 @@ const STORAGE_KEY = STORAGE_KEYS.CALIBRATION;
 export interface CalibrationRecord {
   id: string;
   timestamp: number;
-  promptSnippet: string;            // first 100 chars
-  estimatedInput: number;           // mid-point of estimate range
-  estimatedOutput: number;          // mid-point of estimate range
+  promptSnippet: string; // first 100 chars
+  estimatedInput: number; // mid-point of estimate range
+  estimatedOutput: number; // mid-point of estimate range
   actualInput: number;
   actualOutput: number;
 }
 
 export interface CalibrationStats {
   totalRecords: number;
-  avgInputRatio: number;            // actual / estimated (1.0 = perfect)
+  avgInputRatio: number; // actual / estimated (1.0 = perfect)
   avgOutputRatio: number;
-  inputCorrectionFactor: number;    // multiplier to apply to estimates
+  inputCorrectionFactor: number; // multiplier to apply to estimates
   outputCorrectionFactor: number;
 }
 
@@ -53,7 +53,13 @@ export function addCalibrationRecord(
   // Keep last 100 records
   const trimmed = records.slice(-100);
   saveRecords(trimmed);
-  loggerInfo(INFO_MESSAGES.CALIBRATION_RECORDED, { id: newRecord.id }, 'calibration', 'calibration.ts', 'addCalibrationRecord');
+  loggerInfo(
+    INFO_MESSAGES.CALIBRATION_RECORDED,
+    { id: newRecord.id },
+    'calibration',
+    'calibration.ts',
+    'addCalibrationRecord'
+  );
   return newRecord;
 }
 

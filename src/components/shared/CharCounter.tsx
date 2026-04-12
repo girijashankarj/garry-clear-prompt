@@ -13,16 +13,24 @@ export function CharCounter({ current, max, showWords, text }: CharCounterProps)
   const wordCount = text ? text.trim().split(/\s+/).filter(Boolean).length : 0;
 
   return (
-    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+    <div
+      className="flex items-center gap-2 text-xs text-muted-foreground"
+      aria-live="polite"
+      aria-atomic="true"
+    >
       {showWords && text && text.trim().length > 0 && (
-        <span>{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
+        <span>
+          {wordCount} {wordCount === 1 ? 'word' : 'words'}
+        </span>
       )}
-      {showWords && text && text.trim().length > 0 && <span className="text-muted-foreground/40">|</span>}
+      {showWords && text && text.trim().length > 0 && (
+        <span className="text-muted-foreground/40">|</span>
+      )}
       <span
         className={cn(
           'tabular-nums',
           isOverLimit && 'text-destructive font-medium',
-          isNearLimit && !isOverLimit && 'text-amber-500',
+          isNearLimit && !isOverLimit && 'text-amber-500'
         )}
       >
         {current.toLocaleString()}

@@ -1,5 +1,15 @@
 import { useState } from 'react';
-import { Play, Lock, Settings2, ChevronDown, ChevronUp, Zap, DollarSign, Clock, Info } from 'lucide-react';
+import {
+  Play,
+  Lock,
+  Settings2,
+  ChevronDown,
+  ChevronUp,
+  Zap,
+  DollarSign,
+  Clock,
+  Info,
+} from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -17,12 +27,16 @@ export function LlmRunnerPanel({ result }: LlmRunnerPanelProps) {
   const [selectedProvider, setSelectedProvider] = useState('openai');
   const [selectedModel, setSelectedModel] = useState('gpt-4o-mini');
 
-  const provider = LLM_PROVIDERS.find(p => p.provider === selectedProvider);
-  const model = provider?.models.find(m => m.id === selectedModel);
+  const provider = LLM_PROVIDERS.find((p) => p.provider === selectedProvider);
+  const model = provider?.models.find((m) => m.id === selectedModel);
 
   // Pre-compute estimated cost
-  const midInput = Math.round((result.tokenEstimate.inputTokens.low + result.tokenEstimate.inputTokens.high) / 2);
-  const midOutput = Math.round((result.tokenEstimate.outputTokens.low + result.tokenEstimate.outputTokens.high) / 2);
+  const midInput = Math.round(
+    (result.tokenEstimate.inputTokens.low + result.tokenEstimate.inputTokens.high) / 2
+  );
+  const midOutput = Math.round(
+    (result.tokenEstimate.outputTokens.low + result.tokenEstimate.outputTokens.high) / 2
+  );
   const estimatedCost = model
     ? (midInput / 1000) * model.inputCostPer1k + (midOutput / 1000) * model.outputCostPer1k
     : 0;
@@ -45,7 +59,10 @@ export function LlmRunnerPanel({ result }: LlmRunnerPanelProps) {
                   </Badge>
                 </TooltipTrigger>
                 <TooltipContent side="top">
-                  <p>LLM integration is disabled. Will be enabled when we have money to waste on tokens.</p>
+                  <p>
+                    LLM integration is disabled. Will be enabled when we have money to waste on
+                    tokens.
+                  </p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -55,7 +72,9 @@ export function LlmRunnerPanel({ result }: LlmRunnerPanelProps) {
       <CardContent className="space-y-3">
         {/* Provider selector */}
         <div>
-          <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Provider</label>
+          <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+            Provider
+          </label>
           <div className="flex flex-wrap gap-1.5 mt-1">
             {LLM_PROVIDERS.map((p) => (
               <button
@@ -80,7 +99,9 @@ export function LlmRunnerPanel({ result }: LlmRunnerPanelProps) {
         {/* Model selector */}
         {provider && (
           <div>
-            <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Model</label>
+            <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              Model
+            </label>
             <div className="flex flex-wrap gap-1.5 mt-1">
               {provider.models.map((m) => (
                 <button
@@ -111,7 +132,9 @@ export function LlmRunnerPanel({ result }: LlmRunnerPanelProps) {
             </div>
             <div className="rounded-md border p-2 text-center">
               <Zap className="h-3.5 w-3.5 mx-auto text-blue-500 mb-0.5" />
-              <p className="text-xs font-bold tabular-nums">{(midInput + midOutput).toLocaleString()}</p>
+              <p className="text-xs font-bold tabular-nums">
+                {(midInput + midOutput).toLocaleString()}
+              </p>
               <p className="text-[9px] text-muted-foreground">Est. tokens</p>
             </div>
             <div className="rounded-md border p-2 text-center">
@@ -153,7 +176,9 @@ export function LlmRunnerPanel({ result }: LlmRunnerPanelProps) {
 
             {/* Temperature */}
             <div>
-              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Temperature</label>
+              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Temperature
+              </label>
               <input
                 type="range"
                 min="0"
@@ -171,7 +196,9 @@ export function LlmRunnerPanel({ result }: LlmRunnerPanelProps) {
 
             {/* Max tokens */}
             <div>
-              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Max Output Tokens</label>
+              <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Max Output Tokens
+              </label>
               <input
                 type="number"
                 defaultValue={2048}
@@ -185,7 +212,10 @@ export function LlmRunnerPanel({ result }: LlmRunnerPanelProps) {
             {/* Security notice */}
             <div className="flex items-start gap-1.5 text-[10px] text-muted-foreground bg-amber-500/5 border border-amber-500/20 rounded-md p-2">
               <Info className="h-3 w-3 shrink-0 mt-0.5 text-amber-500" />
-              <span>API keys are stored locally in your browser. They are never sent anywhere except directly to the provider's API.</span>
+              <span>
+                API keys are stored locally in your browser. They are never sent anywhere except
+                directly to the provider's API.
+              </span>
             </div>
           </div>
         )}
@@ -195,10 +225,7 @@ export function LlmRunnerPanel({ result }: LlmRunnerPanelProps) {
           <Tooltip>
             <TooltipTrigger asChild>
               <div>
-                <Button
-                  className="w-full gap-2"
-                  disabled={isDisabled}
-                >
+                <Button className="w-full gap-2" disabled={isDisabled}>
                   {isDisabled ? (
                     <>
                       <Lock className="h-4 w-4" />
@@ -208,7 +235,9 @@ export function LlmRunnerPanel({ result }: LlmRunnerPanelProps) {
                     <>
                       <Play className="h-4 w-4" />
                       Run Prompt
-                      {model && <span className="text-xs opacity-70">~${estimatedCost.toFixed(4)}</span>}
+                      {model && (
+                        <span className="text-xs opacity-70">~${estimatedCost.toFixed(4)}</span>
+                      )}
                     </>
                   )}
                 </Button>
@@ -224,7 +253,9 @@ export function LlmRunnerPanel({ result }: LlmRunnerPanelProps) {
 
         {/* Run history placeholder */}
         <div className="rounded-md border border-dashed p-3 text-center">
-          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1">Run History</p>
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium mb-1">
+            Run History
+          </p>
           <p className="text-xs text-muted-foreground">
             {isDisabled
               ? 'No runs yet. Feature coming soon.'

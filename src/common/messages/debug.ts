@@ -17,4 +17,6 @@ export const DEBUG_MESSAGES = {
   ADVANCED_DRAFT_SAVED: 'Advanced draft saved',
   LLM_SETTINGS_SAVED: 'LLM settings saved',
   VERSION_DELETED: 'Prompt version deleted',
+  APP_STORAGE_CLEARED: 'All app localStorage keys removed',
+  APP_RESET_TO_DEFAULTS: 'App mode and theme reset to defaults',
 } as const;

@@ -29,9 +29,21 @@ export function TokenEstimatorPanel({ estimate }: TokenEstimatorProps) {
       </CardHeader>
       <CardContent>
         <div className="divide-y">
-          <TokenRange label="Input tokens" low={estimate.inputTokens.low} high={estimate.inputTokens.high} />
-          <TokenRange label="Output tokens" low={estimate.outputTokens.low} high={estimate.outputTokens.high} />
-          <TokenRange label="Total tokens" low={estimate.totalTokens.low} high={estimate.totalTokens.high} />
+          <TokenRange
+            label="Input tokens"
+            low={estimate.inputTokens.low}
+            high={estimate.inputTokens.high}
+          />
+          <TokenRange
+            label="Output tokens"
+            low={estimate.outputTokens.low}
+            high={estimate.outputTokens.high}
+          />
+          <TokenRange
+            label="Total tokens"
+            low={estimate.totalTokens.low}
+            high={estimate.totalTokens.high}
+          />
         </div>
         <p className="text-[11px] text-muted-foreground mt-3">
           Estimates are approximate. Actual usage depends on model, prompt complexity, and response.

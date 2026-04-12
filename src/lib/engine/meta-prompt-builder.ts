@@ -33,6 +33,12 @@ export function buildMetaPromptFromBasic(input: BasicPromptInput): string {
   }
 
   const result = parts.join(' ');
-  loggerDebug(DEBUG_MESSAGES.META_PROMPT_BUILT, { wordCount: result.split(/\s+/).length }, 'engine', 'meta-prompt-builder.ts', 'buildMetaPromptFromBasic');
+  loggerDebug(
+    DEBUG_MESSAGES.META_PROMPT_BUILT,
+    { wordCount: result.split(/\s+/).length },
+    'engine',
+    'meta-prompt-builder.ts',
+    'buildMetaPromptFromBasic'
+  );
   return result;
 }

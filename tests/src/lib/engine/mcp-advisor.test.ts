@@ -19,31 +19,31 @@ describe('mcp-advisor', () => {
 
     it('should suggest Postgres for database-related prompts', () => {
       const result = suggestMcpTools('Query the database to find all users');
-      const names = result.map(s => s.name);
+      const names = result.map((s) => s.name);
       expect(names).toContain('Postgres');
     });
 
     it('should suggest Playwright for browser/UI test prompts', () => {
       const result = suggestMcpTools('Write an e2e browser test for the login page');
-      const names = result.map(s => s.name);
+      const names = result.map((s) => s.name);
       expect(names).toContain('Playwright');
     });
 
     it('should suggest Figma for design-related prompts', () => {
       const result = suggestMcpTools('Extract design tokens from the Figma component library');
-      const names = result.map(s => s.name);
+      const names = result.map((s) => s.name);
       expect(names).toContain('Figma');
     });
 
     it('should suggest GitHub for repo-related prompts', () => {
       const result = suggestMcpTools('Review the pull request and check the git branch');
-      const names = result.map(s => s.name);
+      const names = result.map((s) => s.name);
       expect(names).toContain('GitHub');
     });
 
     it('should suggest Filesystem for file operations', () => {
       const result = suggestMcpTools('Read the config file from the project directory');
-      const names = result.map(s => s.name);
+      const names = result.map((s) => s.name);
       expect(names).toContain('Filesystem');
     });
 
@@ -53,8 +53,10 @@ describe('mcp-advisor', () => {
     });
 
     it('should mark tools with 2+ keyword matches as recommended', () => {
-      const result = suggestMcpTools('Run a SQL query on the postgres database to get user table schema');
-      const postgres = result.find(s => s.name === 'Postgres');
+      const result = suggestMcpTools(
+        'Run a SQL query on the postgres database to get user table schema'
+      );
+      const postgres = result.find((s) => s.name === 'Postgres');
       expect(postgres?.recommended).toBe(true);
     });
 
@@ -64,7 +66,7 @@ describe('mcp-advisor', () => {
         const firstRecommended = result[0].recommended;
         const lastRecommended = result[result.length - 1].recommended;
         // If any are recommended, they should come first
-        if (result.some(s => s.recommended) && result.some(s => !s.recommended)) {
+        if (result.some((s) => s.recommended) && result.some((s) => !s.recommended)) {
           expect(firstRecommended).toBe(true);
           expect(lastRecommended).toBe(false);
         }

@@ -1,4 +1,6 @@
 import { ratePrompt } from '@/lib/engine/prompt-rater';
+import { buildPromptFromAdvanced } from '@/lib/engine/prompt-builder';
+import { createMockAdvancedInput } from '../../../mock';
 
 describe('prompt-rater', () => {
   describe('ratePrompt', () => {
@@ -15,14 +17,17 @@ describe('prompt-rater', () => {
     });
 
     it('should return a score between 0 and 100', () => {
-      const result = ratePrompt('Create a React component that displays user data in a table format.');
+      const result = ratePrompt(
+        'Create a React component that displays user data in a table format.'
+      );
       expect(result.totalScore).toBeGreaterThanOrEqual(0);
       expect(result.totalScore).toBeLessThanOrEqual(100);
     });
 
     it('should rate well-structured prompts higher', () => {
       const poorPrompt = 'stuff about things';
-      const goodPrompt = 'Create a REST API endpoint for user authentication.\n\nConstraints:\n- Use JWT tokens\n- Return JSON responses\n- Include input validation\n\nOutput format: numbered steps with code examples';
+      const goodPrompt =
+        'Create a REST API endpoint for user authentication.\n\nConstraints:\n- Use JWT tokens\n- Return JSON responses\n- Include input validation\n\nOutput format: numbered steps with code examples';
 
       const poorResult = ratePrompt(poorPrompt);
       const goodResult = ratePrompt(goodPrompt);
@@ -46,14 +51,17 @@ describe('prompt-rater', () => {
     });
 
     it('should penalize filler words in token efficiency', () => {
-      const fillerPrompt = 'Please kindly I think maybe perhaps basically actually just create a function';
+      const fillerPrompt =
+        'Please kindly I think maybe perhaps basically actually just create a function';
       const result = ratePrompt(fillerPrompt);
       expect(result.dimensions.tokenEfficiency.score).toBeLessThan(15);
     });
 
     it('should return correct band names', () => {
       // We can't guarantee exact scores, but we can test the band function
-      const result = ratePrompt('Create a comprehensive REST API endpoint for user management with CRUD operations.\n\nConstraints:\n- Use TypeScript\n- Include input validation with zod\n- Return JSON responses\n- Max 200 lines of code\n\nOutput format: numbered steps with code blocks');
+      const result = ratePrompt(
+        'Create a comprehensive REST API endpoint for user management with CRUD operations.\n\nConstraints:\n- Use TypeScript\n- Include input validation with zod\n- Return JSON responses\n- Max 200 lines of code\n\nOutput format: numbered steps with code blocks'
+      );
       expect(['excellent', 'good', 'average', 'weak', 'poor']).toContain(result.band);
     });
 
@@ -76,9 +84,80 @@ describe('prompt-rater', () => {
       expect(result.dimensions).toHaveProperty('riskPenalty');
     });
 
+    it('should include dimension hints for each scorer', () => {
+      const result = ratePrompt('Create a function');
+      expect(result.dimensionHints.clarity.length).toBeGreaterThan(15);
+      expect(result.dimensionHints.constraints.length).toBeGreaterThan(10);
+      expect(result.dimensionHints.structure.length).toBeGreaterThan(10);
+      expect(result.dimensionHints.tokenEfficiency.length).toBeGreaterThan(10);
+      expect(result.dimensionHints.riskPenalty.length).toBeGreaterThan(10);
+    });
+
     it('should have risk penalty as non-positive score', () => {
       const result = ratePrompt('Tell me everything about anything');
       expect(result.dimensions.riskPenalty.score).toBeLessThanOrEqual(0);
+    });
+
+    it('should include section coverage on the rating', () => {
+      const result = ratePrompt('');
+      expect(result.sectionCoverage).toEqual({
+        goal: false,
+        context: false,
+        constraints: false,
+        output: false,
+      });
+    });
+
+    it('should detect labeled Goal, Context, Constraints, Output sections', () => {
+      const result = ratePrompt(
+        'Goal: Ship MVP\n\nContext: Two engineers\n\nConstraints: No new deps\n\nOutput: bullet list'
+      );
+      expect(result.sectionCoverage.goal).toBe(true);
+      expect(result.sectionCoverage.context).toBe(true);
+      expect(result.sectionCoverage.constraints).toBe(true);
+      expect(result.sectionCoverage.output).toBe(true);
+    });
+
+    it('should vary suggestions when suggestionSource hash differs', () => {
+      const rated = 'maybe do something cool';
+      const a = ratePrompt(rated, { suggestionSource: 'unique-source-aaa' });
+      const b = ratePrompt(rated, { suggestionSource: 'unique-source-bbb' });
+      expect(a.suggestions).not.toEqual(b.suggestions);
+    });
+
+    it('should rate structured advanced text higher when strict JSON is enabled', () => {
+      const loose = createMockAdvancedInput({
+        prompt: 'Summarize quarterly results.',
+        outputFormat: {
+          strictJson: false,
+          includeCode: false,
+          includeTables: false,
+          includeDiagrams: false,
+          includeExamples: false,
+        },
+      });
+      const strict = createMockAdvancedInput({
+        prompt: 'Summarize quarterly results.',
+        outputFormat: {
+          strictJson: true,
+          includeCode: false,
+          includeTables: false,
+          includeDiagrams: false,
+          includeExamples: false,
+        },
+      });
+      const rLoose = ratePrompt(buildPromptFromAdvanced(loose), { suggestionSource: loose.prompt });
+      const rStrict = ratePrompt(buildPromptFromAdvanced(strict), {
+        suggestionSource: strict.prompt,
+      });
+      expect(rStrict.totalScore).toBeGreaterThanOrEqual(rLoose.totalScore);
+    });
+
+    it('should add a comparison hint when nlpIntent is comparison', () => {
+      const result = ratePrompt('Compare REST and GraphQL for mobile apps.', {
+        nlpIntent: 'comparison',
+      });
+      expect(result.suggestions.some((s) => /criteria|rubric|matrix|trade/i.test(s))).toBe(true);
     });
   });
 });

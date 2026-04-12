@@ -8,19 +8,19 @@
 
 These are [shadcn/ui](https://ui.shadcn.com/) components built on [Radix UI](https://www.radix-ui.com/) primitives. Styled with Tailwind CSS v4. (11 components)
 
-| Component | File | Description |
-|-----------|------|-------------|
-| **Button** | `button.tsx` | Primary action element with variants: default, destructive, outline, secondary, ghost, link |
-| **Card** | `card.tsx` | Container with Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter |
-| **Badge** | `badge.tsx` | Small label with variants: default, secondary, destructive, outline |
-| **Label** | `label.tsx` | Accessible form label |
-| **Textarea** | `textarea.tsx` | Multi-line text input |
-| **Select** | `select.tsx` | Dropdown selector with SelectTrigger, SelectContent, SelectItem, SelectValue |
-| **Switch** | `switch.tsx` | Toggle switch for boolean values |
-| **Tooltip** | `tooltip.tsx` | Hover/focus tooltip with TooltipProvider, Tooltip, TooltipTrigger, TooltipContent |
-| **Progress** | `progress.tsx` | Horizontal progress bar |
-| **Separator** | `separator.tsx` | Visual divider line |
-| **ScrollArea** | `scroll-area.tsx` | Scrollable container with custom scrollbar |
+| Component      | File              | Description                                                                                 |
+| -------------- | ----------------- | ------------------------------------------------------------------------------------------- |
+| **Button**     | `button.tsx`      | Primary action element with variants: default, destructive, outline, secondary, ghost, link |
+| **Card**       | `card.tsx`        | Container with Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter        |
+| **Badge**      | `badge.tsx`       | Small label with variants: default, secondary, destructive, outline                         |
+| **Label**      | `label.tsx`       | Accessible form label                                                                       |
+| **Textarea**   | `textarea.tsx`    | Multi-line text input                                                                       |
+| **Select**     | `select.tsx`      | Dropdown selector with SelectTrigger, SelectContent, SelectItem, SelectValue                |
+| **Switch**     | `switch.tsx`      | Toggle switch for boolean values                                                            |
+| **Tooltip**    | `tooltip.tsx`     | Hover/focus tooltip with TooltipProvider, Tooltip, TooltipTrigger, TooltipContent           |
+| **Progress**   | `progress.tsx`    | Horizontal progress bar                                                                     |
+| **Separator**  | `separator.tsx`   | Visual divider line                                                                         |
+| **ScrollArea** | `scroll-area.tsx` | Scrollable container with custom scrollbar                                                  |
 
 ---
 
@@ -30,13 +30,15 @@ These are [shadcn/ui](https://ui.shadcn.com/) components built on [Radix UI](htt
 
 ```
 File: Header.tsx
-Props: mode, onModeChange, theme, onThemeToggle
+Props: mode, onModeChange, theme, onThemeToggle, onResetApp
 ```
 
 Sticky top navigation bar containing:
+
 - App logo (Sparkles icon) + name (`APP_NAME` constant)
 - Tagline (hidden on mobile)
 - ModeToggle (Basic/Advanced tab switcher)
+- Reset control (clears drafts + feature localStorage, resets Redux defaults; confirm dialog)
 - ThemeToggle (light/dark icon button)
 
 **Accessibility**: `role="banner"`, `<nav>` with `aria-label`, decorative icon has `aria-hidden`.
@@ -75,6 +77,7 @@ Props: current (number), max? (number), showWords? (boolean), text? (string)
 ```
 
 Character count display with optional:
+
 - Word count (when `showWords` + `text` provided)
 - Max limit indicator (e.g., `1,234 / 2,000 chars`)
 - Color coding: amber at 90% capacity, red when over limit
@@ -87,6 +90,7 @@ Props: score (number), band (RatingBand), size? ('sm' | 'lg')
 ```
 
 Animated SVG ring that displays the prompt quality score (0-100). Features:
+
 - Ease-out counting animation
 - Color-coded by band (emerald/blue/amber/orange/red)
 - Two sizes: `sm` (80px) for inline, `lg` (120px) for featured display
@@ -115,6 +119,33 @@ Sun/Moon icon button for theme switching. Uses shadcn Button ghost variant.
 
 **Accessibility**: `aria-label="Toggle theme"`.
 
+### LoadingSkeleton
+
+```
+File: LoadingSkeleton.tsx
+Props: none
+```
+
+Placeholder grid (form + results) shown while `React.lazy` mode bundles load inside `App` `Suspense`.
+
+### MobileTabLayout
+
+```
+File: MobileTabLayout.tsx
+Props: form (ReactNode), results (ReactNode)
+```
+
+On small viewports, switches between Form and Results tabs; on `lg+` renders both columns. Uses `role="tablist"` / `role="tab"` / `aria-selected`.
+
+### StickyScore
+
+```
+File: StickyScore.tsx
+Props: score (number), band (RatingBand), targetRef (ref to main score element)
+```
+
+Fixed top bar that appears when the primary score scrolls out of view (`IntersectionObserver`), keeping score visible while reading long results.
+
 ### ExportButtons
 
 ```
@@ -123,6 +154,7 @@ Props: result (PromptEngineResult)
 ```
 
 Row of export action buttons. All downloaded files include a timestamp in the filename (e.g. `prompt-export_09_02_2026_14_35.md`):
+
 - Copy Prompt (clipboard)
 - Copy Meta (clipboard, shown only when meta prompt exists)
 - Download .md (Markdown)
@@ -145,14 +177,20 @@ Scrollable card that renders prompt content as Markdown using `react-markdown` +
 
 ```
 File: BeforeAfterComparison.tsx
-Props: promptText (string), onApplyImproved? (callback)
+Props: promptText (string), onApplyImproved? (callback), ratingAssembler? (RatingTextAssembler)
 ```
 
 Side-by-side score comparison showing:
+
 - Original vs improved ScoreBadge (with arrow between)
+- Word-level diff of original vs improved text
 - List of changes applied
 - Improved prompt preview
 - "Copy Improved" and "Apply" buttons
+
+When `VITE_ML_INTENT_ENABLED=true`, an optional action re-runs domain checklist selection via in-browser ML (`refineImprovementWithMl`); regex `improvePrompt` remains the default path.
+
+`ratingAssembler` aligns before/after scores with the main rating card in advanced mode (assembled prompt vs raw textarea).
 
 Only renders if the improver made changes.
 
@@ -164,6 +202,7 @@ Props: text (string)
 ```
 
 NLP analysis card showing:
+
 - Intent badge (question/instruction/description/comparison)
 - Complexity badge (simple/moderate/complex)
 - Readability grade badge
@@ -179,6 +218,7 @@ Props: currentPrompt, currentMetaPrompt, currentScore, mode, onRestore
 ```
 
 Version management card:
+
 - Save current prompt as vN
 - List of saved versions with score, timestamp, preview
 - Hover actions: restore, delete
@@ -201,6 +241,7 @@ Props: promptSnippet (string), tokenEstimate (TokenEstimate)
 ```
 
 Token calibration tool (Advanced mode only):
+
 - Record actual input/output token counts after running a prompt
 - View correction factors (input/output multipliers)
 - Recent records list
@@ -214,6 +255,7 @@ Props: promptSnippet (string)
 ```
 
 Test suite manager (Advanced mode only):
+
 - Create named test suites
 - Add input/expected-output pairs (max 10 per suite)
 - Export suite as JSON
@@ -227,6 +269,7 @@ Props: result (PromptEngineResult)
 ```
 
 Cursor IDE export (Advanced mode only):
+
 - Type selector: Rule (.mdc), Agent (.md), Skill (SKILL.md), Command (.md)
 - Name input
 - Preview, Copy, Download actions
@@ -239,6 +282,7 @@ Props: result (PromptEngineResult)
 ```
 
 LLM execution panel (currently disabled):
+
 - Provider selector (OpenAI, Anthropic, AWS Bedrock)
 - Model selector with tier badges
 - Cost preview grid (estimated cost, tokens, speed)
@@ -258,6 +302,7 @@ Props: input (BasicPromptInput), onChange (callback)
 ```
 
 User-friendly prompt input form:
+
 - Main goal textarea (2,000 char limit) with word count + char counter
 - Detail level selector (Short/Medium/Detailed) as option cards
 - Style tone selector (Simple/Professional/Friendly)
@@ -273,6 +318,7 @@ Props: result (PromptEngineResult), rawGoal?, onApplyImproved?
 ```
 
 Results panel for Basic mode:
+
 1. Score card with ScoreBadge + suggestions
 2. NLP Analysis
 3. Before/After Comparison
@@ -294,6 +340,7 @@ Props: input (AdvancedPromptInput), onChange (callback)
 ```
 
 Full-control prompt editor:
+
 - Prompt textarea (10,000 char limit) with word count + char counter + token estimate
 - Meta prompt textarea (4,000 char limit)
 - Task configuration grid: task type, complexity, risk, context size, output size, audience
@@ -308,6 +355,7 @@ Props: result (PromptEngineResult), rawPrompt?, onApplyImproved?
 ```
 
 Results panel for Advanced mode, organized into sections:
+
 1. **Analysis**: Rating, NLP, Lint warnings
 2. **Improvement**: Before/After comparison
 3. **Intelligence**: Model advisor, Token estimator, MCP advisor, Calibration
@@ -320,12 +368,14 @@ Results panel for Advanced mode, organized into sections:
 ### PromptRatingPanel
 
 ```
-File: PromptRating.tsx
-Props: rating (PromptRating)
+File: PromptRatingPanel.tsx
+Props: rating (PromptRating), isAnalyzing?, subtitle?, improvementHint?, onInsertSection?, onInsertFullOutline?
 ```
 
 Detailed rating breakdown with:
-- ScoreBadge (lg) + top 3 suggestions
+
+- ScoreBadge (lg) + expandable suggestions
+- Section coverage checklist (goal, context, constraints, output) with insert actions when callbacks provided
 - 5 dimension progress bars with scores and feedback
 
 ### ModelAdvisorPanel

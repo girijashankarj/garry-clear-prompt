@@ -145,11 +145,22 @@ describe('model-advisor', () => {
       });
       // With tools the recommendation should be at least as capable
       const tierRank = { fast: 0, balanced: 1, reasoning: 2 };
-      expect(tierRank[withTools.recommended]).toBeGreaterThanOrEqual(tierRank[withoutTools.recommended]);
+      expect(tierRank[withTools.recommended]).toBeGreaterThanOrEqual(
+        tierRank[withoutTools.recommended]
+      );
     });
 
     it('should handle all task types without errors', () => {
-      const taskTypes = ['refactor', 'debug', 'design', 'sql', 'docs', 'data', 'testing', 'general'] as const;
+      const taskTypes = [
+        'refactor',
+        'debug',
+        'design',
+        'sql',
+        'docs',
+        'data',
+        'testing',
+        'general',
+      ] as const;
       for (const taskType of taskTypes) {
         const result = recommendModel({
           taskType,

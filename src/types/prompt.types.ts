@@ -1,3 +1,5 @@
+import type { NlpAnalysis } from '@/lib/engine/nlp-analyzer';
+
 // ===== Mode =====
 export type AppMode = 'basic' | 'advanced';
 export type ThemeMode = 'light' | 'dark';
@@ -64,9 +66,41 @@ export interface RatingDimension {
 
 export type RatingBand = 'excellent' | 'good' | 'average' | 'weak' | 'poor';
 
+/** Optional NLP hints from `analyzePromptNlp` for one extra intent-aware suggestion line. */
+export type RatePromptNlpIntent =
+  | 'question'
+  | 'instruction'
+  | 'description'
+  | 'comparison'
+  | 'unknown';
+
+export interface PromptSectionCoverage {
+  goal: boolean;
+  context: boolean;
+  constraints: boolean;
+  output: boolean;
+}
+
+export interface RatePromptOptions {
+  /** Text to scan for user-facing gaps (defaults to full rated text). Basic: goal + rules; Advanced: raw prompt. */
+  suggestionSource?: string;
+  nlpIntent?: RatePromptNlpIntent;
+}
+
+/** One-line “next step” under each dimension bar. */
+export interface PromptRatingDimensionHints {
+  clarity: string;
+  constraints: string;
+  structure: string;
+  tokenEfficiency: string;
+  riskPenalty: string;
+}
+
 export interface PromptRating {
   totalScore: number;
   band: RatingBand;
+  sectionCoverage: PromptSectionCoverage;
+  dimensionHints: PromptRatingDimensionHints;
   dimensions: {
     clarity: RatingDimension;
     constraints: RatingDimension;
@@ -133,6 +167,7 @@ export interface PromptEngineResult {
   structuredPrompt: string;
   metaPrompt: string;
   rating: PromptRating;
+  nlpAnalysis: NlpAnalysis;
   tokenEstimate: TokenEstimate;
   modelRecommendation: ModelRecommendation;
   mcpSuggestions: McpToolSuggestion[];
@@ -140,7 +175,7 @@ export interface PromptEngineResult {
 }
 
 // ===== Export =====
-export type ExportFormat = 'markdown' | 'text' | 'json';
+export type ExportFormat = 'markdown' | 'text' | 'json' | 'zip' | 'cursor';
 
 // ===== LLM Provider Integration =====
 export type LlmProvider = 'openai' | 'anthropic' | 'bedrock';
@@ -157,9 +192,9 @@ export interface LlmModelOption {
   id: string;
   label: string;
   tier: ModelTier;
-  inputCostPer1k: number;   // $ per 1K input tokens
-  outputCostPer1k: number;  // $ per 1K output tokens
-  maxContext: number;        // max context window in tokens
+  inputCostPer1k: number; // $ per 1K input tokens
+  outputCostPer1k: number; // $ per 1K output tokens
+  maxContext: number; // max context window in tokens
 }
 
 export interface LlmConfigField {

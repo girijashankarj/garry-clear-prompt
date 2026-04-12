@@ -5,7 +5,9 @@ import {
   saveAdvancedDraft,
   loadAdvancedDraft,
   clearAdvancedDraft,
+  clearAllAppStorage,
 } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/common/constants';
 import { createMockBasicInput, createMockAdvancedInput } from '../../mock';
 
 // Mock localStorage
@@ -13,9 +15,15 @@ const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
     getItem: jest.fn((key: string) => store[key] ?? null),
-    setItem: jest.fn((key: string, value: string) => { store[key] = value; }),
-    removeItem: jest.fn((key: string) => { delete store[key]; }),
-    clear: jest.fn(() => { store = {}; }),
+    setItem: jest.fn((key: string, value: string) => {
+      store[key] = value;
+    }),
+    removeItem: jest.fn((key: string) => {
+      delete store[key];
+    }),
+    clear: jest.fn(() => {
+      store = {};
+    }),
   };
 })();
 
@@ -83,6 +91,18 @@ describe('storage', () => {
       const loaded = loadAdvancedDraft();
       expect(loaded.success).toBe(true);
       expect(loaded.data).toBeUndefined();
+    });
+  });
+
+  describe('clearAllAppStorage', () => {
+    it('should remove every STORAGE_KEYS entry', () => {
+      for (const key of Object.values(STORAGE_KEYS)) {
+        localStorageMock.setItem(key, '"x"');
+      }
+      clearAllAppStorage();
+      for (const key of Object.values(STORAGE_KEYS)) {
+        expect(localStorageMock.getItem(key)).toBeNull();
+      }
     });
   });
 });

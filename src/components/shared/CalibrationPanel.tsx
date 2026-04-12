@@ -34,7 +34,9 @@ export function CalibrationPanel({ promptSnippet, tokenEstimate }: CalibrationPa
   }, []);
 
   useEffect(() => {
-    refresh();
+    queueMicrotask(() => {
+      refresh();
+    });
   }, [refresh]);
 
   const handleAdd = () => {
@@ -45,8 +47,12 @@ export function CalibrationPanel({ promptSnippet, tokenEstimate }: CalibrationPa
       return;
     }
 
-    const estInput = Math.round((tokenEstimate.inputTokens.low + tokenEstimate.inputTokens.high) / 2);
-    const estOutput = Math.round((tokenEstimate.outputTokens.low + tokenEstimate.outputTokens.high) / 2);
+    const estInput = Math.round(
+      (tokenEstimate.inputTokens.low + tokenEstimate.inputTokens.high) / 2
+    );
+    const estOutput = Math.round(
+      (tokenEstimate.outputTokens.low + tokenEstimate.outputTokens.high) / 2
+    );
 
     addCalibrationRecord({
       promptSnippet: promptSnippet.slice(0, 100),
@@ -91,12 +97,16 @@ export function CalibrationPanel({ promptSnippet, tokenEstimate }: CalibrationPa
         {stats && stats.totalRecords > 0 && (
           <div className="grid grid-cols-2 gap-3">
             <div className="rounded-md border p-2.5">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Input Factor</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Input Factor
+              </p>
               <p className="text-lg font-bold tabular-nums">{stats.inputCorrectionFactor}x</p>
               <p className="text-[10px] text-muted-foreground">avg ratio: {stats.avgInputRatio}</p>
             </div>
             <div className="rounded-md border p-2.5">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Output Factor</p>
+              <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Output Factor
+              </p>
               <p className="text-lg font-bold tabular-nums">{stats.outputCorrectionFactor}x</p>
               <p className="text-[10px] text-muted-foreground">avg ratio: {stats.avgOutputRatio}</p>
             </div>
@@ -109,7 +119,9 @@ export function CalibrationPanel({ promptSnippet, tokenEstimate }: CalibrationPa
             <p className="text-xs font-medium">Enter actual token counts from your model:</p>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Actual Input Tokens</label>
+                <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Actual Input Tokens
+                </label>
                 <input
                   type="number"
                   min="1"
@@ -120,7 +132,9 @@ export function CalibrationPanel({ promptSnippet, tokenEstimate }: CalibrationPa
                 />
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Actual Output Tokens</label>
+                <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Actual Output Tokens
+                </label>
                 <input
                   type="number"
                   min="1"
@@ -132,13 +146,22 @@ export function CalibrationPanel({ promptSnippet, tokenEstimate }: CalibrationPa
               </div>
             </div>
             <div className="flex gap-2 pt-1">
-              <Button size="sm" onClick={handleAdd}>Save</Button>
-              <Button size="sm" variant="ghost" onClick={() => setShowForm(false)}>Cancel</Button>
+              <Button size="sm" onClick={handleAdd}>
+                Save
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setShowForm(false)}>
+                Cancel
+              </Button>
             </div>
           </div>
         ) : (
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => setShowForm(true)} disabled={!promptSnippet.trim()}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowForm(true)}
+              disabled={!promptSnippet.trim()}
+            >
               <Plus className="h-3.5 w-3.5 mr-1.5" />
               Add Record
             </Button>
@@ -154,16 +177,25 @@ export function CalibrationPanel({ promptSnippet, tokenEstimate }: CalibrationPa
         {/* Recent records */}
         {records.length > 0 && (
           <div className="space-y-1">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Recent records</p>
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              Recent records
+            </p>
             <div className="max-h-32 overflow-y-auto space-y-1">
-              {records.slice(-5).reverse().map((r) => (
-                <div key={r.id} className="flex items-center justify-between text-[11px] text-muted-foreground py-0.5">
-                  <span className="truncate max-w-[120px]">{r.promptSnippet || '...'}</span>
-                  <span className="tabular-nums">
-                    est {r.estimatedInput}/{r.estimatedOutput} → actual {r.actualInput}/{r.actualOutput}
-                  </span>
-                </div>
-              ))}
+              {records
+                .slice(-5)
+                .reverse()
+                .map((r) => (
+                  <div
+                    key={r.id}
+                    className="flex items-center justify-between text-[11px] text-muted-foreground py-0.5"
+                  >
+                    <span className="truncate max-w-[120px]">{r.promptSnippet || '...'}</span>
+                    <span className="tabular-nums">
+                      est {r.estimatedInput}/{r.estimatedOutput} → actual {r.actualInput}/
+                      {r.actualOutput}
+                    </span>
+                  </div>
+                ))}
             </div>
           </div>
         )}

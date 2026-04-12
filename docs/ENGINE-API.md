@@ -36,19 +36,28 @@ Generates a meta prompt for basic mode from style tone, detail level, response f
 
 **File**: `src/lib/engine/prompt-rater.ts`
 
-### `ratePrompt(text: string): PromptRating`
+### `ratePrompt(text: string, options?: RatePromptOptions): PromptRating`
+
+Scores a prompt across 5 dimensions. Optional `options`:
+
+| Field              | Purpose                                                                                                                                                                                                                                               |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `suggestionSource` | Text used to detect user-facing gaps for suggestions (defaults to `text`). Basic mode should pass goal + rules; advanced mode should pass the raw textarea so tips target what the author typed while scores still reflect the full assembled prompt. |
+| `nlpIntent`        | Optional intent from `analyzePromptNlp` for one extra intent-aware suggestion (e.g. comparisons).                                                                                                                                                     |
+
+The result includes `sectionCoverage` (`goal`, `context`, `constraints`, `output`) for UI checklists.
 
 Scores a prompt across 5 dimensions:
 
-| Dimension | Max Score | Key Checks |
-|-----------|-----------|------------|
-| Clarity | 25 | Action verb, specificity, single task, word count |
-| Constraints | 20 | Output format, length limits, do/don't rules, scope |
-| Structure | 20 | Line breaks, labeled sections, bullet points, paragraphs |
-| Token Efficiency | 20 | Filler words, repetition, conversational padding |
-| Risk Penalty | -15 | Open-ended scope, multiple tasks, missing audience |
+| Dimension        | Max Score | Key Checks                                               |
+| ---------------- | --------- | -------------------------------------------------------- |
+| Clarity          | 25        | Action verb, specificity, single task, word count        |
+| Constraints      | 20        | Output format, length limits, do/don't rules, scope      |
+| Structure        | 20        | Line breaks, labeled sections, bullet points, paragraphs |
+| Token Efficiency | 20        | Filler words, repetition, conversational padding         |
+| Risk Penalty     | -15       | Open-ended scope, multiple tasks, missing audience       |
 
-**Returns**: `{ totalScore, band, dimensions, suggestions }`
+**Returns**: `{ totalScore, band, sectionCoverage, dimensions, suggestions }`
 
 ---
 
@@ -61,6 +70,7 @@ Scores a prompt across 5 dimensions:
 Runs 15+ lint rules against the prompt text. Rules are defined in `src/lib/data/lint-rules.ts`.
 
 **Rule categories**:
+
 - **Quality**: missing goal, too vague, no output format, no length constraint, too many tasks, open-ended, repetition, no examples
 - **Efficiency**: emotional/filler language, absolutist language
 - **Security**: potential secret exposure, potential PII, prompt injection patterns
@@ -82,13 +92,13 @@ Estimates input and output token ranges.
 
 **Output tokens**: Based on output size selector + format multipliers:
 
-| Format | Multiplier |
-|--------|-----------|
-| Strict JSON | 1.1x |
-| Include code | 1.5x |
-| Include tables | 1.2x |
-| Include diagrams | 1.5x |
-| Include examples | 1.4x |
+| Format           | Multiplier |
+| ---------------- | ---------- |
+| Strict JSON      | 1.1x       |
+| Include code     | 1.5x       |
+| Include tables   | 1.2x       |
+| Include diagrams | 1.5x       |
+| Include examples | 1.4x       |
 
 ### `estimateInputTokens(text: string): { low, high }`
 
@@ -107,6 +117,7 @@ Standalone output token estimator.
 ### `recommendModel(input): ModelRecommendation`
 
 Rule-based model tier recommendation using weighted scoring across:
+
 - Task type (refactor, debug, design, sql, docs, data, testing, general)
 - Complexity (low, medium, high)
 - Risk level (low, medium, high)
@@ -142,23 +153,33 @@ Heuristic: returns `true` if the prompt mentions data/action keywords and is not
 
 Full NLP analysis using `compromise`:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| intent | `PromptIntent` | question, instruction, description, comparison, unknown |
-| complexity | `ComplexityLevel` | simple, moderate, complex |
-| sentenceCount | number | |
-| wordCount | number | |
-| avgWordsPerSentence | number | |
-| questionCount | number | |
-| verbCount | number | |
-| nounCount | number | |
-| adjectiveCount | number | |
-| topNouns | string[] | Top 5 unique nouns |
-| topVerbs | string[] | Top 5 unique verbs |
-| hasList | boolean | Detects bullet/numbered lists |
-| hasConditional | boolean | if, when, unless, etc. |
-| hasNegation | boolean | not, don't, never, etc. |
-| readabilityGrade | number | Flesch-Kincaid grade level |
+| Field               | Type              | Description                                             |
+| ------------------- | ----------------- | ------------------------------------------------------- |
+| intent              | `PromptIntent`    | question, instruction, description, comparison, unknown |
+| complexity          | `ComplexityLevel` | simple, moderate, complex                               |
+| sentenceCount       | number            |                                                         |
+| wordCount           | number            |                                                         |
+| avgWordsPerSentence | number            |                                                         |
+| questionCount       | number            |                                                         |
+| verbCount           | number            |                                                         |
+| nounCount           | number            |                                                         |
+| adjectiveCount      | number            |                                                         |
+| topNouns            | string[]          | Top 5 unique nouns                                      |
+| topVerbs            | string[]          | Top 5 unique verbs                                      |
+| hasList             | boolean           | Detects bullet/numbered lists                           |
+| hasConditional      | boolean           | if, when, unless, etc.                                  |
+| hasNegation         | boolean           | not, don't, never, etc.                                 |
+| readabilityGrade    | number            | Flesch-Kincaid grade level                              |
+
+---
+
+## Improve Intent (regex routing)
+
+**File**: `src/lib/engine/improve-intent.ts`
+
+### `detectPrimaryImproveIntent(text: string): ImprovePromptIntent | null`
+
+Chooses a single domain for the optional checklist block appended by `improvePrompt`, using keyword priority over `src/common/messages/improve-checklists.ts`.
 
 ---
 
@@ -166,17 +187,36 @@ Full NLP analysis using `compromise`:
 
 **File**: `src/lib/engine/prompt-improver.ts`
 
-### `improvePrompt(text: string): PromptImprovement`
+### `improvePrompt(text: string, options?: ImprovePromptOptions): PromptImprovement`
+
+Optional `options`:
+
+| Field             | Purpose                                                                                                                                                                                                            |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ratingAssembler` | Maps raw improved/original text to the string passed to `ratePrompt` (e.g. advanced mode passes the assembled structured prompt so scores match the main rating card). Suggestions still use the raw trimmed text. |
 
 Auto-rewrites a prompt by:
+
 1. Removing filler words ("please", "I think", "maybe")
 2. Removing conversational padding ("I want you to", "could you")
 3. Capitalizing first letter
 4. Adding output format instruction if missing
 5. Adding length constraint if missing
 6. Suggesting audience specification for complex prompts
+7. Appending a short domain checklist when coarse intent matches (SQL/data, code, DevOps, product, research, analysis, legal, education, data visualization, creative, translation, or writing)—see `src/lib/engine/improve-intent.ts`
 
 **Returns**: `{ original, improved, originalRating, improvedRating, changes }`
+
+### Optional ML checklist refinement
+
+When `VITE_ML_INTENT_ENABLED=true` (in `.env`; also injected into the client bundle via `define` in [`vite.config.ts`](vite.config.ts)), the UI can call `refineImprovementWithMl(base, rawUserPrompt, options?)` to re-select the domain checklist using **in-browser** zero-shot classification ([`@xenova/transformers`](https://www.npmjs.com/package/@xenova/transformers), model id in [`src/lib/ml/ml-intent-config.ts`](src/lib/ml/ml-intent-config.ts)). Regex-based `improvePrompt` stays the default; ML runs only when the user triggers it.
+
+| Item               | Detail                                                                                                                                                                                                                       |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Privacy**        | Prompt text is not sent to Hugging Face servers for inference; weights are fetched from the Hub CDN on first use.                                                                                                            |
+| **Bundle**         | The library and WASM are **not** in the main chunk—loaded via dynamic `import()` when the user clicks refine.                                                                                                                |
+| **Helpers**        | `stripDomainChecklistBlock`, `appendDomainChecklistForIntent` rebuild the checklist section; `MlRefinementOutcome.status` reports `applied`, `skipped_low_confidence`, `skipped_inference_failed`, or `skipped_feature_off`. |
+| **Implementation** | [`src/lib/ml/intent-classifier.ts`](src/lib/ml/intent-classifier.ts)                                                                                                                                                         |
 
 ---
 
@@ -194,14 +234,14 @@ interface StorageResult<T> {
 }
 ```
 
-| Function | Returns | Description |
-|----------|---------|-------------|
-| `saveBasicDraft(input)` | `StorageResult<void>` | Save basic mode draft to localStorage |
-| `loadBasicDraft()` | `StorageResult<BasicPromptInput>` | Load basic mode draft |
-| `clearBasicDraft()` | `void` | Remove basic mode draft |
-| `saveAdvancedDraft(input)` | `StorageResult<void>` | Save advanced mode draft to localStorage |
-| `loadAdvancedDraft()` | `StorageResult<AdvancedPromptInput>` | Load advanced mode draft |
-| `clearAdvancedDraft()` | `void` | Remove advanced mode draft |
+| Function                   | Returns                              | Description                              |
+| -------------------------- | ------------------------------------ | ---------------------------------------- |
+| `saveBasicDraft(input)`    | `StorageResult<void>`                | Save basic mode draft to localStorage    |
+| `loadBasicDraft()`         | `StorageResult<BasicPromptInput>`    | Load basic mode draft                    |
+| `clearBasicDraft()`        | `void`                               | Remove basic mode draft                  |
+| `saveAdvancedDraft(input)` | `StorageResult<void>`                | Save advanced mode draft to localStorage |
+| `loadAdvancedDraft()`      | `StorageResult<AdvancedPromptInput>` | Load advanced mode draft                 |
+| `clearAdvancedDraft()`     | `void`                               | Remove advanced mode draft               |
 
 All save/load functions use message constants from `src/common/messages/debug.ts` and `src/common/messages/error.ts` for structured logging.
 
@@ -211,12 +251,12 @@ All save/load functions use message constants from `src/common/messages/debug.ts
 
 **File**: `src/lib/versioning.ts`
 
-| Function | Description |
-|----------|-------------|
-| `getPromptVersions(mode?)` | List all versions, optionally filtered by mode |
-| `savePromptVersion(prompt, meta, score, mode)` | Save a new version (auto-increments) |
-| `deletePromptVersion(id)` | Delete a version by ID |
-| `clearPromptVersions(mode?)` | Clear all or mode-specific versions |
+| Function                                       | Description                                    |
+| ---------------------------------------------- | ---------------------------------------------- |
+| `getPromptVersions(mode?)`                     | List all versions, optionally filtered by mode |
+| `savePromptVersion(prompt, meta, score, mode)` | Save a new version (auto-increments)           |
+| `deletePromptVersion(id)`                      | Delete a version by ID                         |
+| `clearPromptVersions(mode?)`                   | Clear all or mode-specific versions            |
 
 Max versions: `MAX_PROMPT_VERSIONS` (50) from constants.
 
@@ -226,12 +266,12 @@ Max versions: `MAX_PROMPT_VERSIONS` (50) from constants.
 
 **File**: `src/lib/calibration.ts`
 
-| Function | Description |
-|----------|-------------|
-| `addCalibrationRecord(record)` | Add actual token usage record |
-| `getCalibrationRecords()` | List all records |
-| `clearCalibrationRecords()` | Clear all records |
-| `getCalibrationStats()` | Compute correction factors from records |
+| Function                       | Description                             |
+| ------------------------------ | --------------------------------------- |
+| `addCalibrationRecord(record)` | Add actual token usage record           |
+| `getCalibrationRecords()`      | List all records                        |
+| `clearCalibrationRecords()`    | Clear all records                       |
+| `getCalibrationStats()`        | Compute correction factors from records |
 
 Max records: 100.
 
@@ -241,14 +281,14 @@ Max records: 100.
 
 **File**: `src/lib/test-cases.ts`
 
-| Function | Description |
-|----------|-------------|
-| `getTestSuites()` | List all test suites |
-| `createTestSuite(name, promptSnippet)` | Create a new suite |
-| `addTestCase(suiteId, input, expected, notes?)` | Add a test case |
-| `removeTestCase(suiteId, caseId)` | Remove a test case |
-| `deleteTestSuite(suiteId)` | Delete a suite |
-| `exportTestSuiteAsJson(suite)` | Export as JSON string |
+| Function                                        | Description           |
+| ----------------------------------------------- | --------------------- |
+| `getTestSuites()`                               | List all test suites  |
+| `createTestSuite(name, promptSnippet)`          | Create a new suite    |
+| `addTestCase(suiteId, input, expected, notes?)` | Add a test case       |
+| `removeTestCase(suiteId, caseId)`               | Remove a test case    |
+| `deleteTestSuite(suiteId)`                      | Delete a suite        |
+| `exportTestSuiteAsJson(suite)`                  | Export as JSON string |
 
 Max cases per suite: `MAX_TEST_CASES_PER_SUITE` (10) from constants.
 
@@ -268,13 +308,13 @@ Keyword-based Jaccard similarity search across version history. Filters stop wor
 
 **File**: `src/lib/utils.ts`
 
-| Function | Signature | Description |
-|----------|-----------|-------------|
-| `cn(...inputs)` | `(...inputs: ClassValue[]) => string` | Tailwind class merging via `clsx` + `twMerge` |
-| `copyToClipboard(text)` | `(text: string) => Promise<boolean>` | Copy to clipboard with fallback for older browsers |
-| `downloadFile(content, filename, mimeType)` | `(content: string, filename: string, mimeType: string) => void` | Trigger a file download from a string |
-| `formatExportTimestamp(date?)` | `(date?: Date) => string` | Format date as `DD_MM_YYYY_HH_MM` (e.g. `09_02_2026_14_35`) |
-| `getExportFileName(base, ext)` | `(base: string, ext: string) => string` | Build timestamped filename (e.g. `prompt-export_09_02_2026_14_35.md`) |
+| Function                                    | Signature                                                       | Description                                                           |
+| ------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `cn(...inputs)`                             | `(...inputs: ClassValue[]) => string`                           | Tailwind class merging via `clsx` + `twMerge`                         |
+| `copyToClipboard(text)`                     | `(text: string) => Promise<boolean>`                            | Copy to clipboard with fallback for older browsers                    |
+| `downloadFile(content, filename, mimeType)` | `(content: string, filename: string, mimeType: string) => void` | Trigger a file download from a string                                 |
+| `formatExportTimestamp(date?)`              | `(date?: Date) => string`                                       | Format date as `DD_MM_YYYY_HH_MM` (e.g. `09_02_2026_14_35`)           |
+| `getExportFileName(base, ext)`              | `(base: string, ext: string) => string`                         | Build timestamped filename (e.g. `prompt-export_09_02_2026_14_35.md`) |
 
 ---
 
@@ -282,11 +322,11 @@ Keyword-based Jaccard similarity search across version history. Filters stop wor
 
 **File**: `src/lib/llm/adapter.ts` (currently disabled)
 
-| Function | Returns | Description |
-|----------|---------|-------------|
-| `runPrompt(prompt, systemPrompt, settings)` | `Promise<LlmRunResult>` | Run prompt against configured LLM (throws `LlmNotEnabledError`) |
-| `runPromptSafe(prompt, systemPrompt, settings)` | `Promise<ApiResult<LlmRunResult>>` | Safe wrapper returning typed `ApiResult<T>` |
-| `preEstimateCost(settings, inputTokens, outputTokens)` | `number` | Pre-flight cost estimate |
+| Function                                               | Returns                            | Description                                                     |
+| ------------------------------------------------------ | ---------------------------------- | --------------------------------------------------------------- |
+| `runPrompt(prompt, systemPrompt, settings)`            | `Promise<LlmRunResult>`            | Run prompt against configured LLM (throws `LlmNotEnabledError`) |
+| `runPromptSafe(prompt, systemPrompt, settings)`        | `Promise<ApiResult<LlmRunResult>>` | Safe wrapper returning typed `ApiResult<T>`                     |
+| `preEstimateCost(settings, inputTokens, outputTokens)` | `number`                           | Pre-flight cost estimate                                        |
 
 ```typescript
 interface ApiResult<T> {

@@ -1,4 +1,8 @@
-import { estimateInputTokens, estimateOutputTokens, estimateTokens } from '@/lib/engine/token-estimator';
+import {
+  estimateInputTokens,
+  estimateOutputTokens,
+  estimateTokens,
+} from '@/lib/engine/token-estimator';
 
 describe('token-estimator', () => {
   describe('estimateInputTokens', () => {
@@ -21,7 +25,9 @@ describe('token-estimator', () => {
 
     it('should increase with longer text', () => {
       const short = estimateInputTokens('Hello');
-      const long = estimateInputTokens('Create a comprehensive REST API with authentication, authorization, rate limiting, and input validation');
+      const long = estimateInputTokens(
+        'Create a comprehensive REST API with authentication, authorization, rate limiting, and input validation'
+      );
       expect(long.low).toBeGreaterThan(short.low);
       expect(long.high).toBeGreaterThan(short.high);
     });

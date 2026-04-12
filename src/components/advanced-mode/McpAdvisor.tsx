@@ -34,7 +34,9 @@ export function McpAdvisorPanel({ suggestions }: McpAdvisorProps) {
         <div className="flex items-center gap-2">
           <Wrench className="h-4 w-4 text-muted-foreground" />
           <CardTitle className="text-sm font-medium">MCP Tool Suggestions</CardTitle>
-          <Badge variant="secondary" className="text-xs ml-auto">{suggestions.length} found</Badge>
+          <Badge variant="secondary" className="text-xs ml-auto">
+            {suggestions.length} found
+          </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -49,15 +51,23 @@ export function McpAdvisorPanel({ suggestions }: McpAdvisorProps) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium">{tool.name}</span>
-                {tool.recommended && <Badge variant="secondary" className="text-xs">Recommended</Badge>}
+                {tool.recommended && (
+                  <Badge variant="secondary" className="text-xs">
+                    Recommended
+                  </Badge>
+                )}
               </div>
-              <Badge variant="outline" className="text-xs">{tool.permission}</Badge>
+              <Badge variant="outline" className="text-xs">
+                {tool.permission}
+              </Badge>
             </div>
             <p className="text-xs text-muted-foreground">{tool.description}</p>
             <div className="flex items-center gap-1.5">
               <span className="text-[11px] text-muted-foreground">Safe in:</span>
-              {tool.safeEnvironments.map(env => (
-                <Badge key={env} variant="outline" className="text-[10px] px-1.5 py-0">{env}</Badge>
+              {tool.safeEnvironments.map((env) => (
+                <Badge key={env} variant="outline" className="text-[10px] px-1.5 py-0">
+                  {env}
+                </Badge>
               ))}
             </div>
             <div className="flex items-start gap-1.5 text-[11px]">

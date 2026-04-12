@@ -39,21 +39,52 @@ export const promptSlice = createSlice({
     setMode: (state, action: PayloadAction<AppMode>) => {
       state.mode = action.payload;
       saveToStorage(STORAGE_KEYS.MODE, action.payload);
-      loggerDebug(DEBUG_MESSAGES.MODE_SWITCHED, { mode: action.payload }, 'store', 'promptSlice.ts', 'setMode');
+      loggerDebug(
+        DEBUG_MESSAGES.MODE_SWITCHED,
+        { mode: action.payload },
+        'store',
+        'promptSlice.ts',
+        'setMode'
+      );
     },
     setTheme: (state, action: PayloadAction<ThemeMode>) => {
       state.theme = action.payload;
       saveToStorage(STORAGE_KEYS.THEME, action.payload);
-      loggerDebug(DEBUG_MESSAGES.THEME_SET, { theme: action.payload }, 'store', 'promptSlice.ts', 'setTheme');
+      loggerDebug(
+        DEBUG_MESSAGES.THEME_SET,
+        { theme: action.payload },
+        'store',
+        'promptSlice.ts',
+        'setTheme'
+      );
     },
     toggleTheme: (state) => {
       const newTheme: ThemeMode = state.theme === 'dark' ? 'light' : 'dark';
       state.theme = newTheme;
       saveToStorage(STORAGE_KEYS.THEME, newTheme);
-      loggerDebug(DEBUG_MESSAGES.THEME_TOGGLED, { theme: newTheme }, 'store', 'promptSlice.ts', 'toggleTheme');
+      loggerDebug(
+        DEBUG_MESSAGES.THEME_TOGGLED,
+        { theme: newTheme },
+        'store',
+        'promptSlice.ts',
+        'toggleTheme'
+      );
+    },
+    resetToDefaults: (state) => {
+      state.mode = 'basic';
+      state.theme = 'dark';
+      saveToStorage(STORAGE_KEYS.MODE, 'basic');
+      saveToStorage(STORAGE_KEYS.THEME, 'dark');
+      loggerDebug(
+        DEBUG_MESSAGES.APP_RESET_TO_DEFAULTS,
+        undefined,
+        'store',
+        'promptSlice.ts',
+        'resetToDefaults'
+      );
     },
   },
 });
 
-export const { setMode, setTheme, toggleTheme } = promptSlice.actions;
+export const { setMode, setTheme, toggleTheme, resetToDefaults } = promptSlice.actions;
 export default promptSlice.reducer;

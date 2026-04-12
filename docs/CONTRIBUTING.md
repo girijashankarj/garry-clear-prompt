@@ -43,20 +43,21 @@ npm run dev
 git checkout -b feature/your-feature-name
 ```
 
-| Prefix | Use For |
-|--------|---------|
-| `feature/*` | New features or enhancements |
-| `fix/*` | Bug fixes |
-| `hotfix/*` | Critical production fixes |
-| `docs/*` | Documentation changes |
+| Prefix       | Use For                                   |
+| ------------ | ----------------------------------------- |
+| `feature/*`  | New features or enhancements              |
+| `fix/*`      | Bug fixes                                 |
+| `hotfix/*`   | Critical production fixes                 |
+| `docs/*`     | Documentation changes                     |
 | `refactor/*` | Code improvements without behavior change |
-| `test/*` | Adding or updating tests |
+| `test/*`     | Adding or updating tests                  |
 
 ### 2. Make Changes
 
 Follow these conventions:
 
 **Code Standards**
+
 - Use TypeScript strict mode
 - Use `src/common/constants` for all magic strings, storage keys, and limits
 - Use `src/common/messages/{info,error,warn,debug}.ts` for all toast and log messages — never hard-code strings
@@ -66,6 +67,7 @@ Follow these conventions:
 - Follow existing component patterns (see `docs/DESIGN-SYSTEM.md`)
 
 **UI Standards**
+
 - Add `InfoTooltip` to every new form field and section header
 - Add `CharCounter` to every new text input with a character limit
 - Use `APP_NAME` from constants instead of hardcoded strings
@@ -73,6 +75,7 @@ Follow these conventions:
 - Add ARIA attributes for accessibility (roles, labels, states)
 
 **File Organization**
+
 - Components go in the appropriate subdirectory under `src/components/`
 - Engine modules go in `src/lib/engine/`
 - Static data goes in `src/lib/data/`
@@ -95,6 +98,7 @@ npm run test:structure
 ```
 
 **Requirements**:
+
 - Every new source file must have a corresponding test in `tests/src/`
 - Minimum 80% coverage on branches, functions, lines, and statements
 - Use mock factories from `tests/mock/index.ts` (`createMockBasicInput`, `createMockAdvancedInput`, `createMockEngineResult`)
@@ -126,6 +130,7 @@ npx changeset
 ```
 
 This will prompt you to:
+
 1. Select the package (there's only one)
 2. Choose the bump type: `patch` (fix), `minor` (feature), `major` (breaking)
 3. Write a summary of the change
@@ -141,16 +146,16 @@ git add .
 git commit -m "feat: add prompt template library"
 ```
 
-| Type | When |
-|------|------|
-| `feat` | New feature or enhancement |
-| `fix` | Bug fix |
-| `docs` | Documentation only |
-| `refactor` | Code change without behavior change |
-| `test` | Adding or updating tests |
-| `chore` | Build process, dependencies, tooling |
-| `style` | Formatting, whitespace (no logic change) |
-| `perf` | Performance improvement |
+| Type       | When                                     |
+| ---------- | ---------------------------------------- |
+| `feat`     | New feature or enhancement               |
+| `fix`      | Bug fix                                  |
+| `docs`     | Documentation only                       |
+| `refactor` | Code change without behavior change      |
+| `test`     | Adding or updating tests                 |
+| `chore`    | Build process, dependencies, tooling     |
+| `style`    | Formatting, whitespace (no logic change) |
+| `perf`     | Performance improvement                  |
 
 **Format**: `type: lowercase description`
 **Max header length**: 100 characters (enforced by commitlint)
@@ -224,13 +229,13 @@ For a deep dive into the codebase structure:
 
 The project includes a comprehensive `.cursor/` configuration:
 
-| Resource | Description |
-|----------|-------------|
-| `.cursor/rules/` | 10 always-applied AI rules for code standards |
-| `.cursor/agents/` | 4 specialized frontend AI agents |
-| `.cursor/skills/` | 2 step-by-step skill workflows |
-| `.cursor/commands/` | 4 quick-action commands |
-| `.cursor/templates/` | Component and test scaffolding templates |
+| Resource             | Description                                   |
+| -------------------- | --------------------------------------------- |
+| `.cursor/rules/`     | 10 always-applied AI rules for code standards |
+| `.cursor/agents/`    | 4 specialized frontend AI agents              |
+| `.cursor/skills/`    | 2 step-by-step skill workflows                |
+| `.cursor/commands/`  | 4 quick-action commands                       |
+| `.cursor/templates/` | Component and test scaffolding templates      |
 
 ---
 

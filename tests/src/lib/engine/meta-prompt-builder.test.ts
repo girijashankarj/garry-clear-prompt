@@ -51,7 +51,9 @@ describe('meta-prompt-builder', () => {
     });
 
     it('should include explanation format instruction', () => {
-      const result = buildMetaPromptFromBasic(createMockBasicInput({ responseFormat: 'explanation' }));
+      const result = buildMetaPromptFromBasic(
+        createMockBasicInput({ responseFormat: 'explanation' })
+      );
       expect(result).toContain('flowing explanations');
     });
 

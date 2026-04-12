@@ -12,9 +12,15 @@ const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
     getItem: jest.fn((key: string) => store[key] ?? null),
-    setItem: jest.fn((key: string, value: string) => { store[key] = value; }),
-    removeItem: jest.fn((key: string) => { delete store[key]; }),
-    clear: jest.fn(() => { store = {}; }),
+    setItem: jest.fn((key: string, value: string) => {
+      store[key] = value;
+    }),
+    removeItem: jest.fn((key: string) => {
+      delete store[key];
+    }),
+    clear: jest.fn(() => {
+      store = {};
+    }),
   };
 })();
 
@@ -98,7 +104,7 @@ describe('test-cases', () => {
       addTestCase(suite.id, 'input2', 'expected2');
       removeTestCase(suite.id, tc!.id);
       const suites = getTestSuites();
-      const updated = suites.find(s => s.id === suite.id);
+      const updated = suites.find((s) => s.id === suite.id);
       expect(updated!.cases.length).toBe(1);
       expect(updated!.cases[0].input).toBe('input2');
     });
@@ -122,7 +128,7 @@ describe('test-cases', () => {
       const suite = createTestSuite('Export Suite', 'prompt');
       addTestCase(suite.id, 'input', 'expected');
       const suites = getTestSuites();
-      const updatedSuite = suites.find(s => s.id === suite.id)!;
+      const updatedSuite = suites.find((s) => s.id === suite.id)!;
       const json = exportTestSuiteAsJson(updatedSuite);
       expect(() => JSON.parse(json)).not.toThrow();
     });
@@ -131,7 +137,7 @@ describe('test-cases', () => {
       const suite = createTestSuite('Export Suite', 'prompt');
       addTestCase(suite.id, 'test input', 'test expected');
       const suites = getTestSuites();
-      const updatedSuite = suites.find(s => s.id === suite.id)!;
+      const updatedSuite = suites.find((s) => s.id === suite.id)!;
       const parsed = JSON.parse(exportTestSuiteAsJson(updatedSuite));
       expect(parsed.name).toBe('Export Suite');
       expect(parsed.cases).toHaveLength(1);

@@ -23,6 +23,12 @@ export function lintPrompt(text: string): LintWarning[] {
   const severityOrder = { error: 0, warning: 1, info: 2 };
   warnings.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
 
-  loggerDebug(DEBUG_MESSAGES.PROMPT_LINTED, { warningCount: warnings.length }, 'engine', 'prompt-linter.ts', 'lintPrompt');
+  loggerDebug(
+    DEBUG_MESSAGES.PROMPT_LINTED,
+    { warningCount: warnings.length },
+    'engine',
+    'prompt-linter.ts',
+    'lintPrompt'
+  );
   return warnings;
 }

@@ -6,9 +6,15 @@ const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
     getItem: jest.fn((key: string) => store[key] ?? null),
-    setItem: jest.fn((key: string, value: string) => { store[key] = value; }),
-    removeItem: jest.fn((key: string) => { delete store[key]; }),
-    clear: jest.fn(() => { store = {}; }),
+    setItem: jest.fn((key: string, value: string) => {
+      store[key] = value;
+    }),
+    removeItem: jest.fn((key: string) => {
+      delete store[key];
+    }),
+    clear: jest.fn(() => {
+      store = {};
+    }),
   };
 })();
 
@@ -55,13 +61,17 @@ describe('useLocalStorage', () => {
   });
 
   it('should return initial value when localStorage throws on read', () => {
-    localStorageMock.getItem.mockImplementationOnce(() => { throw new Error('fail'); });
+    localStorageMock.getItem.mockImplementationOnce(() => {
+      throw new Error('fail');
+    });
     const { result } = renderHook(() => useLocalStorage('test-key', 'fallback'));
     expect(result.current[0]).toBe('fallback');
   });
 
   it('should handle localStorage setItem failure gracefully', () => {
-    localStorageMock.setItem.mockImplementationOnce(() => { throw new Error('full'); });
+    localStorageMock.setItem.mockImplementationOnce(() => {
+      throw new Error('full');
+    });
     const { result } = renderHook(() => useLocalStorage('test-key', 'default'));
     // Should not throw
     act(() => {

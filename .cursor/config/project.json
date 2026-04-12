@@ -84,9 +84,7 @@
       "test-case generator",
       "prompt suggestions"
     ],
-    "deferred": [
-      "LLM integration (OpenAI, Anthropic, Bedrock) — src/lib/llm/"
-    ]
+    "deferred": ["LLM integration (OpenAI, Anthropic, Bedrock) — src/lib/llm/"]
   },
   "testing": {
     "coverageMinimum": 80,

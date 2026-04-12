@@ -31,9 +31,15 @@ export function exportAsText(result: PromptEngineResult): string {
 
   lines.push('TOKEN ESTIMATE:');
   lines.push('-'.repeat(20));
-  lines.push(`  Input:  ${result.tokenEstimate.inputTokens.low}-${result.tokenEstimate.inputTokens.high}`);
-  lines.push(`  Output: ${result.tokenEstimate.outputTokens.low}-${result.tokenEstimate.outputTokens.high}`);
-  lines.push(`  Total:  ${result.tokenEstimate.totalTokens.low}-${result.tokenEstimate.totalTokens.high}`);
+  lines.push(
+    `  Input:  ${result.tokenEstimate.inputTokens.low}-${result.tokenEstimate.inputTokens.high}`
+  );
+  lines.push(
+    `  Output: ${result.tokenEstimate.outputTokens.low}-${result.tokenEstimate.outputTokens.high}`
+  );
+  lines.push(
+    `  Total:  ${result.tokenEstimate.totalTokens.low}-${result.tokenEstimate.totalTokens.high}`
+  );
   lines.push('');
 
   lines.push('MODEL: ' + result.modelRecommendation.recommended);

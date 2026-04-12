@@ -44,47 +44,48 @@ Most people write prompts like they write emails -- long, vague, and full of fil
 
 ### Core Engine
 
-| Feature | Description |
-|---------|-------------|
-| **Prompt Rating** | Scores 0-100 across 5 dimensions: clarity, constraints, structure, token efficiency, risk penalty |
-| **Before/After Comparison** | Auto-rewrites your prompt, shows score delta, one-click apply |
-| **Prompt Linter** | 15+ rules covering quality, security (PII, secrets, injection), and efficiency |
-| **Prompt Improver** | Strips filler, adds format instructions, adds length constraints |
-| **NLP Analysis** | Intent detection, complexity grading, Flesch-Kincaid readability, key noun/verb extraction |
+| Feature                            | Description                                                                                             |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **Prompt Rating**                  | Scores 0-100 across 5 dimensions: clarity, constraints, structure, token efficiency, risk penalty       |
+| **Before/After Comparison**        | Auto-rewrites your prompt, shows score delta, one-click apply                                           |
+| **Prompt Linter**                  | 15+ rules covering quality, security (PII, secrets, injection), and efficiency                          |
+| **Prompt Improver**                | Strips filler, adds format instructions, length hints, optional domain checklist (`improve-intent`)     |
+| **ML checklist refine (optional)** | Set `VITE_ML_INTENT_ENABLED=true` to re-classify the checklist in-browser (Transformers.js); no API key |
+| **NLP Analysis**                   | Intent detection, complexity grading, Flesch-Kincaid readability, key noun/verb extraction              |
 
 ### Model & Token Intelligence
 
-| Feature | Description |
-|---------|-------------|
-| **Model Advisor** | Recommends Fast/Balanced/Reasoning tier based on task type, complexity, risk, context size |
-| **Token Estimator** | Input/output token ranges with format multipliers (JSON +10%, code +50%, tables +20%) |
-| **Token Calibration** | Record actual usage to compute correction factors for future estimates |
-| **Cost Preview** | Pre-flight cost estimate per provider and model |
+| Feature               | Description                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------ |
+| **Model Advisor**     | Recommends Fast/Balanced/Reasoning tier based on task type, complexity, risk, context size |
+| **Token Estimator**   | Input/output token ranges with format multipliers (JSON +10%, code +50%, tables +20%)      |
+| **Token Calibration** | Record actual usage to compute correction factors for future estimates                     |
+| **Cost Preview**      | Pre-flight cost estimate per provider and model                                            |
 
 ### Productivity Tools
 
-| Feature | Description |
-|---------|-------------|
-| **Version History** | Save v1/v2/v3 snapshots, restore any version, view score progression |
-| **Similar Prompts** | Keyword-based Jaccard similarity search across your version history |
-| **Test Cases** | Create test suites with input/expected-output pairs for offline validation |
+| Feature                 | Description                                                                       |
+| ----------------------- | --------------------------------------------------------------------------------- |
+| **Version History**     | Save v1/v2/v3 snapshots, restore any version, view score progression              |
+| **Similar Prompts**     | Keyword-based Jaccard similarity search across your version history               |
+| **Test Cases**          | Create test suites with input/expected-output pairs for offline validation        |
 | **Multi-format Export** | Copy, Markdown, Text, JSON, ZIP bundle — timestamped filenames (DD_MM_YYYY_HH_MM) |
-| **Cursor IDE Export** | Export as `.mdc` rule, agent, skill, or command for Cursor IDE |
+| **Cursor IDE Export**   | Export as `.mdc` rule, agent, skill, or command for Cursor IDE                    |
 
 ### Two Modes
 
-| Mode | Best For | Includes |
-|------|----------|----------|
-| **Basic** | Anyone who can type | Goal input, detail/style/format refiners, score, NLP, before/after, versioning |
-| **Advanced** | Prompt engineers | Everything in Basic + task config, model advisor, token estimator, lint, MCP advisor, calibration, test cases, Cursor export, LLM runner |
+| Mode         | Best For            | Includes                                                                                                                                 |
+| ------------ | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Basic**    | Anyone who can type | Goal input, detail/style/format refiners, score, NLP, before/after, versioning                                                           |
+| **Advanced** | Prompt engineers    | Everything in Basic + task config, model advisor, token estimator, lint, MCP advisor, calibration, test cases, Cursor export, LLM runner |
 
 ### Coming Soon
 
-| Feature | Status |
-|---------|--------|
-| **LLM Runner** | UI built, API disabled. OpenAI, Anthropic, AWS Bedrock adapters ready. |
-| **Collaborative Editing** | Planned |
-| **Prompt Templates Library** | Planned |
+| Feature                      | Status                                                                 |
+| ---------------------------- | ---------------------------------------------------------------------- |
+| **LLM Runner**               | UI built, API disabled. OpenAI, Anthropic, AWS Bedrock adapters ready. |
+| **Collaborative Editing**    | Planned                                                                |
+| **Prompt Templates Library** | Planned                                                                |
 
 ---
 
@@ -109,20 +110,22 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
 
+Optional: enable in-browser ML checklist refinement in `.env` with `VITE_ML_INTENT_ENABLED=true` (see `.env.example`).
+
 ### Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start Vite dev server with HMR |
-| `npm run build` | TypeScript check + Vite production build |
-| `npm run lint` | ESLint check (zero warnings enforced) |
-| `npm run lint:fix` | ESLint auto-fix |
-| `npm run format` | Prettier format all files |
-| `npm run format:check` | Check formatting without changes |
-| `npm test` | Jest with coverage |
-| `npm run test:coverage` | Same as test (with coverage report) |
-| `npm run test:structure` | Verify tests mirror src/ structure |
-| `npm run preview` | Preview production build |
+| Script                   | Description                              |
+| ------------------------ | ---------------------------------------- |
+| `npm run dev`            | Start Vite dev server with HMR           |
+| `npm run build`          | TypeScript check + Vite production build |
+| `npm run lint`           | ESLint check (zero warnings enforced)    |
+| `npm run lint:fix`       | ESLint auto-fix                          |
+| `npm run format`         | Prettier format all files                |
+| `npm run format:check`   | Check formatting without changes         |
+| `npm test`               | Jest with coverage                       |
+| `npm run test:coverage`  | Same as test (with coverage report)      |
+| `npm run test:structure` | Verify tests mirror src/ structure       |
+| `npm run preview`        | Preview production build                 |
 
 ---
 
@@ -406,13 +409,13 @@ flowchart TD
 
 5 dimensions, scored out of 100:
 
-| Dimension | Max | What It Checks |
-|-----------|-----|----------------|
-| Clarity | 25 | Single clear goal, specific action verb, no vague language |
-| Constraints | 20 | Output format, length limits, do/don't rules, scope boundaries |
-| Structure | 20 | Labeled sections, bullet points, paragraphs, logical flow |
-| Token Efficiency | 20 | No filler words, no repetition, no conversational padding |
-| Risk Penalty | -15 | Open-ended scope, multiple tasks, missing audience, contradictions |
+| Dimension        | Max | What It Checks                                                     |
+| ---------------- | --- | ------------------------------------------------------------------ |
+| Clarity          | 25  | Single clear goal, specific action verb, no vague language         |
+| Constraints      | 20  | Output format, length limits, do/don't rules, scope boundaries     |
+| Structure        | 20  | Labeled sections, bullet points, paragraphs, logical flow          |
+| Token Efficiency | 20  | No filler words, no repetition, no conversational padding          |
+| Risk Penalty     | -15 | Open-ended scope, multiple tasks, missing audience, contradictions |
 
 **Score bands**: Excellent (90+), Good (75-89), Average (60-74), Weak (40-59), Poor (<40)
 
@@ -420,21 +423,21 @@ flowchart TD
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| **Framework** | React 19 + TypeScript 5.9 (Node.js v24.13.0) |
-| **Build** | Vite 7 |
-| **Styling** | Tailwind CSS v4 + shadcn/ui (Radix primitives) |
-| **State** | Redux Toolkit (app state) + localStorage (persistence) |
-| **Forms** | react-hook-form + zod |
-| **NLP** | compromise (lightweight browser NLP) |
-| **Export** | JSZip, react-markdown + remark-gfm |
-| **Notifications** | sonner |
-| **Logging** | Custom browser logger (structured JSON) |
-| **Testing** | Jest + React Testing Library |
-| **Linting** | ESLint 9 (flat config) + Prettier |
-| **Git Hooks** | Husky + commitlint + lint-staged |
-| **Versioning** | Changesets |
+| Layer             | Technology                                             |
+| ----------------- | ------------------------------------------------------ |
+| **Framework**     | React 19 + TypeScript 5.9 (Node.js v24.13.0)           |
+| **Build**         | Vite 7                                                 |
+| **Styling**       | Tailwind CSS v4 + shadcn/ui (Radix primitives)         |
+| **State**         | Redux Toolkit (app state) + localStorage (persistence) |
+| **Forms**         | react-hook-form + zod                                  |
+| **NLP**           | compromise (lightweight browser NLP)                   |
+| **Export**        | JSZip, react-markdown + remark-gfm                     |
+| **Notifications** | sonner                                                 |
+| **Logging**       | Custom browser logger (structured JSON)                |
+| **Testing**       | Jest + React Testing Library                           |
+| **Linting**       | ESLint 9 (flat config) + Prettier                      |
+| **Git Hooks**     | Husky + commitlint + lint-staged                       |
+| **Versioning**    | Changesets                                             |
 
 ---
 
@@ -495,12 +498,12 @@ git checkout -b feature/your-feature-name
 git checkout -b fix/your-bug-fix
 ```
 
-| Prefix | Use For |
-|--------|---------|
-| `feature/*` | New features |
-| `fix/*` | Bug fixes |
-| `hotfix/*` | Production hotfixes |
-| `release/DD-MM-YYYY` | Release branches |
+| Prefix               | Use For             |
+| -------------------- | ------------------- |
+| `feature/*`          | New features        |
+| `fix/*`              | Bug fixes           |
+| `hotfix/*`           | Production hotfixes |
+| `release/DD-MM-YYYY` | Release branches    |
 
 ### 3. Make Changes
 
@@ -523,7 +526,7 @@ npm test
 npm run test:structure
 ```
 
-- Tests live in `tests/src/` mirroring the `src/` directory (28 suites, 269 tests)
+- Tests live in `tests/src/` mirroring the `src/` directory (30 suites, 315 tests)
 - Minimum 80% coverage required
 - Use mock factories from `tests/mock/index.ts` (`createMockBasicInput`, `createMockAdvancedInput`, `createMockEngineResult`)
 
@@ -539,14 +542,14 @@ npx changeset
 git commit -m "feat: add prompt template library"
 ```
 
-| Type | When |
-|------|------|
-| `feat` | New feature |
-| `fix` | Bug fix |
-| `docs` | Documentation only |
+| Type       | When                                    |
+| ---------- | --------------------------------------- |
+| `feat`     | New feature                             |
+| `fix`      | Bug fix                                 |
+| `docs`     | Documentation only                      |
 | `refactor` | Code change that neither fixes nor adds |
-| `test` | Adding or updating tests |
-| `chore` | Build process, dependencies, CI |
+| `test`     | Adding or updating tests                |
+| `chore`    | Build process, dependencies, CI         |
 
 ### 6. Pre-commit Checks
 
@@ -617,14 +620,14 @@ npx changeset version  # Apply version bumps
 
 This project includes a comprehensive `.cursor/` configuration:
 
-| Category | Count | Description |
-|----------|-------|-------------|
-| Rules | 10 | Architecture, frontend, testing, security standards |
-| Agents | 4 | Performance, state, styling, UI component specialists |
-| Skills | 2 | Component creation, state management workflows |
-| Commands | 4 | Test coverage, test single, audit deps, check secrets |
-| Hooks | 3 | Auto-format, post-edit check, shell guard |
-| Templates | 2 | Component and test scaffolding |
+| Category  | Count | Description                                           |
+| --------- | ----- | ----------------------------------------------------- |
+| Rules     | 10    | Architecture, frontend, testing, security standards   |
+| Agents    | 4     | Performance, state, styling, UI component specialists |
+| Skills    | 2     | Component creation, state management workflows        |
+| Commands  | 4     | Test coverage, test single, audit deps, check secrets |
+| Hooks     | 3     | Auto-format, post-edit check, shell guard             |
+| Templates | 2     | Component and test scaffolding                        |
 
 ---
 

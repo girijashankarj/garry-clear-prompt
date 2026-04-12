@@ -37,7 +37,9 @@ export function CursorExportPanel({ result }: CursorExportPanelProps) {
       toast.error('Enter a name for the export');
       return;
     }
-    const { content, filename, mimeType } = exportForCursor(selected, result, { name: name.trim() });
+    const { content, filename, mimeType } = exportForCursor(selected, result, {
+      name: name.trim(),
+    });
     downloadFile(content, filename, mimeType);
     toast.success(`Downloaded as ${filename}`);
   };
@@ -67,7 +69,10 @@ export function CursorExportPanel({ result }: CursorExportPanelProps) {
           {EXPORT_TYPES.map((et) => (
             <button
               key={et.type}
-              onClick={() => { setSelected(et.type); setPreview(null); }}
+              onClick={() => {
+                setSelected(et.type);
+                setPreview(null);
+              }}
               className={`px-2.5 py-1 rounded-md text-xs font-medium border transition-colors ${
                 selected === et.type
                   ? 'bg-primary text-primary-foreground border-primary'
@@ -80,7 +85,7 @@ export function CursorExportPanel({ result }: CursorExportPanelProps) {
         </div>
 
         <p className="text-xs text-muted-foreground">
-          {EXPORT_TYPES.find(e => e.type === selected)?.description}
+          {EXPORT_TYPES.find((e) => e.type === selected)?.description}
         </p>
 
         {/* Name input */}
@@ -89,7 +94,10 @@ export function CursorExportPanel({ result }: CursorExportPanelProps) {
           <input
             type="text"
             value={name}
-            onChange={(e) => { setName(e.target.value); setPreview(null); }}
+            onChange={(e) => {
+              setName(e.target.value);
+              setPreview(null);
+            }}
             placeholder="e.g. Code Review Helper"
             className="w-full mt-1 rounded-md border bg-background px-2.5 py-1.5 text-sm"
           />

@@ -47,7 +47,7 @@ function formatMessage(
   payload?: unknown,
   context?: string,
   fileName?: string,
-  functionName?: string,
+  functionName?: string
 ): Record<string, unknown> {
   return {
     level,
@@ -66,7 +66,7 @@ export function logMessage(
   payload?: unknown,
   context?: string,
   fileName?: string,
-  functionName?: string,
+  functionName?: string
 ) {
   if (!shouldLog(level)) return;
 
@@ -94,7 +94,7 @@ export function loggerInfo(
   payload?: unknown,
   context?: string,
   fileName?: string,
-  functionName?: string,
+  functionName?: string
 ) {
   logMessage('info', message, payload, context, fileName, functionName);
 }
@@ -104,7 +104,7 @@ export function loggerError(
   payload?: unknown,
   context?: string,
   fileName?: string,
-  functionName?: string,
+  functionName?: string
 ) {
   logMessage('error', message, payload, context, fileName, functionName);
 }
@@ -114,7 +114,7 @@ export function loggerWarn(
   payload?: unknown,
   context?: string,
   fileName?: string,
-  functionName?: string,
+  functionName?: string
 ) {
   logMessage('warn', message, payload, context, fileName, functionName);
 }
@@ -124,7 +124,7 @@ export function loggerDebug(
   payload?: unknown,
   context?: string,
   fileName?: string,
-  functionName?: string,
+  functionName?: string
 ) {
   logMessage('debug', message, payload, context, fileName, functionName);
 }

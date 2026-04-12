@@ -10,7 +10,7 @@ export function suggestMcpTools(promptText: string): McpToolSuggestion[] {
   const suggestions: McpToolSuggestion[] = [];
 
   for (const tool of MCP_TOOLS) {
-    const matchCount = tool.keywords.filter(kw => lowerText.includes(kw)).length;
+    const matchCount = tool.keywords.filter((kw) => lowerText.includes(kw)).length;
 
     if (matchCount > 0) {
       suggestions.push({
@@ -27,14 +27,25 @@ export function suggestMcpTools(promptText: string): McpToolSuggestion[] {
   // Sort: most relevant first
   suggestions.sort((a, b) => (b.recommended ? 1 : 0) - (a.recommended ? 1 : 0));
 
-  loggerDebug(DEBUG_MESSAGES.MCP_SUGGESTED, { count: suggestions.length }, 'engine', 'mcp-advisor.ts', 'suggestMcpTools');
+  loggerDebug(
+    DEBUG_MESSAGES.MCP_SUGGESTED,
+    { count: suggestions.length },
+    'engine',
+    'mcp-advisor.ts',
+    'suggestMcpTools'
+  );
   return suggestions;
 }
 
 export function shouldUseMcp(promptText: string): boolean {
   // Simple heuristic: if the prompt is purely reasoning/planning, MCP is not needed
-  const reasoningOnly = /\b(explain|describe|compare|summarize|plan|design|review|think)\b/i.test(promptText);
-  const needsData = /\b(query|fetch|read|write|access|connect|execute|run|deploy|test|browse|screenshot)\b/i.test(promptText);
+  const reasoningOnly = /\b(explain|describe|compare|summarize|plan|design|review|think)\b/i.test(
+    promptText
+  );
+  const needsData =
+    /\b(query|fetch|read|write|access|connect|execute|run|deploy|test|browse|screenshot)\b/i.test(
+      promptText
+    );
 
   return needsData && !reasoningOnly;
 }

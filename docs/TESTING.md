@@ -6,13 +6,13 @@
 
 ## Overview
 
-| Tool | Purpose |
-|------|---------|
-| Jest | Test runner, assertions, coverage |
-| React Testing Library | Component rendering and DOM queries |
-| ts-jest | TypeScript transformation |
-| jest-environment-jsdom | Browser-like environment |
-| identity-obj-proxy | CSS module mocking |
+| Tool                   | Purpose                             |
+| ---------------------- | ----------------------------------- |
+| Jest                   | Test runner, assertions, coverage   |
+| React Testing Library  | Component rendering and DOM queries |
+| ts-jest                | TypeScript transformation           |
+| jest-environment-jsdom | Browser-like environment            |
+| identity-obj-proxy     | CSS module mocking                  |
 
 ---
 
@@ -36,12 +36,12 @@ npm run test:structure
 
 ## Coverage Requirements
 
-| Metric | Threshold |
-|--------|-----------|
-| Branches | 80% |
-| Functions | 80% |
-| Lines | 80% |
-| Statements | 80% |
+| Metric     | Threshold |
+| ---------- | --------- |
+| Branches   | 80%       |
+| Functions  | 80%       |
+| Lines      | 80%       |
+| Statements | 80%       |
 
 Coverage is enforced by Jest config (`jest.config.cjs`).
 
@@ -49,7 +49,7 @@ Coverage is enforced by Jest config (`jest.config.cjs`).
 
 ## Directory Structure
 
-Tests mirror the `src/` directory (28 suites, 269 tests):
+Tests mirror the `src/` directory (30 suites, 315 tests):
 
 ```
 tests/
@@ -62,6 +62,9 @@ tests/
     │   │   ├── prompt-rater.test.ts
     │   │   ├── prompt-linter.test.ts
     │   │   ├── prompt-improver.test.ts
+    │   │   ├── prompt-improver-ml.test.ts
+    │   │   ├── improve-intent.test.ts
+    │   │   ├── prompt-rater.golden.test.ts
     │   │   ├── token-estimator.test.ts
     │   │   ├── model-advisor.test.ts
     │   │   ├── mcp-advisor.test.ts
@@ -80,7 +83,6 @@ tests/
     │   └── prompt-suggestions.test.ts
     ├── hooks/
     │   ├── use-local-storage.test.ts
-    │   ├── use-mode.test.ts
     │   └── use-prompt-engine.test.ts
     ├── components/
     │   └── shared/
@@ -102,12 +104,14 @@ tests/
 ### `createMockPrompt(overrides?)`
 
 Returns a mock prompt string. Options:
+
 - `text`: Custom text (overrides length selection)
 - `length`: `'short'` | `'medium'` | `'long'`
 
 ### `createMockBasicInput(overrides?)`
 
 Returns a `BasicPromptInput` with sensible defaults:
+
 ```typescript
 {
   goal: 'Create a React component that displays a user profile card',
@@ -125,6 +129,7 @@ Returns an `AdvancedPromptInput` with sensible defaults.
 ### `createMockEngineResult(overrides?)`
 
 Returns a complete `PromptEngineResult` with realistic defaults for testing exporters and results-consuming components:
+
 ```typescript
 {
   structuredPrompt: 'Create a REST API endpoint...',
@@ -158,8 +163,8 @@ describe('ratePrompt', () => {
   it('gives higher score for well-structured prompt', () => {
     const good = ratePrompt(
       'Create a REST API endpoint for user authentication.\n\n' +
-      'Output format: JSON with status codes.\n\n' +
-      'Constraints: max 200 lines, include error handling.'
+        'Output format: JSON with status codes.\n\n' +
+        'Constraints: max 200 lines, include error handling.'
     );
     expect(good.totalScore).toBeGreaterThan(60);
   });
@@ -200,7 +205,7 @@ describe('moduleName', () => {
 
 - All engine modules (pure functions)
 - Utility functions (loggerUtils, storage helpers)
-- Custom hooks (useLocalStorage, usePromptEngine)
+- Custom hooks (`useLocalStorage`, `usePromptEngine`; mode lives in Redux, not a separate hook)
 - Critical component interactions (form submission, export)
 - Storage functions — assert on `StorageResult<T>.success` and `.data`, not raw values
 
@@ -230,6 +235,7 @@ Tests use a dedicated `tsconfig.test.json` that extends `tsconfig.app.json` with
 - `noUnusedLocals` / `noUnusedParameters` disabled for test flexibility
 
 The Jest config (`jest.config.cjs`) references this via:
+
 ```javascript
 transform: {
   '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.test.json' }],

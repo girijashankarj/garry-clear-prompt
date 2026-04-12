@@ -1,18 +1,22 @@
 // Shared test utilities and mock helpers
 
 import type { PromptEngineResult } from '@/types/prompt.types';
+import { analyzePromptNlp } from '@/lib/engine/nlp-analyzer';
 
 /**
  * Creates a mock prompt text for testing
  */
-export function createMockPrompt(overrides: { text?: string; length?: 'short' | 'medium' | 'long' } = {}): string {
+export function createMockPrompt(
+  overrides: { text?: string; length?: 'short' | 'medium' | 'long' } = {}
+): string {
   const { text, length = 'medium' } = overrides;
 
   if (text) return text;
 
   const prompts = {
     short: 'Explain React hooks.',
-    medium: 'Create a REST API endpoint for user authentication using JWT tokens. Include input validation with zod. Return JSON responses with proper error codes.',
+    medium:
+      'Create a REST API endpoint for user authentication using JWT tokens. Include input validation with zod. Return JSON responses with proper error codes.',
     long: 'Design a comprehensive microservices architecture for an e-commerce platform. Include service boundaries, data flow between services, event-driven communication patterns, database per service strategy, API gateway configuration, and deployment strategy using Kubernetes. Consider scalability, fault tolerance, and monitoring. Target audience: senior backend developers. Output format: structured document with diagrams.',
   };
 
@@ -22,22 +26,49 @@ export function createMockPrompt(overrides: { text?: string; length?: 'short' | 
 /**
  * Creates a mock PromptEngineResult for testing exporters and components
  */
-export function createMockEngineResult(overrides: Partial<PromptEngineResult> = {}): PromptEngineResult {
+export function createMockEngineResult(
+  overrides: Partial<PromptEngineResult> = {}
+): PromptEngineResult {
+  const structuredPrompt = 'Create a REST API endpoint for user management.';
   return {
-    structuredPrompt: 'Create a REST API endpoint for user management.',
+    structuredPrompt,
     metaPrompt: 'You are an expert backend developer.',
     rating: {
       totalScore: 72,
       band: 'average',
+      sectionCoverage: {
+        goal: true,
+        context: false,
+        constraints: false,
+        output: false,
+      },
+      dimensionHints: {
+        clarity: 'Next: name the single deliverable or decision you need.',
+        constraints: 'Next: specify output shape (bullets, table, JSON).',
+        structure: 'Next: add labeled blocks for Context & Constraints.',
+        tokenEfficiency: 'Next: remove hedges and repeated sentences.',
+        riskPenalty: 'Next: name audience or tighten scope a bit.',
+      },
       dimensions: {
         clarity: { name: 'Clarity', score: 18, maxScore: 25, feedback: 'Good clarity' },
-        constraints: { name: 'Constraints', score: 12, maxScore: 20, feedback: 'Add format constraints' },
+        constraints: {
+          name: 'Constraints',
+          score: 12,
+          maxScore: 20,
+          feedback: 'Add format constraints',
+        },
         structure: { name: 'Structure', score: 14, maxScore: 20, feedback: 'Decent structure' },
-        tokenEfficiency: { name: 'Token Efficiency', score: 16, maxScore: 20, feedback: 'Efficient' },
+        tokenEfficiency: {
+          name: 'Token Efficiency',
+          score: 16,
+          maxScore: 20,
+          feedback: 'Efficient',
+        },
         riskPenalty: { name: 'Risk Penalty', score: -3, maxScore: 0, feedback: 'Minor risk' },
       },
       suggestions: ['Add output format', 'Specify constraints'],
     },
+    nlpAnalysis: analyzePromptNlp(structuredPrompt),
     tokenEstimate: {
       inputTokens: { low: 20, high: 35 },
       outputTokens: { low: 200, high: 400 },

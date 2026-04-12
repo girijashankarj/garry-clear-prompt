@@ -53,11 +53,7 @@ export const MODEL_TIERS: ModelTierInfo[] = [
       'Migration planning',
       'Multi-step problem solving',
     ],
-    avoidFor: [
-      'Simple formatting',
-      'Boilerplate code',
-      'Repetitive tasks',
-    ],
+    avoidFor: ['Simple formatting', 'Boilerplate code', 'Repetitive tasks'],
     costLevel: 'high',
     speedLevel: 'slow',
   },

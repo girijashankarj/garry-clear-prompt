@@ -1,4 +1,10 @@
-import type { ModelRecommendation, TaskType, Complexity, RiskLevel, ContextSize } from '@/types/prompt.types';
+import type {
+  ModelRecommendation,
+  TaskType,
+  Complexity,
+  RiskLevel,
+  ContextSize,
+} from '@/types/prompt.types';
 import { loggerDebug } from '@/utils/loggerUtils';
 import { DEBUG_MESSAGES } from '@/common/messages/debug';
 
@@ -12,32 +18,33 @@ interface ModelAdvisorInput {
 
 // Scoring weights
 const TASK_SCORES: Record<TaskType, { fast: number; balanced: number; reasoning: number }> = {
-  refactor:  { fast: 1, balanced: 3, reasoning: 2 },
-  debug:     { fast: 0, balanced: 2, reasoning: 3 },
-  design:    { fast: 0, balanced: 1, reasoning: 3 },
-  sql:       { fast: 1, balanced: 3, reasoning: 2 },
-  docs:      { fast: 2, balanced: 3, reasoning: 1 },
-  data:      { fast: 1, balanced: 3, reasoning: 2 },
-  testing:   { fast: 2, balanced: 3, reasoning: 1 },
-  general:   { fast: 2, balanced: 3, reasoning: 1 },
+  refactor: { fast: 1, balanced: 3, reasoning: 2 },
+  debug: { fast: 0, balanced: 2, reasoning: 3 },
+  design: { fast: 0, balanced: 1, reasoning: 3 },
+  sql: { fast: 1, balanced: 3, reasoning: 2 },
+  docs: { fast: 2, balanced: 3, reasoning: 1 },
+  data: { fast: 1, balanced: 3, reasoning: 2 },
+  testing: { fast: 2, balanced: 3, reasoning: 1 },
+  general: { fast: 2, balanced: 3, reasoning: 1 },
 };
 
-const COMPLEXITY_SCORES: Record<Complexity, { fast: number; balanced: number; reasoning: number }> = {
-  low:    { fast: 3, balanced: 2, reasoning: 0 },
-  medium: { fast: 1, balanced: 3, reasoning: 2 },
-  high:   { fast: 0, balanced: 1, reasoning: 3 },
-};
+const COMPLEXITY_SCORES: Record<Complexity, { fast: number; balanced: number; reasoning: number }> =
+  {
+    low: { fast: 3, balanced: 2, reasoning: 0 },
+    medium: { fast: 1, balanced: 3, reasoning: 2 },
+    high: { fast: 0, balanced: 1, reasoning: 3 },
+  };
 
 const RISK_SCORES: Record<RiskLevel, { fast: number; balanced: number; reasoning: number }> = {
-  low:    { fast: 3, balanced: 2, reasoning: 0 },
+  low: { fast: 3, balanced: 2, reasoning: 0 },
   medium: { fast: 1, balanced: 3, reasoning: 2 },
-  high:   { fast: 0, balanced: 1, reasoning: 3 },
+  high: { fast: 0, balanced: 1, reasoning: 3 },
 };
 
 const CONTEXT_SCORES: Record<ContextSize, { fast: number; balanced: number; reasoning: number }> = {
-  small:  { fast: 3, balanced: 2, reasoning: 1 },
+  small: { fast: 3, balanced: 2, reasoning: 1 },
   medium: { fast: 2, balanced: 3, reasoning: 2 },
-  large:  { fast: 1, balanced: 2, reasoning: 3 },
+  large: { fast: 1, balanced: 2, reasoning: 3 },
 };
 
 export function recommendModel(input: ModelAdvisorInput): ModelRecommendation {
@@ -96,13 +103,21 @@ export function recommendModel(input: ModelAdvisorInput): ModelRecommendation {
   if (input.riskLevel === 'high') reasons.push('high risk');
   if (input.contextSize === 'large') reasons.push('large context');
   if (input.needsToolUse) reasons.push('tool use needed');
-  if (input.complexity === 'low' && input.riskLevel === 'low') reasons.push('simple, low-risk task');
+  if (input.complexity === 'low' && input.riskLevel === 'low')
+    reasons.push('simple, low-risk task');
 
-  const reasonStr = reasons.length > 0
-    ? `Recommended based on: ${reasons.join(', ')}`
-    : `Best general-purpose option for ${input.taskType} tasks`;
+  const reasonStr =
+    reasons.length > 0
+      ? `Recommended based on: ${reasons.join(', ')}`
+      : `Best general-purpose option for ${input.taskType} tasks`;
 
-  loggerDebug(DEBUG_MESSAGES.MODEL_RECOMMENDED, { recommended, confidence }, 'engine', 'model-advisor.ts', 'recommendModel');
+  loggerDebug(
+    DEBUG_MESSAGES.MODEL_RECOMMENDED,
+    { recommended, confidence },
+    'engine',
+    'model-advisor.ts',
+    'recommendModel'
+  );
 
   return {
     recommended,

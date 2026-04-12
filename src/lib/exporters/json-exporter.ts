@@ -10,14 +10,35 @@ export function exportAsJson(result: PromptEngineResult): string {
     rating: {
       totalScore: result.rating.totalScore,
       band: result.rating.band,
+      sectionCoverage: result.rating.sectionCoverage,
+      dimensionHints: result.rating.dimensionHints,
       dimensions: {
-        clarity: { score: result.rating.dimensions.clarity.score, max: result.rating.dimensions.clarity.maxScore },
-        constraints: { score: result.rating.dimensions.constraints.score, max: result.rating.dimensions.constraints.maxScore },
-        structure: { score: result.rating.dimensions.structure.score, max: result.rating.dimensions.structure.maxScore },
-        tokenEfficiency: { score: result.rating.dimensions.tokenEfficiency.score, max: result.rating.dimensions.tokenEfficiency.maxScore },
+        clarity: {
+          score: result.rating.dimensions.clarity.score,
+          max: result.rating.dimensions.clarity.maxScore,
+        },
+        constraints: {
+          score: result.rating.dimensions.constraints.score,
+          max: result.rating.dimensions.constraints.maxScore,
+        },
+        structure: {
+          score: result.rating.dimensions.structure.score,
+          max: result.rating.dimensions.structure.maxScore,
+        },
+        tokenEfficiency: {
+          score: result.rating.dimensions.tokenEfficiency.score,
+          max: result.rating.dimensions.tokenEfficiency.maxScore,
+        },
         riskPenalty: { score: result.rating.dimensions.riskPenalty.score },
       },
       suggestions: result.rating.suggestions,
+    },
+    nlpSummary: {
+      intent: result.nlpAnalysis.intent,
+      complexity: result.nlpAnalysis.complexity,
+      wordCount: result.nlpAnalysis.wordCount,
+      sentenceCount: result.nlpAnalysis.sentenceCount,
+      readabilityGrade: result.nlpAnalysis.readabilityGrade,
     },
     tokenEstimate: result.tokenEstimate,
     modelRecommendation: result.modelRecommendation,

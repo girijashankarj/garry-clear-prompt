@@ -8,13 +8,39 @@ interface ScoreBadgeProps {
   size?: 'sm' | 'lg';
 }
 
-const BAND_COLORS: Record<RatingBand, { text: string; stroke: string; bg: string }> = {
-  excellent: { text: 'text-emerald-500', stroke: 'stroke-emerald-500', bg: 'bg-emerald-500/10' },
-  good: { text: 'text-blue-500', stroke: 'stroke-blue-500', bg: 'bg-blue-500/10' },
-  average: { text: 'text-amber-500', stroke: 'stroke-amber-500', bg: 'bg-amber-500/10' },
-  weak: { text: 'text-orange-500', stroke: 'stroke-orange-500', bg: 'bg-orange-500/10' },
-  poor: { text: 'text-red-500', stroke: 'stroke-red-500', bg: 'bg-red-500/10' },
-};
+const BAND_COLORS: Record<RatingBand, { text: string; stroke: string; bg: string; glow: string }> =
+  {
+    excellent: {
+      text: 'text-emerald-500',
+      stroke: 'stroke-emerald-500',
+      bg: 'bg-emerald-500/10',
+      glow: 'drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]',
+    },
+    good: {
+      text: 'text-blue-500',
+      stroke: 'stroke-blue-500',
+      bg: 'bg-blue-500/10',
+      glow: 'drop-shadow-[0_0_8px_rgba(59,130,246,0.4)]',
+    },
+    average: {
+      text: 'text-amber-500',
+      stroke: 'stroke-amber-500',
+      bg: 'bg-amber-500/10',
+      glow: 'drop-shadow-[0_0_8px_rgba(245,158,11,0.4)]',
+    },
+    weak: {
+      text: 'text-orange-500',
+      stroke: 'stroke-orange-500',
+      bg: 'bg-orange-500/10',
+      glow: 'drop-shadow-[0_0_8px_rgba(249,115,22,0.4)]',
+    },
+    poor: {
+      text: 'text-red-500',
+      stroke: 'stroke-red-500',
+      bg: 'bg-red-500/10',
+      glow: 'drop-shadow-[0_0_8px_rgba(239,68,68,0.4)]',
+    },
+  };
 
 const BAND_LABELS: Record<RatingBand, string> = {
   excellent: 'Excellent',
@@ -69,7 +95,10 @@ export function ScoreBadge({ score, band, size = 'sm' }: ScoreBadgeProps) {
 
   return (
     <div
-      className={cn('relative inline-flex flex-col items-center justify-center', isLarge ? 'w-[120px] h-[120px]' : 'w-[80px] h-[80px]')}
+      className={cn(
+        'relative inline-flex flex-col items-center justify-center',
+        isLarge ? 'w-[120px] h-[120px]' : 'w-[80px] h-[80px]'
+      )}
       role="meter"
       aria-valuenow={score}
       aria-valuemin={0}
@@ -80,7 +109,7 @@ export function ScoreBadge({ score, band, size = 'sm' }: ScoreBadgeProps) {
       <svg
         width={ringSize}
         height={ringSize}
-        className="absolute inset-0 -rotate-90"
+        className={cn('absolute inset-0 -rotate-90', colors.glow)}
       >
         {/* Background ring */}
         <circle
@@ -107,13 +136,19 @@ export function ScoreBadge({ score, band, size = 'sm' }: ScoreBadgeProps) {
 
       {/* Center content */}
       <div className="relative flex flex-col items-center justify-center z-10">
-        <span className={cn('font-bold tabular-nums', colors.text, isLarge ? 'text-3xl' : 'text-xl')}>
+        <span
+          className={cn('font-bold tabular-nums', colors.text, isLarge ? 'text-3xl' : 'text-xl')}
+        >
           {animatedScore}
         </span>
         <span className={cn('font-medium', colors.text, isLarge ? 'text-xs' : 'text-[10px]')}>
           {BAND_LABELS[band]}
         </span>
       </div>
+
+      <span className="sr-only" aria-live="polite" aria-atomic="true">
+        Score updated to {score}, {BAND_LABELS[band]}
+      </span>
     </div>
   );
 }

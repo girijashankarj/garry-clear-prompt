@@ -16,8 +16,12 @@ function slugify(text: string): string {
     .slice(0, 50);
 }
 
-export function exportAsCursorRule(result: PromptEngineResult, options: CursorExportOptions): string {
-  return `---
+export function exportAsCursorRule(
+  result: PromptEngineResult,
+  options: CursorExportOptions
+): string {
+  return (
+    `---
 description: ${options.description || options.name}
 globs:
 alwaysApply: false
@@ -28,10 +32,14 @@ alwaysApply: false
 ${result.structuredPrompt}
 
 ${result.metaPrompt ? `## System Instructions\n\n${result.metaPrompt}` : ''}
-`.trim() + '\n';
+`.trim() + '\n'
+  );
 }
 
-export function exportAsCursorAgent(result: PromptEngineResult, options: CursorExportOptions): string {
+export function exportAsCursorAgent(
+  result: PromptEngineResult,
+  options: CursorExportOptions
+): string {
   const lines = [
     `# ${options.name}`,
     '',
@@ -53,10 +61,18 @@ export function exportAsCursorAgent(result: PromptEngineResult, options: CursorE
     '- Search codebase',
     '',
   ];
-  return lines.filter((l, i) => !(l === '' && lines[i - 1] === '')).join('\n').trim() + '\n';
+  return (
+    lines
+      .filter((l, i) => !(l === '' && lines[i - 1] === ''))
+      .join('\n')
+      .trim() + '\n'
+  );
 }
 
-export function exportAsCursorSkill(result: PromptEngineResult, options: CursorExportOptions): string {
+export function exportAsCursorSkill(
+  result: PromptEngineResult,
+  options: CursorExportOptions
+): string {
   return `# SKILL.md — ${options.name}
 
 ## Description
@@ -85,7 +101,10 @@ Verify the output meets the requirements.
 `;
 }
 
-export function exportAsCursorCommand(result: PromptEngineResult, options: CursorExportOptions): string {
+export function exportAsCursorCommand(
+  result: PromptEngineResult,
+  options: CursorExportOptions
+): string {
   const slug = slugify(options.name);
   return `---
 name: ${slug}

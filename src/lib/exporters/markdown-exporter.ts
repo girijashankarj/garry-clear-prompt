@@ -36,7 +36,9 @@ export function exportAsMarkdown(result: PromptEngineResult): string {
   lines.push(`| Clarity | ${dims.clarity.score}/${dims.clarity.maxScore} |`);
   lines.push(`| Constraints | ${dims.constraints.score}/${dims.constraints.maxScore} |`);
   lines.push(`| Structure | ${dims.structure.score}/${dims.structure.maxScore} |`);
-  lines.push(`| Token Efficiency | ${dims.tokenEfficiency.score}/${dims.tokenEfficiency.maxScore} |`);
+  lines.push(
+    `| Token Efficiency | ${dims.tokenEfficiency.score}/${dims.tokenEfficiency.maxScore} |`
+  );
   lines.push(`| Risk Penalty | ${dims.riskPenalty.score} |`);
   lines.push('');
 
@@ -53,15 +55,23 @@ export function exportAsMarkdown(result: PromptEngineResult): string {
   // Token estimate
   lines.push('## Token Estimate');
   lines.push('');
-  lines.push(`- Input: ${result.tokenEstimate.inputTokens.low}--${result.tokenEstimate.inputTokens.high} tokens`);
-  lines.push(`- Output: ${result.tokenEstimate.outputTokens.low}--${result.tokenEstimate.outputTokens.high} tokens`);
-  lines.push(`- Total: ${result.tokenEstimate.totalTokens.low}--${result.tokenEstimate.totalTokens.high} tokens`);
+  lines.push(
+    `- Input: ${result.tokenEstimate.inputTokens.low}--${result.tokenEstimate.inputTokens.high} tokens`
+  );
+  lines.push(
+    `- Output: ${result.tokenEstimate.outputTokens.low}--${result.tokenEstimate.outputTokens.high} tokens`
+  );
+  lines.push(
+    `- Total: ${result.tokenEstimate.totalTokens.low}--${result.tokenEstimate.totalTokens.high} tokens`
+  );
   lines.push('');
 
   // Model recommendation
   lines.push('## Model Recommendation');
   lines.push('');
-  lines.push(`- **Recommended:** ${result.modelRecommendation.recommended} (confidence: ${result.modelRecommendation.confidence})`);
+  lines.push(
+    `- **Recommended:** ${result.modelRecommendation.recommended} (confidence: ${result.modelRecommendation.confidence})`
+  );
   lines.push(`- **Alternative:** ${result.modelRecommendation.alternative}`);
   if (result.modelRecommendation.avoid) {
     lines.push(`- **Avoid:** ${result.modelRecommendation.avoid}`);

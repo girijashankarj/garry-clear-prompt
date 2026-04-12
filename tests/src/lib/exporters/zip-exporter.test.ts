@@ -29,14 +29,16 @@ describe('zip-exporter', () => {
 
     it('should work with MCP suggestions', async () => {
       const result = createMockEngineResult({
-        mcpSuggestions: [{
-          name: 'Postgres',
-          description: 'Database access',
-          permission: 'read-only',
-          safeEnvironments: ['dev'],
-          riskNote: 'Be careful',
-          recommended: true,
-        }],
+        mcpSuggestions: [
+          {
+            name: 'Postgres',
+            description: 'Database access',
+            permission: 'read-only',
+            safeEnvironments: ['dev'],
+            riskNote: 'Be careful',
+            recommended: true,
+          },
+        ],
       });
       const blob = await exportAsZip(result);
       expect(blob.size).toBeGreaterThan(0);

@@ -24,7 +24,10 @@ interface VersionHistoryPanelProps {
 
 function formatTime(ts: number): string {
   return new Date(ts).toLocaleString(undefined, {
-    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   });
 }
 
@@ -41,7 +44,11 @@ export function VersionHistoryPanel({
     setVersions(getPromptVersions(mode));
   }, [mode]);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    queueMicrotask(() => {
+      refresh();
+    });
+  }, [refresh]);
 
   const handleSave = () => {
     if (!currentPrompt.trim()) {
@@ -77,7 +84,9 @@ export function VersionHistoryPanel({
           <History className="h-4 w-4 text-indigo-500" />
           <CardTitle className="text-sm font-medium">Version History</CardTitle>
           {versions.length > 0 && (
-            <Badge variant="secondary" className="ml-auto text-xs">{versions.length}</Badge>
+            <Badge variant="secondary" className="ml-auto text-xs">
+              {versions.length}
+            </Badge>
           )}
         </div>
       </CardHeader>
@@ -104,7 +113,9 @@ export function VersionHistoryPanel({
                 key={v.id}
                 className="flex items-center gap-2 rounded-md border p-2 text-xs group hover:bg-muted/50 transition-colors"
               >
-                <Badge variant="outline" className="text-[10px] font-mono shrink-0">{v.label}</Badge>
+                <Badge variant="outline" className="text-[10px] font-mono shrink-0">
+                  {v.label}
+                </Badge>
                 <div className="flex-1 min-w-0">
                   <p className="truncate text-muted-foreground">{v.prompt.slice(0, 60)}</p>
                   <p className="text-[10px] text-muted-foreground/70 mt-0.5">
@@ -133,7 +144,9 @@ export function VersionHistoryPanel({
         )}
 
         {versions.length === 0 && (
-          <p className="text-xs text-muted-foreground">No saved versions yet. Save your prompt to track changes over time.</p>
+          <p className="text-xs text-muted-foreground">
+            No saved versions yet. Save your prompt to track changes over time.
+          </p>
         )}
       </CardContent>
     </Card>
